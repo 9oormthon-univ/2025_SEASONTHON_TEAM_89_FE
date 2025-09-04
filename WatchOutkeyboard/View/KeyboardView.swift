@@ -42,8 +42,21 @@ struct KeyboardView: View {
                 
             
             Spacer()
-            
-           Image("circle01")
+            Button("알림 권한 요청하기  Permission 🙏") {
+                            NotificationManager.instance.requestAuthorization()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        
+                        // 5초 후 알림 예약 버튼
+                        Button("5초 후 알림 예약하기 Schedule ⏰") {
+                            NotificationManager.instance.scheduleNotification(
+                                title: "안녕하세요! 👋",
+                                subtitle: "5초 전에 예약된 알림입니다.",
+                                secondsLater: 5
+                            )
+                        }
+                        .buttonStyle(.bordered)
+            Image("circle01")
         }
         .padding(.horizontal, 15)
         .frame(height: 40)
