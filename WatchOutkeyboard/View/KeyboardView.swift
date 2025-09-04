@@ -13,14 +13,14 @@ struct KeyboardView: View {
         VStack(spacing: 8) {
             // 1. 상단 배너 뷰 추가
             bannerView()
-
+            
             // 2. 기존 키보드 키 레이아웃
             ForEach(controller.keyLayout, id: \.self) { row in
                 HStack(spacing: 7) {
                     ForEach(row, id: \.self) { key in
                         Button(action: {
                             controller.handleKeyPress(key)
-                        
+                            
                         }) {
                             keyView(for: key) // 각 키의 UI를 생성하는 헬퍼 뷰
                         }
@@ -30,7 +30,7 @@ struct KeyboardView: View {
             }
         }
         .padding(3)
-        .background(Color("keyboardbackgraound")).ignoresSafeArea()
+        .background(Color(.systemGray4).ignoresSafeArea())
     }
 
     /// 상단 배너 UI를 구성하는 뷰입니다.
@@ -50,9 +50,9 @@ struct KeyboardView: View {
                         // 5초 후 알림 예약 버튼
                         Button("5초 후 알림 예약하기 Schedule ⏰") {
                             NotificationManager.instance.scheduleNotification(
-                                title: "안녕하세요! 👋",
-                                subtitle: "5초 전에 예약된 알림입니다.",
-                                secondsLater: 5
+                                title: "위험한 문장이 반복 감지되었어요",
+                                subtitle: "필요하다면 즉시 신고를 도와드릴 수 있어요.",
+                                secondsLater: 1
                             )
                         }
                         .buttonStyle(.bordered)
