@@ -20,6 +20,10 @@ struct KeyboardView: View {
                     ForEach(row, id: \.self) { key in
                         Button(action: {
                             controller.handleKeyPress(key)
+                            let currentText = controller.textDocumentProxy.documentContextBeforeInput ?? ""
+                                                       
+                            // 3. 디바운스 관리자의 타이머를 리셋
+                            controller.debounceManager.resetTimer(for: currentText)
                             
                         }) {
                             keyView(for: key) // 각 키의 UI를 생성하는 헬퍼 뷰
