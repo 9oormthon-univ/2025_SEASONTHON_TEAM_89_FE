@@ -20,6 +20,10 @@ struct KeyboardView: View {
                     ForEach(row, id: \.self) { key in
                         Button(action: {
                             controller.handleKeyPress(key)
+                            let currentText = controller.textDocumentProxy.documentContextBeforeInput ?? ""
+                                                       
+                            // 3. 디바운스 관리자의 타이머를 리셋
+                            controller.debounceManager.resetTimer(for: currentText)
                             
                         }) {
                             keyView(for: key) // 각 키의 UI를 생성하는 헬퍼 뷰
@@ -42,21 +46,22 @@ struct KeyboardView: View {
                 
             
             Spacer()
-            Button("알림 권한 요청하기  Permission 🙏") {
-                            NotificationManager.instance.requestAuthorization()
-                        }
-                        .buttonStyle(.borderedProminent)
-                        
-                        // 5초 후 알림 예약 버튼
-                        Button("5초 후 알림 예약하기 Schedule ⏰") {
-                            NotificationManager.instance.scheduleNotification(
-                                title: "위험한 문장이 반복 감지되었어요",
-                                subtitle: "필요하다면 즉시 신고를 도와드릴 수 있어요.",
-                                secondsLater: 1
-                            )
-                        }
-                        .buttonStyle(.bordered)
+//            Button("알림 권한 요청하기  Permission 🙏") {
+//                NotificationManager.instance.requestAuthorization()
+//            }
+//            .buttonStyle(.borderedProminent)
+//            .foregroundStyle(SharedUserDefaults.color(forName: SharedUserDefaults.warningColorLevel1))
+//            // 5초 후 알림 예약 버튼
+//            Button("5초 후 알림 예약하기 Schedule ⏰") {
+//                NotificationManager.instance.scheduleNotification(
+//                    title: "위험한 문장이 반복 감지되었어요",
+//                    subtitle: "필요하다면 즉시 신고를 도와드릴 수 있어요.",
+//                    secondsLater: 1
+//                )
+//            }
+//            .buttonStyle(.bordered)
             Image("circle01")
+                
         }
         .padding(.horizontal, 15)
         .frame(height: 40)
@@ -82,7 +87,7 @@ struct KeyboardView: View {
                 Text(String(char))
                     .font(.system(size: 22))
             case .enter:
-                Image("entericon")
+                Image("enterIcon")
                     .resizable()
                     .scaledToFit()
                     .foregroundStyle(.white)

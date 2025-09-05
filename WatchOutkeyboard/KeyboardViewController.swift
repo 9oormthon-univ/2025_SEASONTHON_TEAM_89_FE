@@ -11,7 +11,7 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
 
     // MARK: - Properties
     private var hangulEngine = HangulEngine()
-    
+    let debounceManager = TypingDebounceManager()
     @Published var isShifted = false
     @Published var keyboardMode: KeyboardMode = .korean
     
