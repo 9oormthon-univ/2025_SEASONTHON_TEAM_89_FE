@@ -7,6 +7,18 @@
 
 import SwiftUI
 
+enum PretendardWeight: String {
+    case black = "Black"
+    case bold = "Bold"
+    case extraBold = "ExtraBold"
+    case extraLight = "ExtraLight"
+    case light = "Light"
+    case medium = "Medium"
+    case regular = "Regular"
+    case semiBold = "SemiBold"
+    case thin = "Thin"
+}
+
 extension Font {
     
     
@@ -24,7 +36,7 @@ extension Font {
     static let pHeadline03: Font = .custom("Pretendard-SemiBold", size: 16)
     static let pvHeadline03: Font = .custom("PretendardVariable", size: 16)
         .weight(.semibold)
-        
+    
     // Subtitle
     static let pSubtitle03: Font = .custom("Pretendard-Regular", size: 16)
     static let pvSubtitle03: Font = .custom("PretendardVariable", size: 16)
@@ -37,7 +49,7 @@ extension Font {
     static let pBody02: Font = .custom("Pretendard-Medium", size: 16)
     static let pvBody02: Font = .custom("PretendardVariable", size: 16)
         .weight(.regular)
-
+    
     // Caption
     static let pCaption01: Font = .custom("Pretendard-Medium", size: 14)
     static let pvCaption01: Font = .custom("PretendardVariable", size: 14)
@@ -46,4 +58,9 @@ extension Font {
     static let keyboardFont: Font = .custom("Pretendard-Regular", size: 22)
     static let pvkeyBoardFont: Font = .custom("PretendardVariable", size: 22)
         .weight(.regular)
+    
+    static func pretendard(size: CGFloat, weight: PretendardWeight) -> Font {
+        return .custom("Pretendard-\(weight.rawValue)", size: size)
+    }
 }
+
