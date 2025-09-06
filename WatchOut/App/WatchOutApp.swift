@@ -14,7 +14,7 @@ struct WatchOutApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ExperienceView()
+            OnboardingView()
         }
     }
 }

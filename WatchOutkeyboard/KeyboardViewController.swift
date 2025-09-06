@@ -6,16 +6,17 @@
 //
 import UIKit
 import SwiftUI
+import Combine
 
 class KeyboardViewController: UIInputViewController, ObservableObject {
 
     // MARK: - Properties
     private var hangulEngine = HangulEngine()
-    let debounceManager = TypingDebounceManager()
+    
     @Published var isShifted = false
     @Published var keyboardMode: KeyboardMode = .korean
-    
-    
+    let typingDebounceManager = TypingDebounceManager()
+    private var cancellables = Set<AnyCancellable>()
     // 키보드 모드에 특수문자 케이스 추가
     enum KeyboardMode {
         case korean, english, symbols, moreSymbols
@@ -37,6 +38,7 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         let keyboardView = KeyboardView(controller: self)
         let hostingController = UIHostingController(rootView: keyboardView)
@@ -52,8 +54,21 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
             hostingController.view.topAnchor.constraint(equalTo: self.view.topAnchor),
             hostingController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ])
+        setupBindings()
     }
-    
+    private func setupBindings() {
+            typingDebounceManager.objectWillChange
+                .sink { [weak self] _ in
+                    // typingDebounceManager가 변경될 것이라고 알리면,
+                    // KeyboardViewController 자신도 변경될 것이라고 외부에 알립니다.
+                    // UI 업데이트는 반드시 메인 스레드에서 일어나야 합니다.
+                    DispatchQueue.main.async {
+                        self?.objectWillChange.send()
+                    }
+                }
+                .store(in: &cancellables)
+        }
+
     override func textWillChange(_ textInput: UITextInput?) {
         let output = hangulEngine.finalize()
         if !output.textToInsert.isEmpty || output.charactersToDelete > 0 {

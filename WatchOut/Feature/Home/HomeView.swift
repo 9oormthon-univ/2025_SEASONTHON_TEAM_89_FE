@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct HomeView: View {
+    @EnvironmentObject private var pathModel: PathModel
     var body: some View {
+        
+        
         ScrollView(showsIndicators: false){
+            Spacer()
+                .frame(height: 20)
             // 타이틀
             TitleView()
                 .padding(.horizontal, 20)
@@ -32,11 +37,20 @@ struct HomeView: View {
             Spacer()
                 .frame(height: 16)
             HStack {
-                GroupBoxRowView(title: "그룹 만들기")
+                GroupBoxRowView(title: "그룹 만들기", imageName: "maingroup1")
+                    .onTapGesture {
+                        pathModel.paths.append(.createGroupView)
+                    }
                 Spacer()
-                GroupBoxRowView(title: "그룹 입장하기")
+                GroupBoxRowView(title: "그룹 입장하기", imageName: "maingroup2")
+                    .onTapGesture {
+                        pathModel.paths.append(.joinGroupView)
+                    }
                 Spacer()
-                GroupBoxRowView(title: "내 그릅 관리")
+                GroupBoxRowView(title: "내 그릅 관리", imageName: "maingroup3")
+                    .onTapGesture {
+                        pathModel.paths.append(.managementGroupView)
+                    }
             }
             .padding(.horizontal, 20)
             
@@ -92,10 +106,11 @@ private struct TitleView: View {
 
 //MARK: - ExperienceButton
 private struct ExprienceButton: View {
+    @EnvironmentObject private var pathModel: PathModel
     fileprivate var body: some View {
         Image("tryitbutton")
             .onTapGesture {
-                print("클릭클릭")
+                pathModel.paths.append(.exprienceView)
             }
     }
 }
@@ -151,12 +166,10 @@ private struct GroupTitleView: View  {
 // MARK: - GroupBoxRowView
 private struct GroupBoxRowView: View {
     let title: String
+    let imageName: String
     fileprivate var body: some View {
         VStack(alignment: .center) {
-            Rectangle()
-                .scaledToFit()
-                .frame(width: 36)
-                .foregroundStyle(.gray200)
+            Image(imageName)
               
             Text(title)
                 .font(.pBody02)
@@ -188,12 +201,10 @@ private struct SubTitleView: View {
 private struct ListRowView: View {
     let title: String
     let description: String
+    let imageName: String
     fileprivate var body: some View {
         HStack{
-            Rectangle()
-                .scaledToFit()
-                .frame(width: 36)
-                .foregroundStyle(.gray200)
+            Image(imageName)
             VStack(alignment: .leading){
                 Text(title)
                     .font(.pBody02)
@@ -217,10 +228,10 @@ private struct ExperienceListView: View {
             SubTitleView(title: "체험 하기")
             ListRowView(
                 title: "위험 문장 감지",
-                description: "금융사기 관련 위험 문장을 빠르게 감지해요!"
+                description: "금융사기 관련 위험 문장을 빠르게 감지해요!", imageName: "mainimage1"
             )
-            ListRowView(title: "위험도 시각화 + 경고 진동", description: "문장의 위험도가 색상으로 표시되고 진동과 팝업으로 경고가 떠요!")
-            ListRowView(title: "신고 연결", description: "리딩방, 수익보장형 사기 등 다양한 금융범죄 유형에 맞춰 맞춤 경고를 제공해요!")
+            ListRowView(title: "위험도 시각화 + 경고 진동", description: "문장의 위험도가 색상으로 표시되고 진동과 팝업으로 경고가 떠요!", imageName: "mainimage2")
+            ListRowView(title: "신고 연결", description: "리딩방, 수익보장형 사기 등 다양한 금융범죄 유형에 맞춰 맞춤 경고를 제공해요!", imageName: "mainimage3")
         }
     }
     
@@ -231,8 +242,8 @@ private struct DetailSettingListView: View {
     fileprivate var body: some View {
         VStack {
             SubTitleView(title: "상세 설정")
-            ListRowView(title: "키보드 커스텀", description: "리딩방, 수익보장형 사기 등 다양한 금융범죄 유형에 맞춰 맞춤 경고를 제공해요!")
-            ListRowView(title: "팝업 및 진동", description: "리딩방, 수익보장형 사기 등 다양한 금융범죄 유형에 맞춰 맞춤 경고를 제공해요!")
+            ListRowView(title: "키보드 커스텀", description: "키보드에 표시되는 경고 신호 색상을 취향껏 꾸며봐요! ", imageName: "mainimage4")
+            ListRowView(title: "팝업 및 진동", description: "팝업과 진동의 유뮤를 설정해요", imageName: "mainimage5")
         }
     }
 }
@@ -241,7 +252,7 @@ private struct ReportListView: View {
     fileprivate var body: some View {
         VStack {
             SubTitleView(title: "신고하기")
-            ListRowView(title: "신고 전화번호", description: "리딩방, 수익보장형 사기 등 다양한 금융범죄 유형에 맞춰 맞춤 경고를 제공해요!")
+            ListRowView(title: "신고 전화번호", description: "리딩방, 수익보장형 사기 등 다양한 금융범죄 유형에 맞춰 맞춤 경고를 제공해요!", imageName: "mainimage6")
         }
     }
 }
