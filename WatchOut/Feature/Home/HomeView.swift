@@ -10,8 +10,6 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject private var pathModel: PathModel
     var body: some View {
-        
-        
         ScrollView(showsIndicators: false){
             Spacer()
                 .frame(height: 20)
@@ -26,8 +24,8 @@ struct HomeView: View {
                 .frame(height: 36)
             
             HStack(spacing: 8) {
-                StatusRoundRectangle(status: .warning, count: 24)
-                StatusRoundRectangle(status: .danger, count: 3)
+                StatusRoundRectangle(status: .warning, count: SharedUserDefaults.riskLevel2Count)
+                StatusRoundRectangle(status: .danger, count: SharedUserDefaults.riskLevel3Count)
             } .padding(.horizontal, 20)
             Spacer()
                 .frame(height: 16)
@@ -69,6 +67,11 @@ struct HomeView: View {
                 .padding(.horizontal,20)
             
             
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                NotificationManager.instance.requestAuthorization()
+            }
         }
         
        

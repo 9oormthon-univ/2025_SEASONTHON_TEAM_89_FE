@@ -27,6 +27,37 @@ struct SharedUserDefaults {
         case onboarding = "isOnboarding"
         case riskLevel2Count = "riskLevel2Count"
         case riskLevel3Count = "riskLevel3Count"
+        case userID = "userID"
+        case groupCode = "groupCode"
+        case joinId = "joinId"
+    }
+    
+    //MAKR: - ShardID
+    static var joinId: String {
+        get {
+            return shared.object(forKey: SettingsKey.joinId.rawValue) as? String ?? ""
+        } set {
+            shared.set(newValue, forKey: SettingsKey.joinId.rawValue)
+        }
+    }
+    
+    //MARK: - GroupCode
+    static var groupCode: String {
+        get {
+            return shared.object(forKey: SettingsKey.groupCode.rawValue) as? String ?? ""
+        } set {
+            shared.set(newValue, forKey: SettingsKey.groupCode.rawValue)
+        }
+    }
+    
+    
+    //MARK: - UserID
+    static var userID: String {
+        get {
+            return shared.object(forKey: SettingsKey.userID.rawValue) as? String ?? ""
+        } set {
+            shared.set(newValue, forKey: SettingsKey.userID.rawValue)
+        }
     }
     
     //MARK: - riskLevel2

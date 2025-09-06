@@ -8,12 +8,14 @@
 import SwiftUI
 import UIKit
 import Combine
+import DotLottie
 
 struct OnboardingView: View {
     
     @StateObject private var pathModel = PathModel()
     @StateObject private var onboardingContentViewModel = OnboardingContentViewModel()
     @StateObject private var maintTabViewModel = MainTabViewModel()
+    @StateObject private var groupViewModel = GroupViewModel()
     let isOnBoarding = SharedUserDefaults.isOnboarding
    
     var body: some View {
@@ -32,6 +34,7 @@ struct OnboardingView: View {
                     case .createGroupView:
                         CreateGroupView()
                             .navigationBarBackButtonHidden()
+                            .environmentObject(groupViewModel)
                     case .joinGroupView:
                         JoinGroupView()
                             .navigationBarBackButtonHidden()
@@ -69,8 +72,7 @@ private struct OnboardingContentView: View {
             if !onboardingViewModel.getIsKeyboardEnabled()
             {
                 VStack {
-                    Rectangle()
-                        .fill()
+                    DotLottieAnimation(fileName: "animation", config: AnimationConfig(autoplay: true, loop: true)).view()
                     OnboardingFristView()
                         .frame(height: 300)
                     Spacer()
@@ -164,7 +166,7 @@ private struct OnboardingSecondView: View {
                     Text("선택완료")
                         .font(.pHeadline02)
                         .foregroundColor(.white)
-                        .padding(13)
+                        .padding(30)
                         .frame(maxWidth: .infinity) // 좌우 꽉 채우기
                         .background(.main) // .main 대체
                 }
