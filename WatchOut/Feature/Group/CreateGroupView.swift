@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct CreateGroupView: View {
-    @State var groupName: String = ""
-    @State var userName: String = ""
+    @EnvironmentObject private var pathModel: PathModel
+    @EnvironmentObject private var groupViewModel: GroupViewModel
     var body: some View {
         VStack {
+            CustomNavigationBar(leftBtnAction: {
+                pathModel.paths.removeLast()
+            }, leftTitle: "")
             HStack(alignment: .bottom) {
                 VStack {
                     
@@ -42,7 +45,7 @@ struct CreateGroupView: View {
                     Spacer()
                 }
                 
-                TextField("그룹 이름을 정해주세요.", text: $groupName)
+                TextField("그룹 이름을 정해주세요.", text: $groupViewModel.groupName)
                     .font(.pBody01)
                     .padding()
                     .background()
@@ -63,7 +66,7 @@ struct CreateGroupView: View {
                     Spacer()
                 }
                 
-                TextField("사용하실 별명을 정해주세요.", text: $groupName)
+                TextField("사용하실 별명을 정해주세요.", text: $groupViewModel.userName)
                     .font(.pBody01)
                     
                     .padding(
@@ -78,7 +81,13 @@ struct CreateGroupView: View {
                 Spacer()
                 Button {
                     
-            
+                    Task {
+                        if await groupViewModel.create() {
+                            pathModel.paths.removeLast()
+                            pathModel.paths.append(.waitingGroupView)
+                        }
+                    }
+                    
                     
                 } label: {
                     Spacer()
@@ -99,7 +108,6 @@ struct CreateGroupView: View {
             .padding(.horizontal, 20)
             .background(.gray100)
             .cornerRadius(48)
-            .ignoresSafeArea()
             
         }
     }

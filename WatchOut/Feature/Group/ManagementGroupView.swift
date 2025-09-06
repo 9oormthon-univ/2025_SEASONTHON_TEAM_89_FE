@@ -8,8 +8,12 @@
 import SwiftUI
 
 struct ManagementGroupView: View {
+    @EnvironmentObject private var pathModel: PathModel
     var body: some View {
         VStack {
+            CustomNavigationBar(leftBtnAction: {
+                pathModel.paths.removeLast()
+            }, leftTitle: "")
             HStack(alignment: .bottom) {
                 VStack {
                     

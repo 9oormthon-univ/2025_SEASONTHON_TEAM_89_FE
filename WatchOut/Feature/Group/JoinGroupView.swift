@@ -8,10 +8,14 @@
 import SwiftUI
 
 struct JoinGroupView: View {
+    @EnvironmentObject private var pathModel: PathModel
     @State var groupCode: String = ""
     @State var userName: String = ""
     var body: some View {
         VStack {
+            CustomNavigationBar(leftBtnAction: {
+                pathModel.paths.removeLast()
+            }, leftTitle: "")
             HStack(alignment: .bottom) {
                 VStack {
                     
@@ -109,7 +113,7 @@ struct JoinGroupView: View {
             .padding(.horizontal, 20)
             .background(.gray100)
             .cornerRadius(48)
-            .ignoresSafeArea()
+            
             
         }
     }

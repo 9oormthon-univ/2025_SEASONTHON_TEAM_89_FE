@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct WaitingGroupView: View {
+    @EnvironmentObject private var pathModel: PathModel
+    
     var body: some View {
         VStack {
+            CustomNavigationBar(leftBtnAction: {
+                pathModel.paths.removeLast()
+            }, leftTitle: "")
             HStack(alignment: .bottom) {
                 VStack {
                     
@@ -25,7 +30,7 @@ struct WaitingGroupView: View {
                     .font(.pSubtitle03)
                     .foregroundStyle(.gray300)
                 Spacer()
-                Text("1KEUS334SJ")
+                Text(SharedUserDefaults.joinId)
                 Button {
                     
                 } label: {
@@ -39,7 +44,7 @@ struct WaitingGroupView: View {
             VStack{
                 
                 HStack {
-                    Text("총 3명")
+                    Text("총 0명")
                         .font(.pHeadline01)
                     Spacer()
                 }
@@ -51,7 +56,7 @@ struct WaitingGroupView: View {
                 }
                 Spacer()
                     .frame(height: 20)
-               GroupRowView()
+//               GroupRowView()
                 
                 Spacer()
                 
@@ -61,7 +66,7 @@ struct WaitingGroupView: View {
                     
                 } label: {
                     Spacer()
-                    Text("만들기")
+                    Text("그룹 완성하기")
                         .font(.pHeadline02)
                         .padding(.vertical, 12)
                     Spacer()
@@ -79,7 +84,7 @@ struct WaitingGroupView: View {
             .padding(.horizontal, 20)
             .background(.gray100)
             .cornerRadius(48)
-            .ignoresSafeArea()
+            
             
         }
     }

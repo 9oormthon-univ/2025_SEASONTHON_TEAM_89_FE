@@ -38,8 +38,10 @@ struct KeyboardView: View {
             status = controller.typingDebounceManager.status
             if status == "주의" {
                 Haptic.notification(type: .warning)
+                SharedUserDefaults.riskLevel2Count += 1
             } else if status == "위험" {
                 count += 1
+                SharedUserDefaults.riskLevel3Count += 1
                 if count % 3 == 0 {
                     NotificationManager.instance.scheduleNotification(title: "위험한 문장이 반복 감지되었어요", subtitle: "필요하다면 즉시 신고를 도와드릴 수 있어요.", secondsLater: 1)
                 }
