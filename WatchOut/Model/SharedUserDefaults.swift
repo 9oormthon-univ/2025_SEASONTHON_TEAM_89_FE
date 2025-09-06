@@ -23,6 +23,7 @@ struct SharedUserDefaults {
         case hapticFeedbackEnabled = "isHapticFeedbackEnabled"
         case warningColorLevel1 = "warningColorLevel1"
         case warningColorLevel2 = "warningColorLevel2"
+      
     }
     
     // MARK: - 설정 프로퍼티 (Get/Set)

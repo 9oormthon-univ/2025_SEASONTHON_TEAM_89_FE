@@ -37,6 +37,7 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         let keyboardView = KeyboardView(controller: self)
         let hostingController = UIHostingController(rootView: keyboardView)
@@ -53,7 +54,7 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
             hostingController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ])
     }
-    
+
     override func textWillChange(_ textInput: UITextInput?) {
         let output = hangulEngine.finalize()
         if !output.textToInsert.isEmpty || output.charactersToDelete > 0 {
