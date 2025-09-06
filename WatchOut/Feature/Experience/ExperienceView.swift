@@ -30,8 +30,10 @@ struct ExperienceView: View {
     @FocusState var focused: Bool
     @State var isEnter = false
     @State var sendtext: String = ""
+    @EnvironmentObject private var pathModel: PathModel
     var body: some View {
         VStack {
+            CustomNavigationBar(leftBtnAction: {pathModel.paths.removeLast()}, leftTitle: "체험하기")
             ScrollViewReader { scrollViewProxy in
                 ScrollView(.horizontal, showsIndicators: false) {
                     // 3. ForEach를 사용해 반복 코드 제거
@@ -77,7 +79,7 @@ struct ExperienceView: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.spring(response: 0.6, dampingFraction: 0.8), value: experienceType) // 부드러운 전환
             Group {
-                HStack {
+                HStack{
                     Text("지금 돈 넣으면")
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
@@ -123,7 +125,7 @@ struct ExperienceView: View {
                                  ))
                 CustomTextField(text: $text, enter: {
                     
-                    if experienceType == .three {
+                    if experienceType == .two {
                         NotificationManager.instance.scheduleNotification(title: "위험한 문장이 반복 감지되었습니다.", subtitle: "필요하다면 즉시 신고를 도와드 수 있어요.", secondsLater: 1)
                     }
                     
@@ -145,10 +147,14 @@ struct ExperienceView: View {
            
         }
         .onAppear{
+            SharedUserDefaults.isTutorial = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 NotificationManager.instance.requestAuthorization()
                 self.focused = true
             }
+        }
+        .onDisappear {
+            SharedUserDefaults.isTutorial = false
         }
     }
         
@@ -163,7 +169,7 @@ private struct ExperienceTitle: View {
     fileprivate var body: some View {
         HStack{
             ZStack{
-                Image("Star") // "Star" 이미지가 없다면 SF Symbol로 대체
+                Image("star") // "Star" 이미지가 없다면 SF Symbol로 대체
                     .resizable()
                     .scaledToFit()
                     .frame(width: 24)

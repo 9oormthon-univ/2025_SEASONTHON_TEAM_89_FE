@@ -23,10 +23,46 @@ struct SharedUserDefaults {
         case hapticFeedbackEnabled = "isHapticFeedbackEnabled"
         case warningColorLevel1 = "warningColorLevel1"
         case warningColorLevel2 = "warningColorLevel2"
-      
+        case tutorialEnabled = "isTutorial"
+        case onboarding = "isOnboarding"
+        case riskLevel2Count = "riskLevel2Count"
+        case riskLevel3Count = "riskLevel3Count"
+    }
+    
+    //MARK: - riskLevel2
+    static var riskLevel2Count: Int {
+        get {
+            return shared.object(forKey: SettingsKey.riskLevel2Count.rawValue) as? Int ?? 0
+        } set {
+            shared.set(newValue, forKey: SettingsKey.riskLevel2Count.rawValue)
+        }
+    }
+    //MARK: - riskLevel3
+    static var riskLevel3Count: Int {
+        get {
+            return shared.object(forKey: SettingsKey.riskLevel3Count.rawValue) as? Int ?? 0
+        } set {
+            shared.set(newValue, forKey: SettingsKey.riskLevel3Count.rawValue)
+        }
+    }
+    //MARK: - 온보딩 설정
+    static var isOnboarding: Bool {
+        get {
+            return shared.object(forKey: SettingsKey.onboarding.rawValue) as? Bool ?? false
+        } set {
+            shared.set(newValue, forKey: SettingsKey.onboarding.rawValue)
+        }
     }
     
     // MARK: - 설정 프로퍼티 (Get/Set)
+    
+    static var isTutorial: Bool {
+        get {
+            return shared.object(forKey: SettingsKey.tutorialEnabled.rawValue) as? Bool ?? false
+        } set {
+            shared.set(newValue, forKey: SettingsKey.tutorialEnabled.rawValue)
+        }
+    }
     
     /// 알림 설정 (켜기/끄기)
     static var isNotificationsEnabled: Bool {

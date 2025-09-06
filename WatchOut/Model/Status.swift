@@ -9,6 +9,6 @@ import Foundation
 
 enum Status: String {
     case normal
-    case warning = "경고"
+    case warning = "주의"
     case danger = "위험"
 }
