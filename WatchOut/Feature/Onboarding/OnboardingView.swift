@@ -8,6 +8,7 @@
 import SwiftUI
 import UIKit
 import Combine
+import DotLottie
 
 struct OnboardingView: View {
     
@@ -71,8 +72,7 @@ private struct OnboardingContentView: View {
             if !onboardingViewModel.getIsKeyboardEnabled()
             {
                 VStack {
-                    Rectangle()
-                        .fill()
+                    DotLottieAnimation(fileName: "animation", config: AnimationConfig(autoplay: true, loop: true)).view()
                     OnboardingFristView()
                         .frame(height: 300)
                     Spacer()
