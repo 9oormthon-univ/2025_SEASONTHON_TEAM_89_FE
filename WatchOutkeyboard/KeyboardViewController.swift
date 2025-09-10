@@ -10,19 +10,20 @@ import Combine
 
 class KeyboardViewController: UIInputViewController, ObservableObject {
 
-    // MARK: - Properties
-    private var hangulEngine = HangulEngine()
-    
-    @Published var isShifted = false
-    @Published var keyboardMode: KeyboardMode = .korean
-    let typingDebounceManager = TypingDebounceManager()
-    private var cancellables = Set<AnyCancellable>()
-    // 키보드 모드에 특수문자 케이스 추가
+    // MARK: - Types
     enum KeyboardMode {
         case korean, english, symbols, moreSymbols
     }
 
-    // 현재 모드에 맞는 키보드 레이아웃을 반환
+    // MARK: - Properties
+    private let hangulEngine = HangulEngine()
+    let typingDebounceManager = TypingDebounceManager()
+    private var cancellables = Set<AnyCancellable>()
+    
+    @Published var isShifted = false
+    @Published var keyboardMode: KeyboardMode = .korean
+
+    // MARK: - Computed Properties
     var keyLayout: [[KeyType]] {
         switch keyboardMode {
         case .korean:
@@ -38,8 +39,12 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
-        
         super.viewDidLoad()
+        setupUI()
+        setupBindings()
+    }
+    
+    private func setupUI() {
         let keyboardView = KeyboardView(controller: self)
         let hostingController = UIHostingController(rootView: keyboardView)
         
@@ -49,27 +54,27 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
         
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            hostingController.view.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            hostingController.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            hostingController.view.topAnchor.constraint(equalTo: self.view.topAnchor),
-            hostingController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+            hostingController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            hostingController.view.topAnchor.constraint(equalTo: view.topAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        setupBindings()
     }
     private func setupBindings() {
-            typingDebounceManager.objectWillChange
-                .sink { [weak self] _ in
-                    // typingDebounceManager가 변경될 것이라고 알리면,
-                    // KeyboardViewController 자신도 변경될 것이라고 외부에 알립니다.
-                    // UI 업데이트는 반드시 메인 스레드에서 일어나야 합니다.
-                    DispatchQueue.main.async {
-                        self?.objectWillChange.send()
-                    }
-                }
-                .store(in: &cancellables)
-        }
+        typingDebounceManager.objectWillChange
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+    }
 
+    // MARK: - Text Input Management
     override func textWillChange(_ textInput: UITextInput?) {
+        finalizeHangulInput()
+    }
+    
+    private func finalizeHangulInput() {
         let output = hangulEngine.finalize()
         if !output.textToInsert.isEmpty || output.charactersToDelete > 0 {
             commitText(output: output)
@@ -80,66 +85,86 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
 
     // MARK: - Key Handling
     func handleKeyPress(_ key: KeyType) {
-//        UIDevice.current.playInputClick() // 키 클릭음 재생
+        // UIDevice.current.playInputClick()  // 필요시 주석 해제
         
         switch key {
         case .character(let char):
-            if keyboardMode == .korean {
-                let output = hangulEngine.process(jamo: char)
-                commitText(output: output)
-            } else { // 영어 또는 특수문자 모드
-                textDocumentProxy.insertText(String(char))
-            }
-            if isShifted && (keyboardMode == .korean || keyboardMode == .english) {
-                isShifted = false
-            }
+            handleCharacterKey(char)
             
         case .shift:
             isShifted.toggle()
             
         case .backspace:
-            if keyboardMode == .korean {
-                let output = hangulEngine.deleteBackward()
-                commitText(output: output)
-            } else {
-                textDocumentProxy.deleteBackward()
-            }
+            handleBackspaceKey()
             
         case .space:
-            let output = hangulEngine.finalize()
-            commitText(output: output)
-            textDocumentProxy.insertText(" ")
+            handleSpaceKey()
             
         case .enter:
-            let output = hangulEngine.finalize()
-            commitText(output: output)
-            textDocumentProxy.insertText("\n")
+            handleEnterKey()
 
         case .modeChange:
-            let output = hangulEngine.finalize()
-            commitText(output: output)
-            keyboardMode = (keyboardMode == .korean) ? .english : .korean
-            isShifted = false
-            objectWillChange.send()
+            handleModeChangeKey()
             
-        // --- 특수문자 키 처리 로직 ---
         case .switchToSymbols:
-            let output = hangulEngine.finalize()
-            commitText(output: output)
-            keyboardMode = .symbols
-            isShifted = false
-            objectWillChange.send()
+            switchToMode(.symbols)
             
         case .switchToAlphabetic:
-            keyboardMode = .korean // 기본 문자 모드를 한글로 설정
-            isShifted = false
-            objectWillChange.send()
+            switchToMode(.korean)
             
         case .switchToMoreSymbols:
-            keyboardMode = .moreSymbols
-            isShifted = false
-            objectWillChange.send()
+            switchToMode(.moreSymbols)
         }
+    }
+    
+    private func handleCharacterKey(_ char: Character) {
+        if keyboardMode == .korean {
+            let output = hangulEngine.process(jamo: char)
+            commitText(output: output)
+        } else {
+            textDocumentProxy.insertText(String(char))
+        }
+        
+        // 영문/한글 모드에서 Shift 자동 해제
+        if isShifted && (keyboardMode == .korean || keyboardMode == .english) {
+            isShifted = false
+        }
+    }
+    
+    private func handleBackspaceKey() {
+        if keyboardMode == .korean {
+            let output = hangulEngine.deleteBackward()
+            commitText(output: output)
+        } else {
+            textDocumentProxy.deleteBackward()
+        }
+    }
+    
+    private func handleSpaceKey() {
+        finalizeHangulInput()
+        textDocumentProxy.insertText(" ")
+    }
+    
+    private func handleEnterKey() {
+        finalizeHangulInput()
+        textDocumentProxy.insertText("\n")
+    }
+    
+    private func handleModeChangeKey() {
+        finalizeHangulInput()
+        keyboardMode = (keyboardMode == .korean) ? .english : .korean
+        resetShiftAndNotify()
+    }
+    
+    private func switchToMode(_ mode: KeyboardMode) {
+        finalizeHangulInput()
+        keyboardMode = mode
+        resetShiftAndNotify()
+    }
+    
+    private func resetShiftAndNotify() {
+        isShifted = false
+        objectWillChange.send()
     }
     
     private func commitText(output: EngineOutput) {
@@ -152,35 +177,37 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
     }
 }
 
-// MARK: - Layouts & Extension
+// MARK: - Layouts
 private extension KeyboardViewController {
-    // --- 기존 레이아웃 (하단 키만 수정) ---
     var koreanLayout: [[KeyType]] {
-        return [
+        [
             [.character("ㅂ"), .character("ㅈ"), .character("ㄷ"), .character("ㄱ"), .character("ㅅ"), .character("ㅛ"), .character("ㅕ"), .character("ㅑ"), .character("ㅐ"), .character("ㅔ")],
             [.character("ㅁ"), .character("ㄴ"), .character("ㅇ"), .character("ㄹ"), .character("ㅎ"), .character("ㅗ"), .character("ㅓ"), .character("ㅏ"), .character("ㅣ")],
             [.shift, .character("ㅋ"), .character("ㅌ"), .character("ㅊ"), .character("ㅍ"), .character("ㅠ"), .character("ㅜ"), .character("ㅡ"), .backspace],
             [.switchToSymbols, .modeChange, .space, .enter]
         ]
     }
+    
     var koreanShiftedLayout: [[KeyType]] {
-        return [
+        [
             [.character("ㅃ"), .character("ㅉ"), .character("ㄸ"), .character("ㄲ"), .character("ㅆ"), .character("ㅛ"), .character("ㅕ"), .character("ㅑ"), .character("ㅒ"), .character("ㅖ")],
             [.character("ㅁ"), .character("ㄴ"), .character("ㅇ"), .character("ㄹ"), .character("ㅎ"), .character("ㅗ"), .character("ㅓ"), .character("ㅏ"), .character("ㅣ")],
             [.shift, .character("ㅋ"), .character("ㅌ"), .character("ㅊ"), .character("ㅍ"), .character("ㅠ"), .character("ㅜ"), .character("ㅡ"), .backspace],
             [.switchToSymbols, .modeChange, .space, .enter]
         ]
     }
+    
     var englishLayout: [[KeyType]] {
-        return [
+        [
             [.character("q"), .character("w"), .character("e"), .character("r"), .character("t"), .character("y"), .character("u"), .character("i"), .character("o"), .character("p")],
             [.character("a"), .character("s"), .character("d"), .character("f"), .character("g"), .character("h"), .character("j"), .character("k"), .character("l")],
             [.shift, .character("z"), .character("x"), .character("c"), .character("v"), .character("b"), .character("n"), .character("m"), .backspace],
             [.switchToSymbols, .modeChange, .space, .enter]
         ]
     }
+    
     var englishShiftedLayout: [[KeyType]] {
-        return [
+        [
             [.character("Q"), .character("W"), .character("E"), .character("R"), .character("T"), .character("Y"), .character("U"), .character("I"), .character("O"), .character("P")],
             [.character("A"), .character("S"), .character("D"), .character("F"), .character("G"), .character("H"), .character("J"), .character("K"), .character("L")],
             [.shift, .character("Z"), .character("X"), .character("C"), .character("V"), .character("B"), .character("N"), .character("M"), .backspace],
@@ -188,18 +215,17 @@ private extension KeyboardViewController {
         ]
     }
 
-    // --- 새로 추가된 특수문자 레이아웃 ---
     var symbolsLayout: [[KeyType]] {
-        return [
+        [
             [.character("1"), .character("2"), .character("3"), .character("4"), .character("5"), .character("6"), .character("7"), .character("8"), .character("9"), .character("0")],
             [.character("-"), .character("/"), .character(":"), .character(";"), .character("("), .character(")"), .character("$"), .character("&"), .character("@"), .character("\"")],
             [.shift, .character("."), .character(","), .character("?"), .character("!"), .character("'"), .backspace],
-            [.switchToMoreSymbols ,.modeChange, .space, .enter]
+            [.switchToMoreSymbols, .modeChange, .space, .enter]
         ]
     }
     
     var moreSymbolsLayout: [[KeyType]] {
-        return [
+        [
             [.character("["), .character("]"), .character("{"), .character("}"), .character("#"), .character("%"), .character("^"), .character("*"), .character("+"), .character("=")],
             [.character("_"), .character("\\"), .character("|"), .character("~"), .character("<"), .character(">"), .character("€"), .character("£"), .character("¥"), .character("•")],
             [.shift, .character("."), .character(","), .character("?"), .character("!"), .character("'"), .backspace],

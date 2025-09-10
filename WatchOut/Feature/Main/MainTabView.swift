@@ -43,7 +43,7 @@ struct MainTabView: View {
                 WatingView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if mainTabViewModel.selectedTab == .reportView {
-                WatingView()
+                ReportView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
