@@ -58,9 +58,9 @@ struct ExperienceView: View {
                     .padding()
                 }
                 .disabled(true)
-                .onChange(of: experienceType) { newStep in
+                .onChange(of: experienceType) { oldValue, newValue in
                     withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                        scrollViewProxy.scrollTo(newStep, anchor: .center)
+                        scrollViewProxy.scrollTo(newValue, anchor: .center)
                     }
                 }
             }

@@ -146,6 +146,11 @@ private struct OnboardingSecondView: View {
             }
             
             VStack {
+                TextField("", text: $hiddenText)
+                    .focused($focusedField, equals: .hiddenTextField)
+                    .opacity(0)
+                    .allowsHitTesting(false)
+                    .frame(height: 0)
                 Spacer()
                 
                 Button {
@@ -155,15 +160,11 @@ private struct OnboardingSecondView: View {
                     Text("선택완료")
                         .font(.pHeadline02)
                         .foregroundColor(.white)
-                        .padding(30)
+                        .padding(10)
                         .frame(maxWidth: .infinity)
                         .background(.main)
                 }
                 
-                TextField("", text: $hiddenText)
-                    .focused($focusedField, equals: .hiddenTextField)
-                    .opacity(0)
-                    .allowsHitTesting(false)
             }
         }
         .ignoresSafeArea(.container)
