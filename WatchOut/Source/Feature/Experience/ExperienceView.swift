@@ -58,9 +58,9 @@ struct ExperienceView: View {
                     .padding()
                 }
                 .disabled(true)
-                .onChange(of: experienceType) { newStep in
+                .onChange(of: experienceType) { oldValue, newValue in
                     withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                        scrollViewProxy.scrollTo(newStep, anchor: .center)
+                        scrollViewProxy.scrollTo(newValue, anchor: .center)
                     }
                 }
             }
@@ -79,7 +79,7 @@ struct ExperienceView: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.spring(response: 0.6, dampingFraction: 0.8), value: experienceType) // 부드러운 전환
             Group {
-                HStack{
+                HStack(){
                     Text("지금 돈 넣으면")
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)

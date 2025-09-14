@@ -19,7 +19,7 @@ class TypingDebounceManager: ObservableObject {
     
     // 대기 시간
     private let debounceInterval: TimeInterval = 2.0
-    
+
     /// 키가 입력될 때마다 호출될 함수. 타이머를 리셋합니다.
     func resetTimer(for text: String){
         // 이전에 예약된 작업이 있다면 취소
