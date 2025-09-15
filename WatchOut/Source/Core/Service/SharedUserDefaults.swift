@@ -54,7 +54,14 @@ struct SharedUserDefaults {
     //MARK: - UserID
     static var userID: String {
         get {
-            return shared.object(forKey: SettingsKey.userID.rawValue) as? String ?? ""
+            if let existingUserID = shared.object(forKey: SettingsKey.userID.rawValue) as? String {
+                return existingUserID
+            } else {
+                // Generate new UUID and save it
+                let newUserID = UUID().uuidString
+                shared.set(newUserID, forKey: SettingsKey.userID.rawValue)
+                return newUserID
+            }
         } set {
             shared.set(newValue, forKey: SettingsKey.userID.rawValue)
         }

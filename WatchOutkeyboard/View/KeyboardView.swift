@@ -8,8 +8,15 @@ import SwiftUI
 
 struct KeyboardView: View {
     @ObservedObject var controller: KeyboardViewController
+    
+    // ⭐️ 1. WebSocketService를 @ObservedObject로 선언
+    // 이렇게 하면 fraudResult가 바뀔 때마다 View의 body가 자동으로 다시 그려집니다.
+    @ObservedObject private var webSocketService = WebSocketService.shared
+    
+    @State private var webSocketURL = "wss://wiheome.ajb.kr/api/ws/fraud/"
     @State var status = "정상"
     @State var count = 0
+    
     var body: some View {
         VStack(spacing: 8) {
             // 1. 상단 배너 뷰 추가
@@ -23,9 +30,8 @@ struct KeyboardView: View {
                             controller.handleKeyPress(key)
                             let currentText = controller.textDocumentProxy.documentContextBeforeInput ?? ""
                             
-                            // 3. 디바운스 관리자의 타이머를 리셋
-                            controller.typingDebounceManager.resetTimer(for: currentText)
-                            
+                            // ⭐️ 2. webSocketService 프로퍼티를 통해 메서드 호출
+                            webSocketService.checkFraudMessage(currentText)
                         }) {
                             keyView(for: key) // 각 키의 UI를 생성하는 헬퍼 뷰
                         }
@@ -34,20 +40,36 @@ struct KeyboardView: View {
                 }
             }
         }
-        .onChange(of: controller.typingDebounceManager.status) {
-            status = controller.typingDebounceManager.status
-            if status == "주의" {
-                Haptic.notification(type: .warning)
-                SharedUserDefaults.riskLevel2Count += 1
-            } else if status == "위험" {
-                count += 1
-                SharedUserDefaults.riskLevel3Count += 1
-                if count % 3 == 0 {
-                    NotificationManager.instance.scheduleNotification(title: "위험한 문장이 반복 감지되었어요", subtitle: "필요하다면 즉시 신고를 도와드릴 수 있어요.", secondsLater: 1)
+        .onAppear {
+            // ⭐️ 2. webSocketService 프로퍼티를 통해 메서드 호출
+            webSocketService.connect(urlString: webSocketURL)
+        }
+        .onDisappear {
+            // ⭐️ 2. webSocketService 프로퍼티를 통해 메서드 호출
+            webSocketService.disconnect()
+        }
+        // ⭐️ 3. onChange는 '동작'을 처리하는 역할로 그대로 둡니다.
+        .onChange(of: webSocketService.fraudResult?.riskLevel) {
+            if let newRiskLevel = webSocketService.fraudResult?.riskLevel {
+                status = newRiskLevel
+                
+                if status == "주의" {
+                    Haptic.notification(type: .warning)
+                    if !SharedUserDefaults.isTutorial {
+                        SharedUserDefaults.riskLevel2Count += 1
+                    }
+                    
+                } else if status == "위험" {
+                    count += 1
+                    if !SharedUserDefaults.isTutorial {
+                        SharedUserDefaults.riskLevel3Count += 1
+                    }
+                    if count % 3 == 0 {
+                        NotificationManager.instance.scheduleNotification(title: "위험한 문장이 반복 감지되었어요", subtitle: "필요하다면 즉시 신고를 도와드릴 수 있어요.", secondsLater: 1)
+                    }
+                    Haptic.notification(type: .error)
                 }
-                Haptic.notification(type: .error)
             }
-            
         }
         .padding(3)
         .background(Color(.systemGray4).ignoresSafeArea())
@@ -56,55 +78,41 @@ struct KeyboardView: View {
     /// 상단 배너 UI를 구성하는 뷰입니다.
     @ViewBuilder
     private func bannerView() -> some View {
-        let status = controller.typingDebounceManager.status
         let isTutorial = SharedUserDefaults.isTutorial
         HStack(spacing: 12) {
-            // 예시 로고
             Image("keyboardicon")
             
-            
             Spacer()
-            //            Button("알림 권한 요청하기  Permission 🙏") {
-            //                NotificationManager.instance.requestAuthorization()
-            //            }
-            //            .buttonStyle(.borderedProminent)
-            //            .foregroundStyle(SharedUserDefaults.color(forName: SharedUserDefaults.warningColorLevel1))
-            //            // 5초 후 알림 예약 버튼
-            //            Button("5초 후 알림 예약하기 Schedule ⏰") {
-            //                NotificationManager.instance.scheduleNotification(
-            //                    title: "위험한 문장이 반복 감지되었어요",
-            //                    subtitle: "필요하다면 즉시 신고를 도와드릴 수 있어요.",
-            //                    secondsLater: 1
-            //                )
-            //            }
-            //            .buttonStyle(.bordered)
             
-            
-            if status == "정상" {
+            // ⭐️ 4. webSocketService.fraudResult를 직접 사용하여 UI를 구성합니다.
+            //    이제 이 값이 바뀌면 bannerView가 자동으로 업데이트됩니다.
+            if let result = webSocketService.fraudResult {
+                if result.riskLevel == "주의" {
+                    if isTutorial {
+                        Image("risklevel2")
+                            .resizable()
+                            .scaledToFit()
+                    }
+                    Image("riskIcon")
+                        .foregroundStyle(.main)
+                } else if result.riskLevel == "위험" {
+                    if isTutorial {
+                        Image("risklevel3")
+                            .resizable()
+                            .scaledToFit()
+                    }
+                    Image("riskIcon")
+                        .foregroundStyle(.red)
+                } else {
+                    Image("circle01")
+                }
+                
+            } else {
                 Image("circle01")
-                
-            } else if status == "주의" {
-                if isTutorial {
-                    Image("risklevel2")
-                        .resizable()
-                        .scaledToFit()
-                }
-                Image("riskIcon")
-                    .foregroundStyle(.main)
-                
-            } else if status == "위험" {
-                if isTutorial {
-                    Image("risklevel3")
-                        .resizable()
-                        .scaledToFit()
-                }
-                Image("riskIcon")
-                    .foregroundStyle(.red)
             }
         }
         .padding(.horizontal, 15)
         .frame(height: 40)
-        
         .cornerRadius(8)
     }
     

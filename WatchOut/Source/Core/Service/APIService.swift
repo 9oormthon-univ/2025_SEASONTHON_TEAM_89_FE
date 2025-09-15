@@ -34,15 +34,23 @@ final class APIService {
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
+        // 원본 JSON 응답 로그 추가
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print("🟡 [APIService] 서버 원본 응답: \(jsonString)")
+        }
+        
         guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+            print("🔴 [APIService] HTTP 응답 코드 에러: \(response)")
             throw APIError.invalidResponse
         }
         
         // 6. 받은 데이터 디코딩 (개선된 부분)
         do {
+            print("🟡 [APIService] JSON 디코딩 시작 - 타입: \(U.self)")
             // ✅ JSONDecoder를 생성하고 키 변환 전략 설정
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
+            print("🟡 [APIService] JSONDecoder 설정 완료 - snake_case 변환 활성화")
             
             // ✅ 설정된 디코더를 사용하여 데이터 변환
             let decodedData = try decoder.decode(U.self, from: data)

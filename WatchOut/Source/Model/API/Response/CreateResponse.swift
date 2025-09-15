@@ -9,14 +9,14 @@ import Foundation
 
 // MARK: - CreateGorupResponse
 struct CreateGorupResponse: Codable {
-    let groupID, groupName, joinCode, creatorID: String
+    let groupID, joinCode, creatorID: String
     let createdAt: String
 
     enum CodingKeys: String, CodingKey {
         case groupID = "group_id"
-        case groupName = "group_name"
         case joinCode = "join_code"
         case creatorID = "creator_id"
         case createdAt = "created_at"
+
     }
 }

@@ -15,6 +15,11 @@
 		<string>Pretendard-Thin.otf</string>
 		<string>PretendardVariable.ttf</string>
 	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIImageName</key>
