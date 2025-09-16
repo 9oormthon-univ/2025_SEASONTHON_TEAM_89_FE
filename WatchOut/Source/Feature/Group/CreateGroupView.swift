@@ -83,13 +83,7 @@ struct CreateGroupView: View {
                     
                     Task {
                         
-                        if await groupViewModel.create() {
-                            print(self)
-                            pathModel.paths.removeLast()
-                            pathModel.paths.append(.waitingGroupView)
-                            
-                        }
-                        
+                  
                     }
                     
                     
