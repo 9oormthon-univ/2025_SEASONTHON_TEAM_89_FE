@@ -12,7 +12,7 @@ import Foundation
 struct SharedUserDefaults {
     
     // Xcode에서 설정한 App Group ID (본인의 ID로 변경 필수!)
-    private static let appGroupID = "group.com.watchout.app"
+    private static let appGroupID = "group.com.eo.watchout.app"
     
     // 공유 UserDefaults 인스턴스
     static let shared = UserDefaults(suiteName: appGroupID)!

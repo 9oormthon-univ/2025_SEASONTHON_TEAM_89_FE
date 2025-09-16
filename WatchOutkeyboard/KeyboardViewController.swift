@@ -74,6 +74,18 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
         finalizeHangulInput()
     }
     
+    override func textDidChange(_ textInput: (any UITextInput)?) {
+        // 텍스트가 변경된 후, 텍스트 필드가 완전히 비었는지 확인합니다.
+           // (예: 메시지 전송 후)
+           let proxy = self.textDocumentProxy
+           if proxy.documentContextBeforeInput?.isEmpty ?? true &&
+              proxy.documentContextAfterInput?.isEmpty ?? true {
+               
+               // 텍스트 필드가 비었다면, 한글 엔진의 상태를 깨끗하게 리셋합니다.
+               hangulEngine.reset()
+           }
+    }
+    
     private func finalizeHangulInput() {
         let output = hangulEngine.finalize()
         if !output.textToInsert.isEmpty || output.charactersToDelete > 0 {

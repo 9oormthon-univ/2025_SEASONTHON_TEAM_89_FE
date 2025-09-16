@@ -51,17 +51,18 @@ struct KeyboardView: View {
         // ⭐️ 3. onChange는 '동작'을 처리하는 역할로 그대로 둡니다.
         .onChange(of: webSocketService.fraudResult?.riskLevel) {
             if let newRiskLevel = webSocketService.fraudResult?.riskLevel {
+                print("\(SharedUserDefaults.isTutorial)")
                 status = newRiskLevel
                 
                 if status == "주의" {
                     Haptic.notification(type: .warning)
-                    if !SharedUserDefaults.isTutorial {
+                    if SharedUserDefaults.isTutorial == false{
                         SharedUserDefaults.riskLevel2Count += 1
                     }
                     
                 } else if status == "위험" {
                     count += 1
-                    if !SharedUserDefaults.isTutorial {
+                    if SharedUserDefaults.isTutorial  == false {
                         SharedUserDefaults.riskLevel3Count += 1
                     }
                     if count % 3 == 0 {
@@ -87,8 +88,10 @@ struct KeyboardView: View {
             // ⭐️ 4. webSocketService.fraudResult를 직접 사용하여 UI를 구성합니다.
             //    이제 이 값이 바뀌면 bannerView가 자동으로 업데이트됩니다.
             if let result = webSocketService.fraudResult {
+                
                 if result.riskLevel == "주의" {
                     if isTutorial {
+                        
                         Image("risklevel2")
                             .resizable()
                             .scaledToFit()
