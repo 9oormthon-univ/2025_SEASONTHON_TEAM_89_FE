@@ -17,7 +17,7 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
 
     // MARK: - Properties
     private let hangulEngine = HangulEngine()
-    let typingDebounceManager = TypingDebounceManager()
+//    let typingDebounceManager = TypingDebounceManager()
     private var cancellables = Set<AnyCancellable>()
     
     @Published var isShifted = false
@@ -41,7 +41,7 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        setupBindings()
+//        setupBindings()
     }
     
     private func setupUI() {
@@ -60,14 +60,14 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
             hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-    private func setupBindings() {
-        typingDebounceManager.objectWillChange
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.objectWillChange.send()
-            }
-            .store(in: &cancellables)
-    }
+//    private func setupBindings() {
+//        typingDebounceManager.objectWillChange
+//            .receive(on: DispatchQueue.main)
+//            .sink { [weak self] _ in
+//                self?.objectWillChange.send()
+//            }
+//            .store(in: &cancellables)
+//    }
 
     // MARK: - Text Input Management
     override func textWillChange(_ textInput: UITextInput?) {

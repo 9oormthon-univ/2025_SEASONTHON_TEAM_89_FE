@@ -71,6 +71,7 @@ struct KeyboardView: View {
                     Haptic.notification(type: .error)
                 }
             }
+            
         }
         .padding(3)
         .background(Color(.systemGray4).ignoresSafeArea())
