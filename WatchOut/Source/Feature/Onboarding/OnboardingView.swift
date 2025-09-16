@@ -146,24 +146,32 @@ private struct OnboardingSecondView: View {
             }
             
             VStack {
-                TextField("", text: $hiddenText)
-                    .focused($focusedField, equals: .hiddenTextField)
-                    .opacity(0)
-                    .allowsHitTesting(false)
-                    .frame(height: 0)
+               
                 Spacer()
                 
                 Button {
                     pathModel.paths.append(.mainTabView)
                     SharedUserDefaults.isOnboarding = true
                 } label: {
-                    Text("선택완료")
-                        .font(.pHeadline02)
-                        .foregroundColor(.white)
-                        .padding(10)
-                        .frame(maxWidth: .infinity)
-                        .background(.main)
+                    VStack {
+                        Text("선택완료")
+                            .font(.pHeadline02)
+                            .foregroundColor(.white)
+                            
+                            .frame(maxWidth: .infinity)
+                            
+                    }
+                    
                 }
+                .frame(height: 58)
+                .background(.main)
+                
+                TextField("", text: $hiddenText)
+                    .focused($focusedField, equals: .hiddenTextField)
+
+                    .opacity(0)
+                    .allowsHitTesting(false)
+                    .frame(height: 39)
                 
             }
         }
