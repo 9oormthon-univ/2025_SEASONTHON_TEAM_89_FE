@@ -7,21 +7,26 @@
 
 import SwiftUI
 import KakaoSDKCommon
+import KakaoSDKAuth
+import KakaoSDKUser
 
 @main
 struct WatchOutApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
-    init() {
-            // Kakao SDK 초기화
-            let kakaoAppKey = Bundle.main.infoDictionary?["KAKAO_NATIVE_APP_KEY"] as? String
-            KakaoSDK.initSDK(appKey: kakaoAppKey ?? "")
-        }
-    
+    init () {
+        let kakaoAppKey = Bundle.main.infoDictionary?["KAKAO_NATIVE_APP_KEY"] ?? ""
+        KakaoSDK.initSDK(appKey: kakaoAppKey as! String)
+    }
     var body: some Scene {
         WindowGroup {
-            OnboardingView()
+            LoginView()
+                .onOpenURL { url in
+                    if (AuthApi.isKakaoTalkLoginUrl(url)) {
+                        _ = AuthController.handleOpenUrl(url: url)
+                    }
+                }
         }
     }
 }
