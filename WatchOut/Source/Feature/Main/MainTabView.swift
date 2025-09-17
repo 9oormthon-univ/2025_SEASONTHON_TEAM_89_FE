@@ -42,6 +42,7 @@ struct MainTabView: View {
             } else if mainTabViewModel.selectedTab == .settingView {
                 SettingView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    
             } else if mainTabViewModel.selectedTab == .reportView {
                 ReportView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)

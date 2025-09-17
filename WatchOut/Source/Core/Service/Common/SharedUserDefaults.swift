@@ -16,13 +16,13 @@ struct SharedUserDefaults {
     
     // 공유 UserDefaults 인스턴스
     static let shared = UserDefaults(suiteName: appGroupID)!
-    
+
     // 설정 키를 Enum으로 관리
     enum SettingsKey: String {
-        case notificationsEnabled = "isNotificationsEnabled"
-        case hapticFeedbackEnabled = "isHapticFeedbackEnabled"
-        case warningColorLevel1 = "warningColorLevel1"
-        case warningColorLevel2 = "warningColorLevel2"
+//        case notificationsEnabled = "isNotificationsEnabled"
+//        case hapticFeedbackEnabled = "isHapticFeedbackEnabled"
+        case riskLevel2Color = "riskLevel2Color"
+        case riskLevel3Color = "riskLevel3Color"
         case tutorialEnabled = "isTutorial"
         case onboarding = "isOnboarding"
         case riskLevel2Count = "riskLevel2Count"
@@ -31,7 +31,48 @@ struct SharedUserDefaults {
         case groupCode = "groupCode"
         case joinId = "joinId"
         case createGroup = "isCreateGroup"
+        case WarningNotification = "isWarningNotification"
+        case DangerNotification = "isDangerNotification"
+        case WarningHaptic = "isWarningHaptic"
+        case DangerHaptic = "isDangerHaptic"
     }
+    
+    //MARK: - WarningNotification
+    static var isWarningNotification: Bool {
+        get {
+            return shared.object(forKey: SettingsKey.WarningNotification.rawValue) as? Bool ?? true
+        } set {
+            shared.set(newValue, forKey: SettingsKey.WarningNotification.rawValue)
+        }
+    }
+    
+    //MARK: - DangerNotification
+    static var isDangerNotification: Bool {
+        get {
+            return shared.object(forKey: SettingsKey.DangerNotification.rawValue) as? Bool ?? true
+        } set {
+            shared.set(newValue, forKey: SettingsKey.DangerNotification.rawValue)
+        }
+    }
+    
+    //MARK: - WarningHaptic
+    static var isWarningHaptic: Bool {
+        get {
+            return shared.object(forKey: SettingsKey.WarningHaptic.rawValue) as? Bool ?? true
+        } set {
+            shared.set(newValue, forKey: SettingsKey.WarningHaptic.rawValue)
+        }
+    }
+    
+    //MARK: - DangerHaptic
+    static var isDangerHaptic: Bool {
+        get {
+            return shared.object(forKey: SettingsKey.DangerHaptic.rawValue) as? Bool ?? true
+        } set {
+            shared.set(newValue, forKey: SettingsKey.DangerHaptic.rawValue)
+        }
+    }
+    
     
     //MARK: - CreateCroup
     static var isCreateGroup: Bool {
@@ -114,46 +155,46 @@ struct SharedUserDefaults {
     }
     
     /// 알림 설정 (켜기/끄기)
-    static var isNotificationsEnabled: Bool {
-        get {
-            // 기본값: 켜기(true)
-            return shared.object(forKey: SettingsKey.notificationsEnabled.rawValue) as? Bool ?? true
-        }
-        set {
-            shared.set(newValue, forKey: SettingsKey.notificationsEnabled.rawValue)
-        }
-    }
-    
-    /// 키보드 진동(햅틱 피드백) 설정
-    static var isHapticFeedbackEnabled: Bool {
-        get {
-            // 기본값: 켜기(true)
-            return shared.object(forKey: SettingsKey.hapticFeedbackEnabled.rawValue) as? Bool ?? true
-        }
-        set {
-            shared.set(newValue, forKey: SettingsKey.hapticFeedbackEnabled.rawValue)
-        }
-    }
+//    static var isNotificationsEnabled: Bool {
+//        get {
+//            // 기본값: 켜기(true)
+//            return shared.object(forKey: SettingsKey.notificationsEnabled.rawValue) as? Bool ?? true
+//        }
+//        set {
+//            shared.set(newValue, forKey: SettingsKey.notificationsEnabled.rawValue)
+//        }
+//    }
+//    
+//    /// 키보드 진동(햅틱 피드백) 설정
+//    static var isHapticFeedbackEnabled: Bool {
+//        get {
+//            // 기본값: 켜기(true)
+//            return shared.object(forKey: SettingsKey.hapticFeedbackEnabled.rawValue) as? Bool ?? true
+//        }
+//        set {
+//            shared.set(newValue, forKey: SettingsKey.hapticFeedbackEnabled.rawValue)
+//        }
+//    }
     
     /// 경고 색상 1단계 (색상 이름을 String으로 저장)
-    static var warningColorLevel1: String {
+    static var riskLevel2Color: String {
         get {
             // 기본값: "orange"
-            return shared.string(forKey: SettingsKey.warningColorLevel1.rawValue) ?? "orange"
+            return shared.string(forKey: SettingsKey.riskLevel2Color.rawValue) ?? "2"
         }
         set {
-            shared.set(newValue, forKey: SettingsKey.warningColorLevel1.rawValue)
+            shared.set(newValue, forKey: SettingsKey.riskLevel2Color.rawValue)
         }
     }
     
     /// 경고 색상 2단계 (색상 이름을 String으로 저장)
-    static var warningColorLevel2: String {
+    static var riskLevel3Color: String {
         get {
             // 기본값: "red"
-            return shared.string(forKey: SettingsKey.warningColorLevel2.rawValue) ?? "red"
+            return shared.string(forKey: SettingsKey.riskLevel3Color.rawValue) ?? "1"
         }
         set {
-            shared.set(newValue, forKey: SettingsKey.warningColorLevel2.rawValue)
+            shared.set(newValue, forKey: SettingsKey.riskLevel3Color.rawValue)
         }
     }
     

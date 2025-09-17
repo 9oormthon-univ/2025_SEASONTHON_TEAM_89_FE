@@ -58,8 +58,11 @@ struct KeyboardView: View {
                 status = newRiskLevel
                 
                 if status == "주의" {
-                    Haptic.notification(type: .warning)
-                    if SharedUserDefaults.isTutorial == false{
+                    if SharedUserDefaults.isWarningHaptic {
+                        Haptic.notification(type: .warning)
+                        
+                    }
+                    if SharedUserDefaults.isTutorial == false {
                         SharedUserDefaults.riskLevel2Count += 1
                     }
                     
@@ -69,9 +72,14 @@ struct KeyboardView: View {
                         SharedUserDefaults.riskLevel3Count += 1
                     }
                     if count % 3 == 0 {
-                        NotificationManager.instance.scheduleNotification(title: "위험한 문장이 반복 감지되었어요", subtitle: "필요하다면 즉시 신고를 도와드릴 수 있어요.", secondsLater: 1)
+                        if SharedUserDefaults.isDangerNotification {
+                            NotificationManager.instance.scheduleNotification(title: "위험한 문장이 반복 감지되었어요", subtitle: "필요하다면 즉시 신고를 도와드릴 수 있어요.", secondsLater: 1)
+                        }
                     }
-                    Haptic.notification(type: .error)
+                    
+                    if SharedUserDefaults.isDangerHaptic {
+                        Haptic.notification(type: .error)
+                    }
                 }
             }
             
@@ -85,44 +93,52 @@ struct KeyboardView: View {
     private func bannerView() -> some View {
         let isTutorial = SharedUserDefaults.isTutorial
         HStack(spacing: 12) {
-            Image("keyboardicon")
+            
+            if webSocketService.isConnected {
+                Image("keyboardicon")
+                    .foregroundStyle(.main)
+            } else {
+                Image("keyboardicon")
+                    .foregroundStyle(.gray400)
+            }
+            
             
             Spacer()
             
             // ⭐️ 4. webSocketService.fraudResult를 직접 사용하여 UI를 구성합니다.
             //    이제 이 값이 바뀌면 bannerView가 자동으로 업데이트됩니다.
-//            if let result = webSocketService.fraudResult {
-//                
-                if status == "주의" {
-                    if isTutorial {
-                        
-                        Image("risklevel2")
-                            .resizable()
-                            .scaledToFit()
-                    }
-                    Image("status1")
+            //            if let result = webSocketService.fraudResult {
+            //
+            if status == "주의" {
+                if isTutorial {
+                    
+                    Image("risklevel2")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 25)
-                        .foregroundStyle(.main)
-                } else if status == "위험" {
-                    if isTutorial {
-                        Image("risklevel3")
-                            .resizable()
-                            .scaledToFit()
-                    }
-                    Image("status2")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 25)
-                        .foregroundStyle(.riskColor1)
-                } else {
-                    Image("circle01")
                 }
-                
-//            } else {
-//                Image("circle01")
-//            }
+                Image("status1")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 25)
+                    .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel2Color)"))
+            } else if status == "위험" {
+                if isTutorial {
+                    Image("risklevel3")
+                        .resizable()
+                        .scaledToFit()
+                }
+                Image("status2")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 25)
+                    .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel3Color)"))
+            } else {
+                Image("circle01")
+            }
+            
+            //            } else {
+            //                Image("circle01")
+            //            }
         }
         .padding(.horizontal, 15)
         .frame(height: 40)

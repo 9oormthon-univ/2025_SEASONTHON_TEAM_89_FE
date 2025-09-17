@@ -14,6 +14,7 @@ struct OnboardingView: View {
     @StateObject private var onboardingContentViewModel = OnboardingContentViewModel()
     @StateObject private var maintTabViewModel = MainTabViewModel()
     @StateObject private var groupViewModel = GroupViewModel()
+    @StateObject private var settingViewModel = SettingViewModel()
     let isOnBoarding = SharedUserDefaults.isOnboarding
    
     var body: some View {
@@ -25,6 +26,7 @@ struct OnboardingView: View {
                         MainTabView()
                             .navigationBarBackButtonHidden()
                             .environmentObject(maintTabViewModel)
+                            .environmentObject(settingViewModel)
                         
                     case .exprienceView:
                         ExperienceView()
