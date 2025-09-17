@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - CreateGorupResponse
-struct CreateGorupResponse: Codable {
+struct CreateGroupResponse: Codable {
     let groupID, joinCode, creatorID: String
     let createdAt: String
 

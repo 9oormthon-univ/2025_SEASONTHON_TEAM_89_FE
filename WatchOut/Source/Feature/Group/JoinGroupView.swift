@@ -91,9 +91,7 @@ struct JoinGroupView: View {
                     }
                 Spacer()
                 Button {
-                    
-            
-                    
+
                 } label: {
                     Spacer()
                     Text("입장하기")

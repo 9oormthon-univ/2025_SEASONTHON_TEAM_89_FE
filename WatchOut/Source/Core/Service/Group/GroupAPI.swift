@@ -9,8 +9,8 @@ import Foundation
 import Moya
 
 enum GroupAPI{
-    case createGroup(CreateGorupRequest)
-    case joinGroup(JoinGorupRequest)
+    case createGroup(createRequest: CreateGroupRequest)
+    case joinGroup(joinRequest: JoinGorupRequest)
 //    case ManageMentGroup
 //    case WaitingGroup
 }

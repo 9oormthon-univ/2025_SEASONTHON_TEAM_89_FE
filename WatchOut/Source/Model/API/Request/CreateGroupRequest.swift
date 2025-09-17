@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - CreateGorupRequest
-struct CreateGorupRequest: Codable {
+struct CreateGroupRequest: Codable {
     let groupName, userID, userName: String
 
     enum CodingKeys: String, CodingKey {

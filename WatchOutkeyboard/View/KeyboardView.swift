@@ -16,6 +16,7 @@ struct KeyboardView: View {
     @State private var webSocketURL = "wss://wiheome.ajb.kr/api/ws/fraud/"
     @State var status = "정상"
     @State var count = 0
+    @State var oldText : String = ""
     
     var body: some View {
         VStack(spacing: 8) {
@@ -43,10 +44,12 @@ struct KeyboardView: View {
         .onAppear {
             // ⭐️ 2. webSocketService 프로퍼티를 통해 메서드 호출
             webSocketService.connect(urlString: webSocketURL)
+            status = "정상"
         }
         .onDisappear {
             // ⭐️ 2. webSocketService 프로퍼티를 통해 메서드 호출
             webSocketService.disconnect()
+            status = "정상"
         }
         // ⭐️ 3. onChange는 '동작'을 처리하는 역할로 그대로 둡니다.
         .onChange(of: webSocketService.fraudResult?.riskLevel) {
@@ -88,32 +91,38 @@ struct KeyboardView: View {
             
             // ⭐️ 4. webSocketService.fraudResult를 직접 사용하여 UI를 구성합니다.
             //    이제 이 값이 바뀌면 bannerView가 자동으로 업데이트됩니다.
-            if let result = webSocketService.fraudResult {
-                
-                if result.riskLevel == "주의" {
+//            if let result = webSocketService.fraudResult {
+//                
+                if status == "주의" {
                     if isTutorial {
                         
                         Image("risklevel2")
                             .resizable()
                             .scaledToFit()
                     }
-                    Image("riskIcon")
+                    Image("status1")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25)
                         .foregroundStyle(.main)
-                } else if result.riskLevel == "위험" {
+                } else if status == "위험" {
                     if isTutorial {
                         Image("risklevel3")
                             .resizable()
                             .scaledToFit()
                     }
-                    Image("riskIcon")
-                        .foregroundStyle(.red)
+                    Image("status2")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25)
+                        .foregroundStyle(.riskColor1)
                 } else {
                     Image("circle01")
                 }
                 
-            } else {
-                Image("circle01")
-            }
+//            } else {
+//                Image("circle01")
+//            }
         }
         .padding(.horizontal, 15)
         .frame(height: 40)

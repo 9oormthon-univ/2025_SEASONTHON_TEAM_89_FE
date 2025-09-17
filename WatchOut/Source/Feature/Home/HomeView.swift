@@ -24,8 +24,8 @@ struct HomeView: View {
                 .frame(height: 36)
             
             HStack(spacing: 8) {
-                StatusRoundRectangle(status: .warning, count: SharedUserDefaults.riskLevel2Count)
-                StatusRoundRectangle(status: .danger, count: SharedUserDefaults.riskLevel3Count)
+                StatusRoundRectangle(iconName: "warningcountIcon", status: .warning, count: SharedUserDefaults.riskLevel2Count)
+                StatusRoundRectangle(iconName: "dangercountIcon", status: .danger, count: SharedUserDefaults.riskLevel3Count)
             } .padding(.horizontal, 20)
             Spacer()
                 .frame(height: 16)
@@ -34,21 +34,26 @@ struct HomeView: View {
             
             Spacer()
                 .frame(height: 16)
-            HStack {
-                GroupBoxRowView(title: "그룹 만들기", imageName: "maingroup1")
-                    .onTapGesture {
-                        pathModel.paths.append(.createGroupView)
-                    }
-                Spacer()
-                GroupBoxRowView(title: "그룹 입장하기", imageName: "maingroup2")
-                    .onTapGesture {
-                        pathModel.paths.append(.joinGroupView)
-                    }
-                Spacer()
-                GroupBoxRowView(title: "내 그릅 관리", imageName: "maingroup3")
-                    .onTapGesture {
-                        pathModel.paths.append(.managementGroupView)
-                    }
+            HStack(spacing: 8) {
+                
+                if SharedUserDefaults.isCreateGroup {
+                    GroupBoxRowView(title: "내 그릅 관리", imageName: "maingroup3")
+                        .onTapGesture {
+                            pathModel.paths.append(.managementGroupView)
+                        }
+                } else {
+                    GroupBoxRowView(title: "그룹 만들기", imageName: "maingroup1")
+                        .onTapGesture {
+                            pathModel.paths.append(.createGroupView)
+                        }
+    
+                    GroupBoxRowView(title: "그룹 입장하기", imageName: "maingroup2")
+                        .onTapGesture {
+                            pathModel.paths.append(.joinGroupView)
+                        }
+                }
+                
+                
             }
             .padding(.horizontal, 20)
             
@@ -120,38 +125,32 @@ private struct ExprienceButton: View {
 
 // MARK: - StatusRoundRectangle
 private struct StatusRoundRectangle: View {
+    let iconName: String
     let status: Status
     let count: Int
     fileprivate var body: some View {
-        
-        HStack {
-            VStack(alignment: .leading) {
-                
-                Image("star")
-                    .foregroundStyle(status == .warning ? .main : .red)
-                HStack{
-                    Text(status.rawValue)
-                        .font(.pHeadline02)
+        ZStack {
+            RoundedRectangle(cornerRadius: 16)
+                .foregroundStyle(.gray100)
+            HStack {
+                Image(iconName)
+                Spacer()
+                VStack(alignment: .center){
                     Text("\(count)회")
                         .font(.pHeadline03)
                         .font(.system(size: 18))
                         .foregroundStyle(.main)
+                    Text(status.rawValue)
+                        .font(.pHeadline02)
                 }
                 Spacer()
-                    .frame(height: 14)
-                Text("자세히 보기")
-                    .font(.pCaption01)
-                    .foregroundStyle(.gray400)
-            }
-            .padding()
-            Spacer()
                 
             }
-        .overlay {
-            RoundedRectangle(cornerRadius: 21)
-                .stroke(Color.gray200, lineWidth: 1)
+            .padding()
+
         }
     }
+    
 }
 
 
@@ -171,13 +170,17 @@ private struct GroupBoxRowView: View {
     let title: String
     let imageName: String
     fileprivate var body: some View {
-        VStack(alignment: .center) {
-            Image(imageName)
-              
-            Text(title)
-                .font(.pBody02)
+        HStack {
+            Spacer()
+            VStack{
+                Image(imageName)
+                
+                Text(title)
+                    .font(.pBody02)
+            }
+            Spacer()
         }
-        .frame(width: 120,height: 120)
+        .frame(height: 120)
         .overlay {
             RoundedRectangle(cornerRadius: 24)
                 .stroke(.gray300, lineWidth: 1)
