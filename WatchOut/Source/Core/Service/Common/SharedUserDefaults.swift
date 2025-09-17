@@ -30,9 +30,20 @@ struct SharedUserDefaults {
         case userID = "userID"
         case groupCode = "groupCode"
         case joinId = "joinId"
+        case createGroup = "isCreateGroup"
     }
     
-    //MAKR: - ShardID
+    //MARK: - CreateCroup
+    static var isCreateGroup: Bool {
+        get {
+            return shared.object(forKey: SettingsKey.createGroup.rawValue) as? Bool ?? false
+        } set {
+            shared.set(newValue, forKey: SettingsKey.createGroup.rawValue)
+        }
+    }
+    
+    
+    //MARK: - ShardID
     static var joinId: String {
         get {
             return shared.object(forKey: SettingsKey.joinId.rawValue) as? String ?? ""
