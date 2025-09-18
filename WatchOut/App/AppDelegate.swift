@@ -39,6 +39,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         print("✅ Device Token: \(token)")
+        TokenManager.shared.saveDeviceToken(token)
         // 이 토큰을 백엔드 서버로 전송하는 로직이 필요합니다.
     }
     

@@ -10,7 +10,8 @@ import Moya
 
 // 'Auth' 관련 API를 모아놓은 enum입니다.
 enum AuthAPI {
-    case kakaoLogin(token: String)
+    case kakaoLogin(request: KakaoLoginRequest)
+    
     // case appleLogin(token: String) // 추후 애플 로그인 추가 시
     // case tokenRefresh(refreshToken: String) // 추후 토큰 리프레시 추가 시
 }
@@ -41,10 +42,8 @@ extension AuthAPI: TargetType {
     // 4. 요청에 포함할 파라미터
     var task: Moya.Task {
         switch self {
-        case .kakaoLogin(let token):
-            // Request Body에 JSON 형태로 들어갈 파라미터
-            let parameters: [String: Any] = ["access_token": token]
-            return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
+        case .kakaoLogin(let request):     
+            return .requestJSONEncodable(request)
         }
     }
 

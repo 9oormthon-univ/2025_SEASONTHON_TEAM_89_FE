@@ -4,6 +4,15 @@
 <dict>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string></string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>CFBundleExecutable</key>
+	<string></string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

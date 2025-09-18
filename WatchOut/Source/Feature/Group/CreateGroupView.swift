@@ -10,6 +10,9 @@ import SwiftUI
 struct CreateGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
     @EnvironmentObject private var groupViewModel: GroupViewModel
+    @EnvironmentObject private var userManager: UserManager
+    
+    
     var body: some View {
         VStack {
             CustomNavigationBar(leftBtnAction: {
@@ -71,18 +74,6 @@ struct CreateGroupView: View {
                             Spacer()
                         }
                         
-                        TextField("사용하실 별명을 정해주세요.", text: $groupViewModel.userName)
-                            .font(.pBody01)
-                            
-                            .padding(
-                                
-                            )
-                            .background()
-                            .cornerRadius(47)
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 47)
-                                    .stroke(.gray300,lineWidth:     1)
-                            }
                         
                         Spacer()
                             .frame(height: 203)
@@ -117,7 +108,7 @@ struct CreateGroupView: View {
         .onChange(of: groupViewModel.isCreate) {
             if groupViewModel.isCreate {
                 pathModel.paths.removeLast()
-                pathModel.paths.append(.joinGroupView)
+                pathModel.paths.append(.managementGroupView)
             }
         }
     }

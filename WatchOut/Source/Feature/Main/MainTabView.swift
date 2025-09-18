@@ -10,6 +10,7 @@ import SwiftUI
 struct MainTabView: View {
     @EnvironmentObject private var pathModel: PathModel
     @EnvironmentObject private var mainTabViewModel: MainTabViewModel
+    @EnvironmentObject private var appState: AppState
     var body: some View {
         VStack {
             
@@ -18,12 +19,10 @@ struct MainTabView: View {
                 ForEach(Tab.allCases, id: \.self) { tab in
                     Button(action: {
                         // 탭을 누르면 selectedTab 상태를 변경
-                        if tab == .exprienceView {
-                            pathModel.paths.append(.exprienceView)
-                        } else {
-                            withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
-                                mainTabViewModel.selectedTab = tab
-                            }
+                        
+                        withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
+                            mainTabViewModel.selectedTab = tab
+                            
                         }
                         
                     }) {
@@ -31,6 +30,13 @@ struct MainTabView: View {
                     }
                     .buttonStyle(.plain) // 버튼의 기본 회색 배경 제거
                 }
+                Spacer()
+                Button(action: {
+                    appState.isLoggedIn = false
+                    TokenManager.shared.clearAllTokens()
+                }, label: {
+                    Image("LogOutImage")
+                })
             }
             .padding(.horizontal)
             .padding(.top)
@@ -42,7 +48,7 @@ struct MainTabView: View {
             } else if mainTabViewModel.selectedTab == .settingView {
                 SettingView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    
+                
             } else if mainTabViewModel.selectedTab == .reportView {
                 ReportView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)

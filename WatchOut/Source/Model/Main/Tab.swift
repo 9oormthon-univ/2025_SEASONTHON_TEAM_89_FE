@@ -9,7 +9,6 @@ import Foundation
 
 enum Tab:String, CaseIterable {
     case homeView = "홈"
-    case exprienceView = "체험하기"
     case settingView = "상세 설정"
     case reportView = "신고"
 }

@@ -9,7 +9,7 @@ import Foundation
 import Moya
 
 protocol GroupServiceType {
-    func CreateOroup(groupRequest: CreateGroupRequest, completion: @escaping (Result<CreateGroupResponse, Error>) -> Void)
+    func CreateGroup(groupRequest: CreateGroupRequest, completion: @escaping (Result<CreateGroupResponse, Error>) -> Void)
 }
 
 class GroupService: GroupServiceType {
@@ -17,9 +17,9 @@ class GroupService: GroupServiceType {
     static let shared = GroupService()
     var provider = MoyaProvider<GroupAPI>(plugins: [MoyaLoggingPlugin()])
     
-    func CreateOroup(groupRequest: CreateGroupRequest, completion: @escaping (Result<CreateGroupResponse, any Error>) -> Void) {
-        provider.request(.createGroup(createRequest: groupRequest)) { reslut in
-            switch reslut {
+    func CreateGroup(groupRequest: CreateGroupRequest, completion: @escaping (Result<CreateGroupResponse, any Error>) -> Void) {
+        provider.request(.createGroup(createRequest: groupRequest)) { result in
+            switch result {
             case .success(let response):
                 do {
                     let responseData =  try JSONDecoder().decode(CreateGroupResponse.self, from: response.data)
@@ -35,6 +35,19 @@ class GroupService: GroupServiceType {
                 completion(.failure(error))
             }
         }
+    }
+    
+    func leaveGrou(userID: String ){
+        provider.request(.leveGroup(userID: userID)) { result in
+            switch result {
+            case .success(let respose):
+                print(result)
+            case .failure(let error):
+                print("나가기 및 삭제 실패 \(error)")
+            }
+            
+        }
+        
     }
     
     

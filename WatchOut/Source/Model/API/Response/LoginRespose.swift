@@ -24,15 +24,3 @@ struct LoginResponse: Codable {
     }
 }
 
-// 응답 JSON 내부의 "user" 객체를 위한 모델
-struct User: Codable {
-    let kakaoId: Int
-    let nickname: String
-    let profileImage: String
-
-    enum CodingKeys: String, CodingKey {
-        case kakaoId = "kakao_id"
-        case nickname
-        case profileImage = "profile_image"
-    }
-}

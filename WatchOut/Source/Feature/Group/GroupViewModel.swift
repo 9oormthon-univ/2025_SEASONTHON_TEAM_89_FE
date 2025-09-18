@@ -10,18 +10,24 @@ import Foundation
 class GroupViewModel: ObservableObject {
     
     @Published var groupName: String
-    @Published var userName: String
+    @Published var selectUser: String
     @Published var GroupCode: String
-    @Published var isCreate: Bool
+    @Published var user: User
+    @Published var isCreate: Bool {
+        didSet {
+            SharedUserDefaults.isCreateGroup = isCreate
+        }
+    }
     @Published private var createGroupRespose: CreateGroupResponse?
     private var service = GroupService.shared
     
     
-    init(groupName: String = "", userName: String = "", GroupCode: String = "", isCreate: Bool = false) {
+    init(groupName: String = "", selectUser: String = "", GroupCode: String = "", isCreate: Bool = false, user: User = User(userId: "", kakaoId: 0, nickname: "", profileImage: "")) {
         self.groupName = groupName
-        self.userName = userName
+        self.selectUser = selectUser
         self.GroupCode = GroupCode
-        self.isCreate = isCreate
+        self.isCreate = SharedUserDefaults.isCreateGroup
+        self.user = UserManager.shared.currentUser!
     }
 }
 
@@ -35,8 +41,8 @@ extension GroupViewModel {
     
     private func CreateGorup() {
         
-        if(!groupName.isEmpty && !userName.isEmpty) {
-            self.service.CreateOroup(groupRequest: CreateGroupRequest(groupName: groupName, userID: SharedUserDefaults.userID, userName: userName)) { [weak self] result in
+        if(!groupName.isEmpty) {
+            self.service.CreateGroup(groupRequest: CreateGroupRequest(userID: user.userId , nickname: user.nickname)) { [weak self] result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let respose):
