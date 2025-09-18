@@ -14,6 +14,7 @@ struct OnboardingView: View {
     @StateObject private var onboardingContentViewModel = OnboardingContentViewModel()
     @StateObject private var maintTabViewModel = MainTabViewModel()
     @StateObject private var groupViewModel = GroupViewModel()
+    @StateObject private var settingViewModel = SettingViewModel()
     let isOnBoarding = SharedUserDefaults.isOnboarding
    
     var body: some View {
@@ -25,6 +26,7 @@ struct OnboardingView: View {
                         MainTabView()
                             .navigationBarBackButtonHidden()
                             .environmentObject(maintTabViewModel)
+                            .environmentObject(settingViewModel)
                         
                     case .exprienceView:
                         ExperienceView()
@@ -36,12 +38,11 @@ struct OnboardingView: View {
                     case .joinGroupView:
                         JoinGroupView()
                             .navigationBarBackButtonHidden()
-                    case .waitingGroupView:
-                        WaitingGroupView()
-                            .navigationBarBackButtonHidden()
+        
                     case .managementGroupView:
                         ManagementGroupView()
                             .navigationBarBackButtonHidden()
+                            .environmentObject(groupViewModel)
                     }
                     
                 })
@@ -146,24 +147,32 @@ private struct OnboardingSecondView: View {
             }
             
             VStack {
-                TextField("", text: $hiddenText)
-                    .focused($focusedField, equals: .hiddenTextField)
-                    .opacity(0)
-                    .allowsHitTesting(false)
-                    .frame(height: 0)
+               
                 Spacer()
                 
                 Button {
                     pathModel.paths.append(.mainTabView)
                     SharedUserDefaults.isOnboarding = true
                 } label: {
-                    Text("선택완료")
-                        .font(.pHeadline02)
-                        .foregroundColor(.white)
-                        .padding(10)
-                        .frame(maxWidth: .infinity)
-                        .background(.main)
+                    VStack {
+                        Text("선택완료")
+                            .font(.pHeadline02)
+                            .foregroundColor(.white)
+                            
+                            .frame(maxWidth: .infinity)
+                            
+                    }
+                    
                 }
+                .frame(height: 58)
+                .background(.main)
+                
+                TextField("", text: $hiddenText)
+                    .focused($focusedField, equals: .hiddenTextField)
+
+                    .opacity(0)
+                    .allowsHitTesting(false)
+                    .frame(height: 39)
                 
             }
         }

@@ -87,13 +87,24 @@ class HangulEngine {
     }
 
     /// 현재 조합 중인 글자를 확정하고, 조합 상태를 초기화합니다.
+//    func finalize() -> EngineOutput {
+//        guard let char = status?.character else {
+//            return EngineOutput(textToInsert: "", charactersToDelete: 0)
+//        }
+//        self.status = nil
+//        return EngineOutput(textToInsert: String(char), charactersToDelete: 1)
+//    }
+    
     func finalize() -> EngineOutput {
-        guard let char = status?.character else {
-            return EngineOutput(textToInsert: "", charactersToDelete: 0)
+        // 조합 중인 글자가 있는지 확인만 하고, 상태를 nil로 리셋합니다.
+        if status != nil {
+            self.status = nil
         }
-        self.status = nil
-        return EngineOutput(textToInsert: String(char), charactersToDelete: 1)
+        // 텍스트 필드를 수정하라는 명령을 보내지 않습니다.
+        // (어차피 글자는 이미 화면에 있음)
+        return EngineOutput(textToInsert: "", charactersToDelete: 0)
     }
+    
     
     /// 현재 조합을 강제로 초기화합니다.
     func reset() {

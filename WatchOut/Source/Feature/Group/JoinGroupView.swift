@@ -9,8 +9,7 @@ import SwiftUI
 
 struct JoinGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
-    @State var groupCode: String = ""
-    @State var userName: String = ""
+    @EnvironmentObject private var groupViewModel: GroupViewModel
     var body: some View {
         VStack {
             CustomNavigationBar(leftBtnAction: {
@@ -46,7 +45,7 @@ struct JoinGroupView: View {
                     Spacer()
                 }
                 
-                TextField("그룹 이름을 정해주세요.", text: $userName)
+                TextField("사용할 별명을 입력하세요", text: $groupViewModel.groupName)
                     .font(.pBody01)
                     .padding()
                     .background()
@@ -77,7 +76,7 @@ struct JoinGroupView: View {
                    
                 }
                 
-                TextField("사용하실 별명을 정해주세요.", text: $groupCode)
+                TextField("코드입력", text: $groupViewModel.groupCode)
                     .font(.pBody01)
                     
                     .padding(
@@ -91,8 +90,7 @@ struct JoinGroupView: View {
                     }
                 Spacer()
                 Button {
-                    
-            
+                    groupViewModel.joinGroupAction()
                     
                 } label: {
                     Spacer()
@@ -113,8 +111,10 @@ struct JoinGroupView: View {
             .padding(.horizontal, 20)
             .background(.gray100)
             .cornerRadius(48)
-            
-            
+        }
+        .onChange(of: groupViewModel.isJoinGroup) {
+            pathModel.paths.removeLast()
+            pathModel.paths.append(.managementGroupView)
         }
     }
 
