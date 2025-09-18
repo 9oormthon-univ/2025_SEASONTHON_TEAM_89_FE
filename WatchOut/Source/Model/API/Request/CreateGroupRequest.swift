@@ -9,10 +9,11 @@ import Foundation
 
 // MARK: - CreateGorupRequest
 struct CreateGroupRequest: Codable {
-    let userID, nickname: String
+    let userID, groupName,nickname: String
 
     enum CodingKeys: String, CodingKey {
         case userID = "user_id"
+        case groupName = "group_name"
         case nickname = "nickname"
     }
 }

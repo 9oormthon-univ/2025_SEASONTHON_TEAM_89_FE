@@ -34,8 +34,14 @@ struct MainTabView: View {
                 Button(action: {
                     appState.isLoggedIn = false
                     TokenManager.shared.clearAllTokens()
+                    UserManager.shared.clearUser()
                 }, label: {
-                    Image("LogOutImage")
+                    VStack {
+                        Image("LogOutImage")
+                        Capsule().frame(height: 3).foregroundColor(.clear)
+                    }
+                    
+                     
                 })
             }
             .padding(.horizontal)

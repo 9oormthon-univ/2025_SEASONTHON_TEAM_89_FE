@@ -18,11 +18,16 @@ struct ManagementGroupView: View {
                 pathModel.paths.removeLast()
             }, leftTitle: "")
             ScrollView {
+                Spacer()
+                    .frame(height: 20)
                 HStack(alignment: .bottom) {
                     VStack {
+                        HStack {
+                            Text(groupViewModel.infoGroupRespose.groupName)
+                                .font(.gHeadline01)
+                            Text("총 \(groupViewModel.infoGroupRespose.memberCount) 명")
+                        }
                         
-                        Text("총 명")
-                            .font(.gHeadline01)
                     }
                     Spacer()
                     
@@ -33,7 +38,9 @@ struct ManagementGroupView: View {
                         .font(.pSubtitle03)
                         .foregroundStyle(.gray300)
                     Spacer()
-                    Text("1KEUS334SJ")
+                    Text(groupViewModel.infoGroupRespose.joinCode)
+                        .font(.pBody01)
+                        .underline()
                     Button {
                         
                     } label: {
@@ -44,32 +51,44 @@ struct ManagementGroupView: View {
                 .padding(.horizontal,20)
                 Spacer()
                     .frame(height: 20)
-                ScrollView(.horizontal){
+                ScrollView(.horizontal, showsIndicators: false){
                     Spacer()
                         .frame(height: 20)
                     HStack {
                         Spacer()
                             .frame(width: 20)
-                        
-                        if let user = userManager.currentUser {
-                            profileView(user: user)
+                        ForEach(groupViewModel.infoGroupRespose.members, id: \.userID) { member in
+                            profileView(member: member)
                                 .onTapGesture {
-                                    groupViewModel.selectUser = user.userId
+                                    groupViewModel.selectMembers = member
                                 }
-                                
-                                    
+                            
                         }
                     }
                     Spacer()
                 }
                 
-                UserInfoView(user: userManager.currentUser!)
+                UserInfoView()
             }
         }
+        .alert(isPresented: $groupViewModel.isLeave) {
+            Alert(title: Text("그룹을 해체하시겠습니까?"), message: Text("그룹을 해체하면 모든 그룹원이 강퇴됩니다."), primaryButton: .destructive(Text("나가기"), action: {
+                groupViewModel.LeaveGorupAction()
+                pathModel.paths.removeLast()
+                groupViewModel.isCreate = false
+                               }), secondaryButton: .cancel(Text("취소")))
+        }
         .onAppear{
-//            if let user = userManager.currentUser {
-//                groupViewModel.selectUser = user.userId
-//            }
+            if let user = userManager.currentUser {
+                groupViewModel.user = user
+            }
+            groupViewModel.loadInfoGroup()
+            if let member = groupViewModel.infoGroupRespose.members.first {
+                groupViewModel.selectMembers = member
+            }
+             
+            
+           
         }
     }
     
@@ -78,7 +97,8 @@ struct ManagementGroupView: View {
 
 //MARK: - UserInfoView
 private struct UserInfoView: View {
-    let user: User
+    @EnvironmentObject private var groupViewModel: GroupViewModel
+    @EnvironmentObject private var pathModel: PathModel
     
     fileprivate var body: some View {
         ZStack{
@@ -89,15 +109,15 @@ private struct UserInfoView: View {
                 Spacer()
                     .frame(height: 44)
                 HStack {
-                    Text("\(user.nickname)")
+                    Text("\(groupViewModel.selectMembers.nickname)")
                         .font(.pHeadline01)
                     Text("님의 경고 기록")
                     
                 }
                 Group {
                     HStack {
-                        StatusRoundRectangle(iconName: "warningcountIcon", status: .warning, count: 10)
-                        StatusRoundRectangle(iconName: "dangercountIcon", status: .danger, count: 20)
+                        StatusRoundRectangle(iconName: "warningcountIcon", status: .warning, count: groupViewModel.selectMembers.warningCount)
+                        StatusRoundRectangle(iconName: "dangercountIcon", status: .danger, count: groupViewModel.selectMembers.dangerCount)
                         
                     }
                     NotificationToggleButton()
@@ -117,6 +137,7 @@ private struct UserInfoView: View {
                 
                 
                 Button {
+                    groupViewModel.isLeave.toggle()
                     
                 } label: {
                     HStack {
@@ -151,7 +172,9 @@ private struct NotificationToggleButton: View {
                 Toggle("위험 발생 시 팝업", isOn: .constant(true))
                     .font(.pBody02)
                     .tint(.main)
-            }.padding()
+            }
+            .padding(.vertical, 33)
+            .padding(.horizontal, 24)
         }
     }
 }
@@ -190,14 +213,14 @@ private struct StatusRoundRectangle: View {
 // MARK: - profileView
 private struct profileView: View {
     @EnvironmentObject private var groupViewModel: GroupViewModel
-    let user: User
+    let member: Member
     
     
     
     
     fileprivate var body: some View {
         VStack {
-            AsyncImage(url: URL(string: user.profileImage)) { image in
+            AsyncImage(url: URL(string: member.profileImage)) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -213,7 +236,7 @@ private struct profileView: View {
                     .stroke(.gray500, lineWidth: 1)
             )
             .overlay {
-                if user.userId == groupViewModel.selectUser {
+                if member.userID == groupViewModel.selectMembers.userID {
                     ZStack{
                         Circle()
                             .foregroundStyle(.gray400.opacity(0.3))
@@ -223,7 +246,7 @@ private struct profileView: View {
                 }
                 
             
-            Text(user.nickname)
+            Text(member.nickname)
             
         }
     }

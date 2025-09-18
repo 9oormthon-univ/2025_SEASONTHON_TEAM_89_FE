@@ -10,6 +10,5 @@ enum PathType: Hashable {
   case exprienceView
   case createGroupView
   case joinGroupView
-
   case managementGroupView
 }

@@ -12,7 +12,6 @@ struct CreateGroupView: View {
     @EnvironmentObject private var groupViewModel: GroupViewModel
     @EnvironmentObject private var userManager: UserManager
     
-    
     var body: some View {
         VStack {
             CustomNavigationBar(leftBtnAction: {
@@ -62,9 +61,9 @@ struct CreateGroupView: View {
                                 RoundedRectangle(cornerRadius: 47)
                                     .stroke(.gray300,lineWidth:     1)
                             }
-                        
                         Spacer()
-                            .frame(height: 50)
+                            .frame(height: 52)
+                        
                         HStack {
                             Text("사용할 별명")
                                 .font(.pHeadline01)
@@ -74,9 +73,18 @@ struct CreateGroupView: View {
                             Spacer()
                         }
                         
+                        TextField(groupViewModel.user.nickname, text: $groupViewModel.userName)
+                            .font(.pBody01)
+                            .padding()
+                            .background()
+                            .cornerRadius(47)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 47)
+                                    .stroke(.gray300,lineWidth:     1)
+                            }
                         
                         Spacer()
-                            .frame(height: 203)
+                            .frame(height: 230)
                         
                         Button {
                             groupViewModel.CreateGorupAction()
@@ -85,16 +93,13 @@ struct CreateGroupView: View {
                                 Spacer()
                                 Text("만들기")
                                     .font(.pHeadline02)
-                                    .padding(.vertical, 12)
+                                    .padding(.vertical, 18)
                                     .foregroundStyle(.white)
                                 Spacer()
                             }
                             .background(.main)
                             .cornerRadius(8)
-                            
                         }
-                        
-                   
                       Spacer()
                     }
                     .padding(.vertical,48)
@@ -104,6 +109,15 @@ struct CreateGroupView: View {
                
             }
                         
+        }
+        .onTapGesture {
+            self.endTextEditing()
+        }
+        .onAppear{
+            if let user = userManager.currentUser {
+                print(user)
+                groupViewModel.user = user
+            }
         }
         .onChange(of: groupViewModel.isCreate) {
             if groupViewModel.isCreate {

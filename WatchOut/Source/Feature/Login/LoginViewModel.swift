@@ -66,8 +66,9 @@ final class LoginViewModel: ObservableObject {
                 }
             } receiveValue: { loginResponse in
                 // 서버로부터 받은 토큰을 키체인에 저장
-                TokenManager.shared.saveAccessToken(loginResponse.accessToken)
                 UserManager.shared.setCurrentUser(loginResponse.user)
+                TokenManager.shared.saveAccessToken(loginResponse.accessToken)
+                
                 print("서버 로그인 성공! 사용자: \(loginResponse.user.nickname)")
 
                 // ✅ 모든 과정이 성공했으므로 true를 반환
