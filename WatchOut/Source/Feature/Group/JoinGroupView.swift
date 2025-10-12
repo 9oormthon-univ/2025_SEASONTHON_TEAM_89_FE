@@ -112,6 +112,9 @@ struct JoinGroupView: View {
             .background(.gray100)
             .cornerRadius(48)
         }
+        .onTapGesture {
+            self.endTextEditing()
+        }
         .onChange(of: groupViewModel.isJoinGroup) {
             pathModel.paths.removeLast()
             pathModel.paths.append(.managementGroupView)
