@@ -15,7 +15,9 @@ final class AuthService {
 
     // ⬇️ 반환 타입을 새로운 LoginResponse로 변경합니다.
     func kakaoLogin(token: String) -> AnyPublisher<LoginResponse, Error> {
-        return provider.requestPublisher(.kakaoLogin(request: KakaoLoginRequest(accessToken: token, DeviceType: TokenManager.shared.loadDeviceToken()!)))
+        
+        
+        return provider.requestPublisher(.kakaoLogin(request: KakaoLoginRequest(accessToken: token, DeviceType: TokenManager.shared.loadDeviceToken() ?? "시뮬레이터")))
             .tryMap { response in
                 guard (200...299).contains(response.statusCode) else {
                     throw MoyaError.statusCode(response)

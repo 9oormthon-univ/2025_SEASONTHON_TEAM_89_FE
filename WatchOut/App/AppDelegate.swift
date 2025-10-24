@@ -40,7 +40,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         print("✅ Device Token: \(token)")
         TokenManager.shared.saveDeviceToken(token)
-        // 이 토큰을 백엔드 서버로 전송하는 로직이 필요합니다.
+   
     }
     
     // 디바이스 토큰 등록에 실패했을 때 호출

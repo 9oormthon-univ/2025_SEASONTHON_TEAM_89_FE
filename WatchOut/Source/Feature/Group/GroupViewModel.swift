@@ -14,8 +14,24 @@ class GroupViewModel: ObservableObject {
     @Published var selectUser: String
     @Published var groupCode: String
     @Published var user: User
-    @Published var selectMembers: Member = .init(userID: "", nickname: "", profileImage: "", warningCount: 0, dangerCount: 0, isCreator: false, joinedAt: "")
-    @Published var infoGroupRespose: InfoGroupRespose = .init(groupID: "", groupName: "", joinCode: "", creatorID: "", memberCount: 0, members: [], createdAt: "")
+    @Published var selectMembers: Member = .init(
+        userID: "",
+        nickname: "",
+        profileImage: "",
+        warningCount: 0,
+        dangerCount: 0,
+        isCreator: false,
+        joinedAt: ""
+    )
+    @Published var infoGroupRespose: InfoGroupRespose = .init(
+        groupID: "",
+        groupName: "",
+        joinCode: "",
+        creatorID: "",
+        memberCount: 0,
+        members: [],
+        createdAt: ""
+    )
     @Published var isCreate: Bool {
         didSet {
             SharedUserDefaults.isCreateGroup = isCreate
@@ -27,7 +43,19 @@ class GroupViewModel: ObservableObject {
     private var service = GroupService.shared
     
     
-    init(groupName: String = "", userName: String = "", selectUser: String = "", groupCode: String = "", isCreate: Bool = false, user: User = User(userId: "", kakaoId: 0, nickname: "", profileImage: "")) {
+    init(
+        groupName: String = "",
+        userName: String = "",
+        selectUser: String = "",
+        groupCode: String = "",
+        isCreate: Bool = false,
+        user: User = User(
+            userId: "",
+            kakaoId: 0,
+            nickname: "",
+            profileImage: ""
+        )
+    ) {
         self.groupName = groupName
         self.userName = userName
         self.selectUser = selectUser
