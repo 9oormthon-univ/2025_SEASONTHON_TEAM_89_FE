@@ -38,6 +38,7 @@ struct OnboardingView: View {
                     case .joinGroupView:
                         JoinGroupView()
                             .navigationBarBackButtonHidden()
+                            .environmentObject(groupViewModel)
         
                     case .managementGroupView:
                         ManagementGroupView()

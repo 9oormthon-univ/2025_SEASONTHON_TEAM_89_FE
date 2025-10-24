@@ -129,30 +129,41 @@ private struct UserInfoView: View {
                 
                 Spacer()
                     .frame(height: 200)
-                
-                Text("강퇴하기")
-                    .underline()
-                    .font(.pBody02)
-                    .foregroundStyle(.gray400)
-                
-                
-                Button {
-                    groupViewModel.isLeave.toggle()
+                if(groupViewModel.infoGroupRespose.creatorID == groupViewModel.user.userId){
+                    Text("강퇴하기")
+                        .underline()
+                        .font(.pBody02)
+                        .foregroundStyle(.gray400)
                     
-                } label: {
-                    HStack {
-                        Spacer()
-                        Text("그룹해체하기")
-                            .font(.pHeadline03)
-                            .padding(.vertical, 18)
-                            .foregroundStyle(.white)
-                        Spacer()
+                    
+                    Button {
+                        groupViewModel.isLeave.toggle()
+                        
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Text("그룹해체하기")
+                                .font(.pHeadline03)
+                                .padding(.vertical, 18)
+                                .foregroundStyle(.white)
+                            Spacer()
+                        }
+                        .background(.black)
+                        .cornerRadius(8)
+                        
                     }
-                    .background(.black)
-                    .cornerRadius(8)
+                    .padding(.horizontal,20)
+                } else {
+                    Text("나가기")
+                        .underline()
+                        .font(.pBody02)
+                        .foregroundStyle(.gray400)
+                        .onTapGesture {
+                            groupViewModel.isLeave.toggle()
+                        }
                     
                 }
-                .padding(.horizontal,20)
+                
                 Spacer()
                     .frame(height: 50)
             }
