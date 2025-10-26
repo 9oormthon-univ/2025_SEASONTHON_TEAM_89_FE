@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject private var pathModel: PathModel
+    
     var body: some View {
         ScrollView(showsIndicators: false){
             Spacer()
@@ -85,13 +86,14 @@ struct HomeView: View {
 
 //MARK: - TitleView
 private struct TitleView: View {
+    private let user = UserManager.shared.currentUser
     fileprivate var body: some View {
         HStack{
             VStack(alignment: .leading) {
-                Text("위허메 키보드에")
+                Text("\(user?.nickname ?? "위허메")님 환영해요!")
                     .font(.gHeadline01)
                 HStack{
-                    Text("오신걸 환영해요")
+                    Text("위허매 키보드와 함께 금용 범죄를 예방해요")
                         .font(.gHeadline01)
                     Image("star")
                         .foregroundStyle(.main)
