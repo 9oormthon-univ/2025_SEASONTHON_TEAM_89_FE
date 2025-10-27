@@ -47,6 +47,8 @@ struct ManagementGroupView: View {
                         isToastShown.toggle()
                     } label: {
                         Image("CopyIcon")
+                    }.alert(isPresented: $isToastShown) {
+                        Alert(title: Text("복사되었습니다!"))
                     }
                     
                 }
@@ -73,24 +75,15 @@ struct ManagementGroupView: View {
                 UserInfoView()
             }
         }
-        .alert(isPresented: $groupViewModel.isLeave) {
-            Alert(title: Text("그룹을 해체하시겠습니까?"), message: Text("그룹을 해체하면 모든 그룹원이 강퇴됩니다."), primaryButton: .destructive(Text("나가기"), action: {
-                groupViewModel.LeaveGorupAction()
-                pathModel.paths.removeLast()
-                groupViewModel.isCreate = false
-                               }), secondaryButton: .cancel(Text("취소")))
-        }
-        .alert(isPresented: $isToastShown) {
-            Alert(title: Text("복사되었습니다!"))
-        }
+        
+        
         .onAppear{
             if let user = userManager.currentUser {
                 groupViewModel.user = user
             }
             groupViewModel.loadInfoGroup()
-            if let member = groupViewModel.infoGroupRespose.members.first {
-                groupViewModel.selectMembers = member
-            }
+           
+
         }
 
     }
@@ -135,15 +128,15 @@ private struct UserInfoView: View {
                 Spacer()
                     .frame(height: 200)
                 if(groupViewModel.infoGroupRespose.creatorID == groupViewModel.user.userId){
-                    Text("강퇴하기")
-                        .underline()
-                        .font(.pBody02)
-                        .foregroundStyle(.gray400)
-                    
+                    if (groupViewModel.infoGroupRespose.creatorID != groupViewModel.selectMembers.userID) {
+                        Text("강퇴하기")
+                            .underline()
+                            .font(.pBody02)
+                            .foregroundStyle(.gray400)
+                    }
                     
                     Button {
                         groupViewModel.isLeave.toggle()
-                        
                     } label: {
                         HStack {
                             Spacer()
@@ -158,6 +151,13 @@ private struct UserInfoView: View {
                         
                     }
                     .padding(.horizontal,20)
+                    .alert(isPresented: $groupViewModel.isLeave) {
+                        Alert(title: Text("그룹을 해체하시겠습니까?"), message: Text("그룹을 해체하면 모든 그룹원이 강퇴됩니다."), primaryButton: .destructive(Text("나가기"), action: {
+                            groupViewModel.LeaveGorupAction()
+                            pathModel.paths.removeLast()
+                            groupViewModel.isCreate = false
+                                           }), secondaryButton: .cancel(Text("취소")))
+                    }
                 } else {
                     Text("나가기")
                         .underline()
@@ -165,6 +165,13 @@ private struct UserInfoView: View {
                         .foregroundStyle(.gray400)
                         .onTapGesture {
                             groupViewModel.isLeave.toggle()
+                        }
+                        .alert(isPresented: $groupViewModel.isLeave) {
+                            Alert(title: Text("그룹을 나가시겠습니까?"), primaryButton: .destructive(Text("나가기"), action: {
+                                groupViewModel.LeaveGorupAction()
+                                pathModel.paths.removeLast()
+                                groupViewModel.isCreate = false
+                                               }), secondaryButton: .cancel(Text("취소")))
                         }
                     
                 }

@@ -102,13 +102,22 @@ extension GroupViewModel {
         }
     }
     
-    private func infoGroup() {
+    private func infoGroup(){
         self.service.infoGroup(userID: user.userId) { result in
             switch result {
             case .success(let response):
                 self.infoGroupRespose = response
                 //                self.members = response.members
+                self.infoGroupRespose.members = self.infoGroupRespose.members.sorted {
+                    ($0.userID == self.user.userId) && ($1.userID != self.user.userId)
+                }
+                if let member = self.infoGroupRespose.members.first {
+                    self.selectMembers = member
+                }
+                print("\(self.infoGroupRespose.members)")
+                
             case .failure(let error):
+                SharedUserDefaults.isCreateGroup = false
                 print("onfoGroupError\(error)")
             }
             
@@ -134,7 +143,7 @@ extension GroupViewModel {
     private func CreateGorup() {
         
         if(!groupName.isEmpty) {
-            self.service.CreateGroup(groupRequest: CreateGroupRequest(userID: user.userId , groupName: userName.isEmpty ? user.nickname : groupName, nickname: user.nickname)) { [weak self] result in
+            self.service.CreateGroup(groupRequest: CreateGroupRequest(userID: user.userId , groupName: groupName, nickname: userName.isEmpty ? user.nickname: userName)) { [weak self] result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let respose):

@@ -11,7 +11,7 @@ import Foundation
 struct InfoGroupRespose: Codable {
     let groupID, groupName, joinCode, creatorID: String
     let memberCount: Int
-    let members: [Member]
+    var members: [Member]
     let createdAt: String
 
     enum CodingKeys: String, CodingKey {

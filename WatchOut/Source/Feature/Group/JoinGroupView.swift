@@ -45,14 +45,14 @@ struct JoinGroupView: View {
                     Spacer()
                 }
                 
-                TextField("사용할 별명을 입력하세요", text: $groupViewModel.groupName)
+                TextField("사용할 별명을 입력하세요", text: $groupViewModel.userName)
                     .font(.pBody01)
                     .padding()
                     .background()
                     .cornerRadius(47)
                     .overlay {
                         RoundedRectangle(cornerRadius: 47)
-                            .stroke(.gray300,lineWidth:     1)
+                            .stroke(.gray300,lineWidth: 1)
                     }
                 
                 Spacer()
