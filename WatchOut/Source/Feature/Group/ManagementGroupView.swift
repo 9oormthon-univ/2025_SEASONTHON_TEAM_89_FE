@@ -11,7 +11,7 @@ struct ManagementGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
     @EnvironmentObject private var groupViewModel: GroupViewModel
     @EnvironmentObject private var userManager: UserManager
-    
+    @State private var isToastShown: Bool = false
     var body: some View {
         VStack {
             CustomNavigationBar(leftBtnAction: {
@@ -43,6 +43,8 @@ struct ManagementGroupView: View {
                         .underline()
                     Button {
                         
+                        UIPasteboard.general.strings = [groupViewModel.infoGroupRespose.joinCode]
+                        isToastShown.toggle()
                     } label: {
                         Image("CopyIcon")
                     }
@@ -78,6 +80,9 @@ struct ManagementGroupView: View {
                 groupViewModel.isCreate = false
                                }), secondaryButton: .cancel(Text("취소")))
         }
+        .alert(isPresented: $isToastShown) {
+            Alert(title: Text("복사되었습니다!"))
+        }
         .onAppear{
             if let user = userManager.currentUser {
                 groupViewModel.user = user
@@ -86,13 +91,13 @@ struct ManagementGroupView: View {
             if let member = groupViewModel.infoGroupRespose.members.first {
                 groupViewModel.selectMembers = member
             }
-             
-            
-           
         }
+
     }
     
 }
+
+ 
 
 
 //MARK: - UserInfoView
