@@ -10,7 +10,6 @@ import SwiftUI
 struct CreateGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
     @EnvironmentObject private var groupViewModel: GroupViewModel
-    @EnvironmentObject private var userManager: UserManager
     
     var body: some View {
         VStack {
@@ -112,12 +111,6 @@ struct CreateGroupView: View {
         }
         .onTapGesture {
             self.endTextEditing()
-        }
-        .onAppear{
-            if let user = userManager.currentUser {
-                print(user)
-                groupViewModel.user = user
-            }
         }
         .onChange(of: groupViewModel.isCreate) {
             if groupViewModel.isCreate {

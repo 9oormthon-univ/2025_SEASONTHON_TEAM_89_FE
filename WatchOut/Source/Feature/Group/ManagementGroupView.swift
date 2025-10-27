@@ -75,8 +75,6 @@ struct ManagementGroupView: View {
                 UserInfoView()
             }
         }
-        
-        
         .onAppear{
             if let user = userManager.currentUser {
                 groupViewModel.user = user
@@ -86,6 +84,14 @@ struct ManagementGroupView: View {
         .onDisappear {
             groupViewModel.stopPolling()
         }
+        
+        .alert("오류", isPresented: $groupViewModel.showError) {
+                    Button("확인", role: .cancel) {
+                            pathModel.paths.removeLast()
+                    }
+                } message: {
+                    Text(groupViewModel.errorMessage)
+                }
 
     }
     
