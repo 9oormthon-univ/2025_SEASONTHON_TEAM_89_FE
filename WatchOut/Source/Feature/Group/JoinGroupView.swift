@@ -119,6 +119,11 @@ struct JoinGroupView: View {
             pathModel.paths.removeLast()
             pathModel.paths.append(.managementGroupView)
         }
+        .onDisappear {
+            groupViewModel.groupCode = ""
+            groupViewModel.userName = ""
+        }
+        
     }
 
 }

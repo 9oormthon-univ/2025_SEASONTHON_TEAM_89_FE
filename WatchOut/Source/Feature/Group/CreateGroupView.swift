@@ -125,6 +125,10 @@ struct CreateGroupView: View {
                 pathModel.paths.append(.managementGroupView)
             }
         }
+        .onDisappear {
+            groupViewModel.userName = ""
+            groupViewModel.groupName = ""
+        }
     }
 }
 
