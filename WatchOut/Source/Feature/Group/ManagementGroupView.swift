@@ -81,9 +81,10 @@ struct ManagementGroupView: View {
             if let user = userManager.currentUser {
                 groupViewModel.user = user
             }
-            groupViewModel.loadInfoGroup()
-           
-
+            groupViewModel.startPolling()
+        }
+        .onDisappear {
+            groupViewModel.stopPolling()
         }
 
     }

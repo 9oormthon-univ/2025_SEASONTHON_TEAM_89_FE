@@ -41,7 +41,7 @@ class GroupViewModel: ObservableObject {
     @Published private var createGroupRespose: CreateGroupResponse?
     @Published var isJoinGroup: Bool = false
     private var service = GroupService.shared
-    
+    private var timer: Timer?
     
     init(
         groupName: String = "",
@@ -68,6 +68,8 @@ class GroupViewModel: ObservableObject {
 
 extension GroupViewModel {
     
+    
+    
     func CreateGorupAction() {
         CreateGorup()
     }
@@ -79,6 +81,26 @@ extension GroupViewModel {
     func loadInfoGroup() {
         infoGroup()
     }
+    
+    func startPolling() {
+        infoGroup { [weak self] in
+            guard let self = self else { return }
+            
+            if let member = self.infoGroupRespose.members.first {
+                self.selectMembers = member
+            }
+            
+        }
+        
+        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+            self?.infoGroup()
+                }
+    }
+    
+    func stopPolling() {
+            timer?.invalidate()
+            timer = nil
+        }
     
     func joinGroupAction() {
         joinGroup()
@@ -102,7 +124,7 @@ extension GroupViewModel {
         }
     }
     
-    private func infoGroup(){
+    private func infoGroup(completion: (() -> Void)? = nil ){
         self.service.infoGroup(userID: user.userId) { result in
             switch result {
             case .success(let response):
@@ -111,9 +133,7 @@ extension GroupViewModel {
                 self.infoGroupRespose.members = self.infoGroupRespose.members.sorted {
                     ($0.userID == self.user.userId) && ($1.userID != self.user.userId)
                 }
-                if let member = self.infoGroupRespose.members.first {
-                    self.selectMembers = member
-                }
+                completion?()
                 print("\(self.infoGroupRespose.members)")
                 
             case .failure(let error):
