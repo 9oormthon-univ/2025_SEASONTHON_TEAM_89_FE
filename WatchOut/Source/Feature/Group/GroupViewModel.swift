@@ -40,9 +40,13 @@ class GroupViewModel: ObservableObject {
     @Published var isLeave: Bool = false
     @Published private var createGroupRespose: CreateGroupResponse?
     @Published var isJoinGroup: Bool = false
-    private var service = GroupService.shared
-    private var timer: Timer?
     
+    @Published var showError = false
+    @Published var errorMessage = ""
+    
+    private var service = GroupService.shared
+    private var userManger = UserManager.shared
+    private var timer: Timer?
     init(
         groupName: String = "",
         userName: String = "",
@@ -61,8 +65,15 @@ class GroupViewModel: ObservableObject {
         self.selectUser = selectUser
         self.groupCode = groupCode
         self.isCreate = SharedUserDefaults.isCreateGroup
-        self.user = user
+        if let user = userManger.currentUser{
+            self.user = user
+        } else {
+            self.user = user
+        }
+        
     }
+    
+    
 }
 
 
@@ -107,76 +118,126 @@ extension GroupViewModel {
     }
     
     private func joinGroup() {
-        self.service.joinGroup(joinGroup: JoinGorupRequest(joinCode: groupCode, userID: user.userId, nickname: userName.isEmpty ? user.nickname : userName ) ) { result in
+        self.service.joinGroup(
+            joinGroup: JoinGorupRequest(
+                joinCode: groupCode,
+                userID: user.userId,
+                nickname: userName.isEmpty ? user.nickname : userName
+            )
+        ) { [weak self] result in
             DispatchQueue.main.async {
+                guard let self = self else { return }
+                
                 switch result {
-                case .success(_) :
-                    print("joinGroup")
+                case .success:
+                    print("✅ joinGroup 성공")
                     self.isCreate = true
                     self.isJoinGroup = true
+                    self.showError = false
                 case .failure(let error):
-                    print("joinGroupError\(error)")
+                    print("❌ joinGroup 실패: \(error.message)")
+                    self.handleError(error)
                 }
             }
-            
-            
-            
         }
     }
-    
-    private func infoGroup(completion: (() -> Void)? = nil ){
-        self.service.infoGroup(userID: user.userId) { result in
+
+    private func infoGroup(completion: (() -> Void)? = nil) {
+        self.service.infoGroup(userID: user.userId) { [weak self] result in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let response):
                 self.infoGroupRespose = response
-                //                self.members = response.members
                 self.infoGroupRespose.members = self.infoGroupRespose.members.sorted {
                     ($0.userID == self.user.userId) && ($1.userID != self.user.userId)
                 }
                 completion?()
-                print("\(self.infoGroupRespose.members)")
+                print("✅ infoGroup 성공: \(self.infoGroupRespose.members)")
                 
             case .failure(let error):
                 SharedUserDefaults.isCreateGroup = false
-                print("onfoGroupError\(error)")
+                print("❌ infoGroup 실패: \(error.message)")
+                self.handleError(error)
             }
-            
         }
-        
     }
-    
+
     private func leaveGroup() {
-        self.service.leaveGrou(userID: user.userId) { result in
+        self.service.leaveGroup(userID: user.userId) { [weak self] result in
             DispatchQueue.main.async {
-                switch result {
-                case .success(_) :
-                    print("leveGroupSuccess")
-                case .failure(let error):
-                    print("leveGroupError\(error)")
-                }
-            }
-            
-        }
-    }
-    
-    
-    private func CreateGorup() {
-        
-        if(!groupName.isEmpty) {
-            self.service.CreateGroup(groupRequest: CreateGroupRequest(userID: user.userId , groupName: groupName, nickname: userName.isEmpty ? user.nickname: userName)) { [weak self] result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let respose):
-                        self?.isCreate = true
-                        self?.createGroupRespose = respose
-                        self?.groupName = ""
-                    case .failure(let error):
-                        print("CreateGroupError:\(error)")
-                    }
-                }
+                guard let self = self else { return }
                 
+                switch result {
+                case .success:
+                    print("✅ leaveGroup 성공")
+                    
+                    
+                case .failure(let error):
+                    print("❌ leaveGroup 실패: \(error.message)")
+                    self.handleError(error)
+                }
             }
-            
         }
     }
-}
+
+    private func CreateGorup() {
+        guard !groupName.isEmpty else { return }
+        
+        self.service.createGroup(
+            groupRequest: CreateGroupRequest(
+                userID: user.userId,
+                groupName: groupName,
+                nickname: userName.isEmpty ? user.nickname : userName
+            )
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let response):
+                    print("✅ CreateGroup 성공")
+                    self.isCreate = true
+                    self.createGroupRespose = response
+                    self.groupName = ""
+                    
+                case .failure(let error):
+                    print("❌ CreateGroup 실패: \(error.message)")
+                    self.handleError(error)
+                }
+            }
+        }
+    }
+
+    // MARK: - Error Handling
+    private func handleError(_ error: APIError) {
+        // 공통 에러 처리
+        errorMessage = error.message
+        showError = true
+        stopPolling()
+        switch error {
+        case .validationError(let errors):
+            // Validation 에러 상세 처리
+            print("📝 검증 오류:")
+            for detail in errors {
+                let field = detail.loc.last?.value ?? "unknown"
+                print("  - \(field): \(detail.msg)")
+            }
+            // 사용자에게 상세 메시지 표시
+            errorMessage = error.validationMessages.joined(separator: "\n")
+           
+        case .unauthorized:
+                break
+        case .networkError:
+            // 네트워크 오류 - 재시도 옵션
+            if error.shouldRetry {
+                // 필요시 재시도 로직
+            }
+            
+        case .serverError:
+            // 서버 오류
+            errorMessage = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+        default:
+            break
+        }
+    }}
