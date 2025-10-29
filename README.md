@@ -4,15 +4,15 @@
 <p align="center">
 <img height="387" alt="Group 1597880445" src="https://github.com/user-attachments/assets/6dc9d80b-a9ba-474a-8ffc-d3c030386382" />
 </p>
-위 급한 판단 실수의 순간! 
-허 위 정보에 흔들리지 않도록! 
-메 시지를 감지해! 금융범죄를 예방하는 키보드 기반 서비스
 
-## 시스템 아키텍쳐
+위급한 판단 실수의 순간!  
+허위 정보에 흔들리지 않도록!  
+메시지를 감지해! 금융범죄를 예방하는 키보드 기반 서비스
+
+## 시스템 아키텍처
 <img width="1122" height="313" alt="Slice 2" src="https://github.com/user-attachments/assets/677c64c8-bae1-4200-ad51-6cd78d5216a5" />
 
 ## 프로젝트 구조
-
 ```
 2025_SEASONTHON_TEAM_89_FE/
 ├── README.md
@@ -27,7 +27,7 @@
 │   │   ├── gray100~500.colorset/     # 그레이 컬러 팔레트
 │   │   └── [기타 이미지 및 아이콘들]
 │   ├── Component/                    # 재사용 가능한 UI 컴포넌트
-│   │   ├── CustomNavigaitonBar.swift # 커스텀 네비게이션 바
+│   │   ├── CustomNavigationBar.swift # 커스텀 네비게이션 바
 │   │   └── CustomTextField.swift     # 커스텀 텍스트 필드
 │   ├── Core/                         # 핵심 기능 및 유틸리티
 │   │   ├── Extension/                # Swift Extension들
