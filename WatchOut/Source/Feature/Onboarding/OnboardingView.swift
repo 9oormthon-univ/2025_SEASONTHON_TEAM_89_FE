@@ -13,7 +13,7 @@ struct OnboardingView: View {
     @StateObject private var pathModel = PathModel()
     @StateObject private var onboardingContentViewModel = OnboardingContentViewModel()
     @StateObject private var maintTabViewModel = MainTabViewModel()
-    @StateObject private var groupViewModel = GroupViewModel()
+//    @StateObject private var groupViewModel = GroupViewModel()
     @StateObject private var settingViewModel = SettingViewModel()
     let isOnBoarding = SharedUserDefaults.isOnboarding
    
@@ -34,16 +34,16 @@ struct OnboardingView: View {
                     case .createGroupView:
                         CreateGroupView()
                             .navigationBarBackButtonHidden()
-                            .environmentObject(groupViewModel)
+//                            .environmentObject(groupViewModel)
                     case .joinGroupView:
                         JoinGroupView()
                             .navigationBarBackButtonHidden()
-                            .environmentObject(groupViewModel)
+//                            .environmentObject(groupViewModel)
         
                     case .managementGroupView:
                         ManagementGroupView()
                             .navigationBarBackButtonHidden()
-                            .environmentObject(groupViewModel)
+//                            .environmentObject(groupViewModel)
                     }
                     
                 })

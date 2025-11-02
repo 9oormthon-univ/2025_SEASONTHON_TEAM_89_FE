@@ -13,9 +13,6 @@ enum GroupAPI{
     case joinGroup(joinRequest: JoinGorupRequest)
     case leveGroup(userID: String)
     case infoGroup(userID: String)
-    
-//    case ManageMentGroup
-//    case WaitingGroup
 }
 
 extension GroupAPI: TargetType{
@@ -30,10 +27,6 @@ extension GroupAPI: TargetType{
             return "/create"
         case .joinGroup:
             return "/join"
-//        case .ManageMentGroup:
-//             
-//        case .WaitingGroup:
-//
         case .leveGroup(let userID):
             return "/leave/\(userID)"
         case .infoGroup(userID: let userID):

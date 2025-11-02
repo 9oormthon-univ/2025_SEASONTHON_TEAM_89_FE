@@ -104,11 +104,7 @@ struct KeyboardView: View {
             
             
             Spacer()
-            
-            // ⭐️ 4. webSocketService.fraudResult를 직접 사용하여 UI를 구성합니다.
-            //    이제 이 값이 바뀌면 bannerView가 자동으로 업데이트됩니다.
-            //            if let result = webSocketService.fraudResult {
-            //
+
             if status == "주의" {
                 if isTutorial {
                     

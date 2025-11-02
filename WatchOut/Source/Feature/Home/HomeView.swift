@@ -90,11 +90,12 @@ private struct TitleView: View {
     fileprivate var body: some View {
         HStack{
             VStack(alignment: .leading) {
-                Text("\(user?.nickname ?? "위허메")님 환영해요!")
+                Text("\(user?.nickname ?? "위허메")님")
                     .font(.gHeadline01)
                 HStack{
-                    Text("위허매 키보드와 함께 금용 범죄를 예방해요")
+                    Text("환영해요!")
                         .font(.gHeadline01)
+                    
                     Image("star")
                         .foregroundStyle(.main)
                         

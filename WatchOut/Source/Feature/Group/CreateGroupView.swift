@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CreateGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
-    @EnvironmentObject private var groupViewModel: GroupViewModel
+    @StateObject private var groupViewModel = GroupViewModel()
     
     var body: some View {
         VStack {
@@ -121,6 +121,13 @@ struct CreateGroupView: View {
         .onDisappear {
             groupViewModel.userName = ""
             groupViewModel.groupName = ""
+        }
+        .alert("오류", isPresented: $groupViewModel.showError) {
+            Button("확인", role: .cancel) {
+                    pathModel.paths.removeLast()
+            }
+        } message: {
+            Text(groupViewModel.errorMessage)
         }
     }
 }

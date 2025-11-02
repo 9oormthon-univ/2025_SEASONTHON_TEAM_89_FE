@@ -43,7 +43,7 @@ class GroupViewModel: ObservableObject {
     
     @Published var showError = false
     @Published var errorMessage = ""
-    
+    @Published var isLoding: Bool = false
     private var service = GroupService.shared
     private var userManger = UserManager.shared
     private var timer: Timer?
@@ -67,8 +67,10 @@ class GroupViewModel: ObservableObject {
         self.isCreate = SharedUserDefaults.isCreateGroup
         if let user = userManger.currentUser{
             self.user = user
+            print("저장된 유저 소환\(user)")
         } else {
             self.user = user
+            print("저장된 유저 없음\(user)")
         }
         
     }
@@ -78,9 +80,9 @@ class GroupViewModel: ObservableObject {
 
 
 extension GroupViewModel {
-    
-    
-    
+    func setIsLoading(_ isLoading: Bool) {
+        self.isLoding = isLoading
+    }
     func CreateGorupAction() {
         CreateGorup()
     }
@@ -91,6 +93,10 @@ extension GroupViewModel {
     
     func loadInfoGroup() {
         infoGroup()
+    }
+    
+    func joinGroupAction() {
+        joinGroup()
     }
     
     func startPolling() {
@@ -113,10 +119,7 @@ extension GroupViewModel {
             timer = nil
         }
     
-    func joinGroupAction() {
-        joinGroup()
-    }
-    
+  
     private func joinGroup() {
         self.service.joinGroup(
             joinGroup: JoinGorupRequest(
@@ -143,6 +146,7 @@ extension GroupViewModel {
     }
 
     private func infoGroup(completion: (() -> Void)? = nil) {
+        
         self.service.infoGroup(userID: user.userId) { [weak self] result in
             guard let self = self else { return }
             
@@ -152,6 +156,7 @@ extension GroupViewModel {
                 self.infoGroupRespose.members = self.infoGroupRespose.members.sorted {
                     ($0.userID == self.user.userId) && ($1.userID != self.user.userId)
                 }
+                
                 completion?()
                 print("✅ infoGroup 성공: \(self.infoGroupRespose.members)")
                 
@@ -233,7 +238,6 @@ extension GroupViewModel {
             if error.shouldRetry {
                 // 필요시 재시도 로직
             }
-            
         case .serverError:
             // 서버 오류
             errorMessage = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."

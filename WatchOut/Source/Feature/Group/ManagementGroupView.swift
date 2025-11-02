@@ -9,10 +9,11 @@ import SwiftUI
 
 struct ManagementGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
-    @EnvironmentObject private var groupViewModel: GroupViewModel
+    @StateObject private var groupViewModel = GroupViewModel()
     @EnvironmentObject private var userManager: UserManager
     @State private var isToastShown: Bool = false
     var body: some View {
+        
         VStack {
             CustomNavigationBar(leftBtnAction: {
                 pathModel.paths.removeLast()
@@ -63,6 +64,7 @@ struct ManagementGroupView: View {
                             .frame(width: 20)
                         ForEach(groupViewModel.infoGroupRespose.members, id: \.userID) { member in
                             profileView(member: member)
+                                .environmentObject(groupViewModel)
                                 .onTapGesture {
                                     groupViewModel.selectMembers = member
                                 }
@@ -73,9 +75,11 @@ struct ManagementGroupView: View {
                 }
                 
                 UserInfoView()
+                    .environmentObject(groupViewModel)
             }
         }
         .onAppear{
+            
             if let user = userManager.currentUser {
                 groupViewModel.user = user
             }
@@ -83,21 +87,21 @@ struct ManagementGroupView: View {
         }
         .onDisappear {
             groupViewModel.stopPolling()
+        }.alert("오류", isPresented: $groupViewModel.showError) {
+            Button("확인", role: .cancel) {
+                pathModel.paths.removeLast()
+            }
+        } message: {
+            Text(groupViewModel.errorMessage)
         }
-        
-        .alert("오류", isPresented: $groupViewModel.showError) {
-                    Button("확인", role: .cancel) {
-                            pathModel.paths.removeLast()
-                    }
-                } message: {
-                    Text(groupViewModel.errorMessage)
-                }
-
     }
+    
     
 }
 
- 
+
+
+
 
 
 //MARK: - UserInfoView
@@ -109,13 +113,14 @@ private struct UserInfoView: View {
         ZStack{
             RoundedRectangle(cornerRadius: 48)
                 .foregroundStyle(.gray100)
-
+            
             VStack(alignment: .center){
                 Spacer()
                     .frame(height: 44)
                 HStack {
                     Text("\(groupViewModel.selectMembers.nickname)")
                         .font(.pHeadline01)
+                        .foregroundStyle(.main)
                     Text("님의 경고 기록")
                     
                 }
@@ -128,8 +133,8 @@ private struct UserInfoView: View {
                     NotificationToggleButton()
                 }
                 .padding(.horizontal, 20)
-               
-               
+                
+                
                 
                 
                 Spacer()
@@ -163,7 +168,7 @@ private struct UserInfoView: View {
                             groupViewModel.LeaveGorupAction()
                             pathModel.paths.removeLast()
                             groupViewModel.isCreate = false
-                                           }), secondaryButton: .cancel(Text("취소")))
+                        }), secondaryButton: .cancel(Text("취소")))
                     }
                 } else {
                     Text("나가기")
@@ -178,7 +183,7 @@ private struct UserInfoView: View {
                                 groupViewModel.LeaveGorupAction()
                                 pathModel.paths.removeLast()
                                 groupViewModel.isCreate = false
-                                               }), secondaryButton: .cancel(Text("취소")))
+                            }), secondaryButton: .cancel(Text("취소")))
                         }
                     
                 }
@@ -188,7 +193,7 @@ private struct UserInfoView: View {
             }
         }
         
-       
+        
         
     }
 }
@@ -220,7 +225,7 @@ private struct StatusRoundRectangle: View {
                 .foregroundStyle(.white)
             HStack {
                 Image(iconName)
-                    
+                
                 Spacer()
                 VStack(alignment: .center){
                     Text("\(count)회")
@@ -234,7 +239,7 @@ private struct StatusRoundRectangle: View {
                 
             }
             .padding()
-
+            
         }
     }
     
@@ -244,9 +249,6 @@ private struct StatusRoundRectangle: View {
 private struct profileView: View {
     @EnvironmentObject private var groupViewModel: GroupViewModel
     let member: Member
-    
-    
-    
     
     fileprivate var body: some View {
         VStack {
@@ -272,9 +274,9 @@ private struct profileView: View {
                             .foregroundStyle(.gray400.opacity(0.3))
                     }
                     Image("chek")
-                    }
                 }
-                
+            }
+            
             
             Text(member.nickname)
             

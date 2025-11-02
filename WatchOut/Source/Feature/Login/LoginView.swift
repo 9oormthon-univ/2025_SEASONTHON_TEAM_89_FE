@@ -36,6 +36,7 @@ struct LoginView: View {
                     loginViewModel.handleKakaoLogin { success in
                                    if success {
                                        // 로그인 성공 시, View가 직접 appState를 업데이트
+                                       
                                        appState.isLoggedIn = true
                                    } else {
                                        // 로그인 실패 시 사용자에게 알림 (예: Alert)

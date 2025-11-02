@@ -23,7 +23,9 @@ final class AuthService {
                     throw MoyaError.statusCode(response)
                 }
                 // ⬇️ 디코딩할 모델을 LoginResponse.self로 변경합니다.
-                return try response.map(LoginResponse.self)
+                let data = try response.map(LoginResponse.self)
+                UserManager.shared.setCurrentUser(data.user)
+                return data
             }
             .eraseToAnyPublisher()
     }
