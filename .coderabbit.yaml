@@ -1,5 +1,5 @@
 # .coderabbit.yaml
-language: ko-KR  # 한국어 (대한민국)
+language: ko-KR
 
 reviews:
   profile: chill
@@ -12,12 +12,13 @@ reviews:
     - "!**/*.generated.swift"
     - "!**/Pods/**"
     - "!**/Carthage/**"
-  
-  auto_review:
-    enabled: true
-    base_branches:
-      - ".*"  # 모든 브랜치를 대상으로 리뷰
-    drafts: false
+
+# auto_review는 reviews와 같은 레벨이어야 함
+auto_review:
+  enabled: true
+  base_branches:
+    - ".*"
+  drafts: false
 
 chat:
   auto_reply: true
