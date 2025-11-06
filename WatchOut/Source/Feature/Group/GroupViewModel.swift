@@ -151,21 +151,23 @@ extension GroupViewModel {
         self.service.infoGroup(userID: user.userId) { [weak self] result in
             guard let self = self else { return }
             
-            switch result {
-            case .success(let response):
-                self.infoGroupRespose = response
-                self.infoGroupRespose.members = self.infoGroupRespose.members.sorted {
-                    ($0.userID == self.user.userId) && ($1.userID != self.user.userId)
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.infoGroupRespose = response
+                    self.infoGroupRespose.members = self.infoGroupRespose.members.sorted {
+                        ($0.userID == self.user.userId) && ($1.userID != self.user.userId)
+                    }
+                    completion?()
+                    print("✅ infoGroup 성공: \(self.infoGroupRespose.members)")
+
+                case .failure(let error):
+                    SharedUserDefaults.isCreateGroup = false
+                    print("❌ infoGroup 실패: \(error.message)")
+                    self.handleError(error)
                 }
-                
-                completion?()
-                print("✅ infoGroup 성공: \(self.infoGroupRespose.members)")
-                
-            case .failure(let error):
-                SharedUserDefaults.isCreateGroup = false
-                print("❌ infoGroup 실패: \(error.message)")
-                self.handleError(error)
             }
+            
         }
     }
 
