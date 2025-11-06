@@ -15,7 +15,7 @@ final class LoginViewModel: ObservableObject {
     
     private let authService = AuthService()
     private var cancellables = Set<AnyCancellable>()
-
+    @Published var isLoading: Bool = false
     // MARK: - 로그인 처리 함수
     
     func handleKakaoLogin(completion: @escaping (_ success: Bool) -> Void) {
@@ -53,8 +53,12 @@ final class LoginViewModel: ObservableObject {
     }
     
     private func requestLoginToServer(with kakaoToken: String, completion: @escaping (_ success: Bool) -> Void) {
+        isLoading = true
         authService.kakaoLogin(token: kakaoToken)
-            .sink { result in
+            .sink { [weak self]
+                result in
+                guard let self = self else { return }
+                self.isLoading = false
                 switch result {
                 case .finished:
                     break // 성공 케이스는 receiveValue에서 처리

@@ -47,5 +47,10 @@ struct LoginView: View {
                     .frame(height: 20)
             }
         }
+        .overlay {
+            if loginViewModel.isLoading {
+                WatingView()
+            }
+        }
     }
 }
