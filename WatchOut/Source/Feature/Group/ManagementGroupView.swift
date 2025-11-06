@@ -65,7 +65,6 @@ struct ManagementGroupView: View {
                             .frame(width: 20)
                         ForEach(groupViewModel.infoGroupRespose.members, id: \.userID) { member in
                             profileView(groupViewModel: groupViewModel, member: member)
-                                .environmentObject(groupViewModel)
                                 .onTapGesture {
                                     groupViewModel.selectMembers = member
                                 }
@@ -76,7 +75,6 @@ struct ManagementGroupView: View {
                 }
                 
                 UserInfoView(groupViewModel: groupViewModel)
-                    .environmentObject(groupViewModel)
             }
         }
         .onAppear{
@@ -139,7 +137,7 @@ private struct UserInfoView: View {
                 
                 
                 Spacer()
-                    .frame(height: 200)
+                    .frame(height: 50)
                 if(groupViewModel.infoGroupRespose.creatorID == groupViewModel.user.userId){
                     if (groupViewModel.infoGroupRespose.creatorID != groupViewModel.selectMembers.userID) {
                         Text("강퇴하기")

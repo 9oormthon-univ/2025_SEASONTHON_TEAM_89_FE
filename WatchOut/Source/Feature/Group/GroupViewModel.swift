@@ -44,9 +44,9 @@ class GroupViewModel: ObservableObject {
     
     @Published var showError = false
     @Published var errorMessage = ""
-    @Published var isLoding: Bool = false
+    @Published var isLoading: Bool = false
     private var service = GroupService.shared
-    private var userManger = UserManager.shared
+    private var userManager = UserManager.shared
     private var timer: Timer?
     init(
         groupName: String = "",
@@ -66,7 +66,7 @@ class GroupViewModel: ObservableObject {
         self.selectUser = selectUser
         self.groupCode = groupCode
         self.isCreate = SharedUserDefaults.isCreateGroup
-        if let user = userManger.currentUser{
+        if let user = userManager.currentUser{
             self.user = user
             print("저장된 유저 소환\(user)")
         } else {
@@ -82,7 +82,7 @@ class GroupViewModel: ObservableObject {
 
 extension GroupViewModel {
     func setIsLoading(_ isLoading: Bool) {
-        self.isLoding = isLoading
+        self.isLoading = isLoading
     }
     func CreateGorupAction() {
         CreateGorup()
@@ -190,7 +190,11 @@ extension GroupViewModel {
     }
 
     private func CreateGorup() {
-        guard !groupName.isEmpty else { return }
+        guard !groupName.isEmpty else {
+            errorMessage = "그룹 이름을 입력해주세요."
+            showError = true
+            return
+        }
         
         self.service.createGroup(
             groupRequest: CreateGroupRequest(
@@ -233,17 +237,19 @@ extension GroupViewModel {
             }
             // 사용자에게 상세 메시지 표시
             errorMessage = error.validationMessages.joined(separator: "\n")
-           
+           stopPolling()
+            break
         case .unauthorized:
-                break
+            stopPolling()
+            break
         case .networkError:
-            // 네트워크 오류 - 재시도 옵션
-            if error.shouldRetry {
-                // 필요시 재시도 로직
-            }
+            break
+            
         case .serverError:
             // 서버 오류
             errorMessage = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+            stopPolling()
+            
         default:
             break
         }
