@@ -11,15 +11,13 @@ import Combine
 import KakaoSDKUser
 
 final class LoginViewModel: ObservableObject {
+
     
-    // ❌ @Published var isLoggedIn 과 init() 을 모두 제거합니다.
-    
-    private let authService = AuthService() // NetworkService를 AuthService로 사용하시는 것으로 보입니다.
+    private let authService = AuthService()
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - 로그인 처리 함수
     
-    /// 카카오 로그인 전체 과정을 처리하고, 성공 여부를 completion 핸들러로 반환합니다.
     func handleKakaoLogin(completion: @escaping (_ success: Bool) -> Void) {
         if UserApi.isKakaoTalkLoginAvailable() {
             loginWithKakaoTalk(completion: completion)

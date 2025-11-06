@@ -72,22 +72,22 @@ struct HomeView: View {
             
         }
         .onAppear {
+            UserManager.shared.loadUserFromUserDefaults()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 NotificationManager.instance.requestAuthorization()
             }
         }
-        
-       
     }
 }
 
+
 //MARK: - TitleView
 private struct TitleView: View {
-    private let user = UserManager.shared.currentUser
+ 
     fileprivate var body: some View {
         HStack{
             VStack(alignment: .leading) {
-                Text("\(user?.nickname ?? "위허메")님")
+                Text("\(UserManager.shared.currentUser?.nickname ?? "위허메")님")
                     .font(.gHeadline01)
                 HStack{
                     Text("환영해요!")
