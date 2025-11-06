@@ -25,9 +25,9 @@ struct ManagementGroupView: View {
                 HStack(alignment: .bottom) {
                     VStack {
                         HStack {
-                            Text(groupViewModel.infoGroupRespose.groupName)
+                            Text(groupViewModel.infoGroupRespose?.groupName ?? "")
                                 .font(.gHeadline01)
-                            Text("총 \(groupViewModel.infoGroupRespose.memberCount) 명")
+                            Text("총 \( groupViewModel.countMembers())명")
                         }
                         
                     }
@@ -40,12 +40,12 @@ struct ManagementGroupView: View {
                         .font(.pSubtitle03)
                         .foregroundStyle(.gray300)
                     Spacer()
-                    Text(groupViewModel.infoGroupRespose.joinCode)
+                    Text(groupViewModel.infoGroupRespose?.joinCode ?? "")
                         .font(.pBody01)
                         .underline()
                     Button {
                         
-                        UIPasteboard.general.strings = [groupViewModel.infoGroupRespose.joinCode]
+                        UIPasteboard.general.strings = [groupViewModel.infoGroupRespose?.joinCode ?? ""]
                         isToastShown.toggle()
                     } label: {
                         Image("CopyIcon")
@@ -63,7 +63,7 @@ struct ManagementGroupView: View {
                     HStack {
                         Spacer()
                             .frame(width: 20)
-                        ForEach(groupViewModel.infoGroupRespose.members, id: \.userID) { member in
+                        ForEach(groupViewModel.infoGroupRespose?.members ?? [], id: \.userID) { member in
                             profileView(groupViewModel: groupViewModel, member: member)
                                 .onTapGesture {
                                     groupViewModel.selectMembers = member
@@ -75,6 +75,13 @@ struct ManagementGroupView: View {
                 }
                 
                 UserInfoView(groupViewModel: groupViewModel)
+            }
+        }
+        .overlay {
+            if groupViewModel.isLoading {
+                WatingView()
+                    .background(Color.black.opacity(0.1))
+                    .scaledToFill()
             }
         }
         .onAppear{
@@ -138,8 +145,8 @@ private struct UserInfoView: View {
                 
                 Spacer()
                     .frame(height: 50)
-                if(groupViewModel.infoGroupRespose.creatorID == groupViewModel.user.userId){
-                    if (groupViewModel.infoGroupRespose.creatorID != groupViewModel.selectMembers.userID) {
+                if(groupViewModel.infoGroupRespose?.creatorID == groupViewModel.user.userId){
+                    if (groupViewModel.infoGroupRespose?.creatorID != groupViewModel.selectMembers.userID) {
                         Text("강퇴하기")
                             .underline()
                             .font(.pBody02)

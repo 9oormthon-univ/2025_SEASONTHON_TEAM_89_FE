@@ -24,15 +24,7 @@ class GroupViewModel: ObservableObject {
         joinedAt: "",
         notificationEnabled: true
     )
-    @Published var infoGroupRespose: InfoGroupRespose = .init(
-        groupID: "",
-        groupName: "",
-        joinCode: "",
-        creatorID: "",
-        memberCount: 0,
-        members: [],
-        createdAt: ""
-    )
+    @Published var infoGroupRespose: InfoGroupRespose?
     @Published var isCreate: Bool {
         didSet {
             SharedUserDefaults.isCreateGroup = isCreate
@@ -81,9 +73,12 @@ class GroupViewModel: ObservableObject {
 
 
 extension GroupViewModel {
-    func setIsLoading(_ isLoading: Bool) {
-        self.isLoading = isLoading
+    func countMembers() -> Int {
+        guard let infoGroup = self.infoGroupRespose else { return 0}
+        
+        return infoGroup.memberCount
     }
+    
     func CreateGorupAction() {
         CreateGorup()
     }
@@ -104,7 +99,7 @@ extension GroupViewModel {
         infoGroup { [weak self] in
             guard let self = self else { return }
             
-            if let member = self.infoGroupRespose.members.first {
+            if let member = self.infoGroupRespose?.members.first {
                 self.selectMembers = member
             }
             
@@ -147,19 +142,24 @@ extension GroupViewModel {
     }
     
     private func infoGroup(completion: (() -> Void)? = nil) {
-        
+        if infoGroupRespose == nil {
+            self.isLoading = true
+        }
         self.service.infoGroup(userID: user.userId) { [weak self] result in
             guard let self = self else { return }
             
+            
             DispatchQueue.main.async {
+                self.isLoading = false
                 switch result {
                 case .success(let response):
                     self.infoGroupRespose = response
-                    self.infoGroupRespose.members = self.infoGroupRespose.members.sorted {
+                    
+                    self.infoGroupRespose?.members = self.infoGroupRespose?.members.sorted {
                         ($0.userID == self.user.userId) && ($1.userID != self.user.userId)
-                    }
+                    } ?? []
                     completion?()
-                    print("✅ infoGroup 성공: \(self.infoGroupRespose.members)")
+                    print("✅ infoGroup 성공: \(String(describing: self.infoGroupRespose?.members))")
                     
                 case .failure(let error):
                     SharedUserDefaults.isCreateGroup = false
@@ -179,7 +179,10 @@ extension GroupViewModel {
                 switch result {
                 case .success:
                     print("✅ leaveGroup 성공")
-                    
+                    self.isCreate = false
+                    self.stopPolling()
+                    SharedUserDefaults.isCreateGroup = false
+
                     
                 case .failure(let error):
                     print("❌ leaveGroup 실패: \(error.message)")
