@@ -9,18 +9,18 @@ import SwiftUI
 
 struct SettingView: View {
     
-    @EnvironmentObject private var settingViewModel: SettingViewModel
+    @StateObject private var settingViewModel = SettingViewModel()
     var body: some View {
         VStack {
             Group{
                 SubTitle(text: "경고 아이콘 색상 변경")
                 VStack(spacing: 20){
-                    ColorPickerView(iconName: "status1", text: "주의", status: .warning)
+                    ColorPickerView(settingViewModel: settingViewModel, iconName: "status1", text: "주의", status: .warning)
                         .onTapGesture {
                             settingViewModel.isShowSheet = true
                             settingViewModel.setStatus(status: .warning)
                         }
-                    ColorPickerView(iconName: "status2", text: "위험", status: .danger)
+                    ColorPickerView(settingViewModel: settingViewModel, iconName: "status2", text: "위험", status: .danger)
                         .onTapGesture {
                             settingViewModel.isShowSheet = true
                                 settingViewModel.setStatus(status: .danger)
@@ -33,16 +33,16 @@ struct SettingView: View {
             Group{
                 SubTitle(text: "경고 알림")
                 VStack(spacing: 20) {
-                    NotificationSettingView(status: .warning)
+                    NotificationSettingView(settingViewModel: settingViewModel, status: .warning)
                     
-                    NotificationSettingView(status: .danger)
+                    NotificationSettingView(settingViewModel: settingViewModel, status: .danger)
                 }
             }
             .padding(.horizontal,20)
             Spacer()
         }
         .sheet(isPresented: $settingViewModel.isShowSheet) {
-            SheetView(status: settingViewModel.getStatus())
+            SheetView(settingViewModel: settingViewModel, status: settingViewModel.getStatus())
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.extraLarge])
         }
@@ -52,7 +52,7 @@ struct SettingView: View {
 }
 // MARK: - SheetView
 private struct SheetView: View {
-    @EnvironmentObject private var settingViewModel: SettingViewModel
+    @ObservedObject var settingViewModel: SettingViewModel
     let status: Status
     fileprivate var body: some View {
         VStack {
@@ -124,7 +124,7 @@ private struct SubTitle: View {
 
 // MARK: - ColorPickerView
 private struct ColorPickerView: View {
-    @EnvironmentObject var settingViewModel: SettingViewModel
+    @ObservedObject var settingViewModel: SettingViewModel
     let iconName: String
     let text: String
     let status: Status
@@ -147,7 +147,7 @@ private struct ColorPickerView: View {
 
 // MARK: - NotificationSettingView
 private struct NotificationSettingView: View {
-    @EnvironmentObject var settingViewModel: SettingViewModel
+    @ObservedObject var settingViewModel: SettingViewModel
     let status: Status
     fileprivate var body: some View {
         HStack {

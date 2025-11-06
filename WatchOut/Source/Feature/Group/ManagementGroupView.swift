@@ -130,7 +130,7 @@ private struct UserInfoView: View {
                         StatusRoundRectangle(iconName: "dangercountIcon", status: .danger, count: groupViewModel.selectMembers.dangerCount)
                         
                     }
-                    NotificationToggleButton()
+                    NotificationToggleButton(viewModel: groupViewModel)
                 }
                 .padding(.horizontal, 20)
                 
@@ -199,12 +199,15 @@ private struct UserInfoView: View {
 }
 
 private struct NotificationToggleButton: View {
+    @ObservedObject var viewModel: GroupViewModel
     fileprivate var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 16)
                 .foregroundStyle(.white)
             HStack{
-                Toggle("위험 발생 시 팝업", isOn: .constant(true))
+                Toggle("위험 발생 시 팝업", isOn: Binding(get: { viewModel.selectMembers.notificationEnabled }, set: { _ in
+                    
+                }))
                     .font(.pBody02)
                     .tint(.main)
             }
