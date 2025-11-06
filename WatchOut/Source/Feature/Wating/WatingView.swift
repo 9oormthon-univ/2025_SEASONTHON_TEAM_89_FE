@@ -15,12 +15,16 @@ struct WatingView: View {
             Spacer()
                 .frame(height: 200)
             
-            DotLottieAnimation(fileName: "ready", config: AnimationConfig(autoplay: true, loop: true)).view()
-                .scaledToFit()
-                .frame(width: 300)
-            
+            HStack {
+                Spacer()
+                DotLottieAnimation(fileName: "ready", config: AnimationConfig(autoplay: true, loop: true)).view()
+                    .scaledToFit()
+                    .frame(width: 300)
+                Spacer()
+            }
             Spacer()
         }
+        .background(Color(.systemBackground))
 
     }
     
