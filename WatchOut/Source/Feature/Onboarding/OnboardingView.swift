@@ -68,7 +68,7 @@ private struct OnboardingContentView: View {
             if !onboardingViewModel.getIsKeyboardEnabled() {
                 ZStack {
                     DotLottieAnimation(
-                        fileName: "animation", 
+                        fileName: "guidevideo",
                         config: AnimationConfig(autoplay: true, loop: true)
                     ).view()
                     
