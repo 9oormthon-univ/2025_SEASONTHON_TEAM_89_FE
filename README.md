@@ -14,61 +14,54 @@
 
 ## 프로젝트 구조
 ```
-2025_SEASONTHON_TEAM_89_FE/
-├── README.md
-├── .gitignore
-├── WatchOut/                          # 메인 앱 모듈
-│   ├── App/                          # 앱 진입점 및 설정
-│   │   ├── AppDelegate.swift         # 앱 델리게이트
-│   │   └── WatchOutApp.swift         # 메인 앱 진입점
-│   ├── Assets.xcassets/              # 앱 리소스 (이미지, 색상)
-│   │   ├── AppIcon.appiconset/       # 앱 아이콘
-│   │   ├── MainColor.colorset/       # 메인 컬러
-│   │   ├── gray100~500.colorset/     # 그레이 컬러 팔레트
-│   │   └── [기타 이미지 및 아이콘들]
-│   ├── Component/                    # 재사용 가능한 UI 컴포넌트
-│   │   ├── CustomNavigationBar.swift # 커스텀 네비게이션 바
-│   │   └── CustomTextField.swift     # 커스텀 텍스트 필드
-│   ├── Core/                         # 핵심 기능 및 유틸리티
-│   │   ├── Extension/                # Swift Extension들
-│   │   └── Service/                  # 공통 서비스
-│   ├── Feature/                      # 주요 기능별 모듈
-│   │   ├── Experience/               # 사용자 경험 관련
-│   │   ├── Group/                    # 그룹 기능
-│   │   ├── Home/                     # 홈 화면
-│   │   ├── Main/                     # 메인 기능
-│   │   ├── Onboarding/               # 온보딩 화면
-│   │   ├── Report/                   # 신고 및 리포트 기능
-│   │   └── Setting/                  # 설정 화면
-│   ├── Font/                         # 폰트 리소스
-│   │   ├── GangwonEduPower/          # 강원교육파워체
-│   │   └── Pretendard/               # Pretendard 폰트
-│   ├── Model/                        # 데이터 모델
-│   │   ├── Status.swift              # 상태 모델
-│   │   ├── Main/                     # 메인 관련 모델
-│   │   └── Path/                     # 경로 관련 모델
-│   ├── ContentView.swift             # 메인 콘텐츠 뷰
-│   ├── Info.plist                    # 앱 정보 설정
-│   └── WatchOut.entitlements         # 앱 권한 설정
-└── WatchOutkeyboard/                 # 키보드 확장 모듈
-    ├── Engine/                       # 키보드 엔진
-    │   ├── Hangul.swift              # 한글 처리
-    │   └── HangulEngine.swift        # 한글 입력 엔진
-    ├── Model/                        # 키보드 관련 모델
-    │   ├── ChatRequest.swift         # 채팅 요청 모델
-    │   ├── ChatResponse.swift        # 채팅 응답 모델
-    │   ├── KeyType.swift             # 키 타입 정의
-    │   └── RiskLevel.swift           # 위험도 레벨
-    ├── Service/                      # 키보드 서비스
-    │   ├── ChatService.swift         # 채팅 서비스
-    │   └── Haptic.swift              # 햅틱 피드백
-    ├── View/                         # 키보드 UI
-    │   ├── KeyboardView.swift        # 키보드 뷰
-    │   └── KeyboardViewModel.swift   # 키보드 뷰모델
-    ├── KeyboardViewController.swift  # 키보드 메인 컨트롤러
-    ├── TypingDebounceManager.swift   # 타이핑 디바운스 관리
-    ├── Info.plist                    # 키보드 확장 정보
-    └── WatchOutkeyboard.entitlements # 키보드 확장 권한
+WatchOut/
+├── App/
+│   ├── AppDelegate.swift
+│   └── WatchOutApp.swift
+│
+├── Source/
+│   ├── Feature/                    # 화면 및 기능
+│   │   ├── Login/                 # 로그인
+│   │   ├── Onboarding/            # 온보딩
+│   │   ├── Main/                  # 메인 탭
+│   │   ├── Home/                  # 홈
+│   │   ├── Group/                 # 그룹 생성/참여/관리
+│   │   ├── Report/                # 리포트
+│   │   ├── Setting/               # 설정
+│   │   ├── Experience/            # 체험하기
+│   │   └── Wating/                # 대기
+│   │
+│   ├── Component/                  # 공통 컴포넌트
+│   │   ├── CustomNavigaitonBar.swift
+│   │   └── CustomTextField.swift
+│   │
+│   ├── Core/
+│   │   ├── Extension/             # Swift Extension
+│   │   └── Service/               # 서비스 레이어
+│   │       ├── Auth/              # 인증 관련
+│   │       ├── Group/             # 그룹 관련
+│   │       ├── Common/            # 공통 서비스
+│   │       └── Log/               # 로깅
+│   │
+│   └── Model/                      # 데이터 모델
+│       ├── API/
+│       │   ├── Request/           # API 요청
+│       │   └── Response/          # API 응답
+│       ├── User/
+│       ├── Main/
+│       └── Path/
+│
+├── Resource/
+│   ├── Assets.xcassets/           # 이미지 및 컬러 에셋
+│   ├── Font/                      # 폰트 파일
+│   └── Animation/                 # Lottie 애니메이션
+│
+└── WatchOutkeyboard/               # 키보드 익스텐션
+    ├── Engine/                     # 한글 입력 엔진
+    ├── Service/                    # 웹소켓 및 햅틱
+    ├── Model/                      # 키보드 모델
+    └── View/                       # 키보드 UI
+
 ```
 
 ## 주요 기능
