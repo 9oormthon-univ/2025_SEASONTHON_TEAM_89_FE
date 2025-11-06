@@ -64,7 +64,7 @@ struct ManagementGroupView: View {
                         Spacer()
                             .frame(width: 20)
                         ForEach(groupViewModel.infoGroupRespose?.members ?? [], id: \.userID) { member in
-                            profileView(groupViewModel: groupViewModel, member: member)
+                            ProfileView(groupViewModel: groupViewModel, member: member)
                                 .onTapGesture {
                                     groupViewModel.selectMembers = member
                                 }
