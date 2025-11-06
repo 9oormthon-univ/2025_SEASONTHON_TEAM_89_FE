@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ManagementGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
@@ -63,7 +64,7 @@ struct ManagementGroupView: View {
                         Spacer()
                             .frame(width: 20)
                         ForEach(groupViewModel.infoGroupRespose.members, id: \.userID) { member in
-                            profileView(member: member)
+                            profileView(groupViewModel: groupViewModel, member: member)
                                 .environmentObject(groupViewModel)
                                 .onTapGesture {
                                     groupViewModel.selectMembers = member
@@ -74,7 +75,7 @@ struct ManagementGroupView: View {
                     Spacer()
                 }
                 
-                UserInfoView()
+                UserInfoView(groupViewModel: groupViewModel)
                     .environmentObject(groupViewModel)
             }
         }
@@ -106,7 +107,7 @@ struct ManagementGroupView: View {
 
 //MARK: - UserInfoView
 private struct UserInfoView: View {
-    @EnvironmentObject private var groupViewModel: GroupViewModel
+    @ObservedObject var groupViewModel: GroupViewModel
     @EnvironmentObject private var pathModel: PathModel
     
     fileprivate var body: some View {
@@ -250,7 +251,7 @@ private struct StatusRoundRectangle: View {
 
 // MARK: - profileView
 private struct profileView: View {
-    @EnvironmentObject private var groupViewModel: GroupViewModel
+    @ObservedObject var groupViewModel: GroupViewModel
     let member: Member
     
     fileprivate var body: some View {
