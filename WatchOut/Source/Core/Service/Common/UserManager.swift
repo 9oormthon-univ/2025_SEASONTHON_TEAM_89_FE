@@ -41,6 +41,7 @@ final class UserManager: ObservableObject {
             let userData = try encoder.encode(user)
             UserDefaults.standard.set(userData, forKey: userDefaultsKey)
             print("UserDefaults에 사용자 정보 저장 완료")
+            self.loadUserFromUserDefaults()
         } catch {
             print("UserDefaults 저장 실패: \(error.localizedDescription)")
         }
