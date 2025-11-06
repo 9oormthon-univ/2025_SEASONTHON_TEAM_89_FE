@@ -255,7 +255,7 @@ private struct StatusRoundRectangle: View {
 }
 
 // MARK: - profileView
-private struct profileView: View {
+private struct ProfileView: View {
     @ObservedObject var groupViewModel: GroupViewModel
     let member: Member
     
