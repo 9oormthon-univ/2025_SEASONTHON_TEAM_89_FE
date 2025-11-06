@@ -87,10 +87,10 @@ private struct TitleView: View {
     fileprivate var body: some View {
         HStack{
             VStack(alignment: .leading) {
-                Text("\(UserManager.shared.currentUser?.nickname ?? "위허메")님")
-                    .font(.gHeadline01)
+                Spacer()
+                    .frame(height: 20)
                 HStack{
-                    Text("환영해요!")
+                    Text("\(UserManager.shared.currentUser?.nickname ?? "위허메")님 환영해요")
                         .font(.gHeadline01)
                     
                     Image("star")
