@@ -112,15 +112,15 @@ extension GroupViewModel {
         
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
             self?.infoGroup()
-                }
+        }
     }
     
     func stopPolling() {
-            timer?.invalidate()
-            timer = nil
-        }
+        timer?.invalidate()
+        timer = nil
+    }
     
-  
+    
     private func joinGroup() {
         self.service.joinGroup(
             joinGroup: JoinGorupRequest(
@@ -145,7 +145,7 @@ extension GroupViewModel {
             }
         }
     }
-
+    
     private func infoGroup(completion: (() -> Void)? = nil) {
         
         self.service.infoGroup(userID: user.userId) { [weak self] result in
@@ -160,7 +160,7 @@ extension GroupViewModel {
                     }
                     completion?()
                     print("✅ infoGroup 성공: \(self.infoGroupRespose.members)")
-
+                    
                 case .failure(let error):
                     SharedUserDefaults.isCreateGroup = false
                     print("❌ infoGroup 실패: \(error.message)")
@@ -170,7 +170,7 @@ extension GroupViewModel {
             
         }
     }
-
+    
     private func leaveGroup() {
         self.service.leaveGroup(userID: user.userId) { [weak self] result in
             DispatchQueue.main.async {
@@ -188,7 +188,7 @@ extension GroupViewModel {
             }
         }
     }
-
+    
     private func CreateGorup() {
         guard !groupName.isEmpty else {
             errorMessage = "그룹 이름을 입력해주세요."
@@ -220,37 +220,36 @@ extension GroupViewModel {
             }
         }
     }
-
+    
     // MARK: - Error Handling
     private func handleError(_ error: APIError) {
         // 공통 에러 처리
         errorMessage = error.message
         showError = true
-        stopPolling()
+        
         switch error {
         case .validationError(let errors):
-            // Validation 에러 상세 처리
             print("📝 검증 오류:")
             for detail in errors {
                 let field = detail.loc.last?.value ?? "unknown"
                 print("  - \(field): \(detail.msg)")
             }
-            // 사용자에게 상세 메시지 표시
             errorMessage = error.validationMessages.joined(separator: "\n")
-           stopPolling()
-            break
+            stopPolling()
+           
         case .unauthorized:
             stopPolling()
-            break
+           
         case .networkError:
-            break
+            
             
         case .serverError:
-            // 서버 오류
+            
             errorMessage = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
             stopPolling()
             
         default:
             break
         }
-    }}
+    }
+}
