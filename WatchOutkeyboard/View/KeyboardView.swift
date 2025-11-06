@@ -18,26 +18,34 @@ struct KeyboardView: View {
     @State var oldText : String = ""
     
     var body: some View {
-        VStack(spacing: 8) {
-            
-            bannerView()
-            
-            
-            ForEach(controller.keyLayout, id: \.self) { row in
-                HStack(spacing: 7) {
-                    ForEach(row, id: \.self) { key in
-                        Button(action: {
-                            controller.handleKeyPress(key)
-                            let currentText = controller.textDocumentProxy.documentContextBeforeInput ?? ""
-                            
-                            webSocketService.checkFraudMessage(currentText)
-                        }) {
-                            keyView(for: key)
+        HStack {
+            Spacer()
+                .frame(width:1)
+            VStack(spacing: 8) {
+                
+                bannerView()
+                
+                
+                ForEach(controller.keyLayout, id: \.self) { row in
+                    HStack(spacing: 7) {
+                        ForEach(row, id: \.self) { key in
+                            Button(action: {
+                                controller.handleKeyPress(key)
+                                let currentText = controller.textDocumentProxy.documentContextBeforeInput ?? ""
+                                
+                                webSocketService.checkFraudMessage(currentText)
+                            }) {
+                                keyView(for: key)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }
+            .padding(2)
+            Spacer()
+                .frame(width:1)
+            
         }
         .onAppear {
            
@@ -82,8 +90,7 @@ struct KeyboardView: View {
             }
             
         }
-        .padding(3)
-        .background(Color(.systemGray4).ignoresSafeArea())
+        .background(Color(.keyBoardNewBackground).ignoresSafeArea(.keyboard))
     }
     
 // MARK: - BannerView
@@ -109,27 +116,39 @@ struct KeyboardView: View {
                     Image("risklevel2")
                         .resizable()
                         .scaledToFit()
+                    
+                    Image("status1")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25)
+                        .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel2Color)"))
+                } else {
+                    Image("status1")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25)
+                        .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel2Color)"))
                 }
-                Image("status1")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 25)
-                    .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel2Color)"))
+                
             } else if status == "위험" {
                 if isTutorial {
                     Image("risklevel3")
                         .resizable()
                         .scaledToFit()
+                    Image("status2")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25)
+                        .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel3Color)"))
+                } else {
+                    Image("status2")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25)
+                        .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel3Color)"))
                 }
-                Image("status2")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 25)
-                    .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel3Color)"))
-            } else {
-                Image("circle01")
+                
             }
-
         }
         .padding(.horizontal, 15)
         .frame(height: 40)
