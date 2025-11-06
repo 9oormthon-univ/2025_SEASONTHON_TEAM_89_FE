@@ -61,18 +61,18 @@ enum APIError: Error {
     case validationError(errors: [ValidationErrorDetail])
     case unknown(statusCode: Int, message: String?)
     
-    // Moya Error로부터 변환
+    
     init(moyaError: MoyaError) {
         switch moyaError {
         case .statusCode(let response):
-            // 422 Validation Error 처리
+    
             if response.statusCode == 422,
                let validationError = try? response.map(ValidationErrorResponse.self) {
                 self = .validationError(errors: validationError.detail)
                 return
             }
             
-            // HTTP 상태 코드별 처리
+            
             switch response.statusCode {
             case 401:
                 self = .unauthorized
@@ -97,7 +97,7 @@ enum APIError: Error {
         }
     }
     
-    // 사용자에게 보여줄 메시지
+
     var message: String {
         switch self {
         case .unauthorized:
@@ -113,7 +113,7 @@ enum APIError: Error {
         case .decodingError:
             return "데이터 처리 중 오류가 발생했습니다."
         case .validationError(let errors):
-            // 첫 번째 에러 메시지 반환
+            
             return errors.first?.msg ?? "입력값을 확인해주세요."
         case .unknown(let statusCode, let message):
             if let message = message {
@@ -123,7 +123,7 @@ enum APIError: Error {
         }
     }
     
-    // Validation 에러의 상세 메시지들
+    
     var validationMessages: [String] {
         switch self {
         case .validationError(let errors):
@@ -136,7 +136,7 @@ enum APIError: Error {
         }
     }
     
-    // 재시도 가능 여부
+    
     var shouldRetry: Bool {
         switch self {
         case .networkError, .serverError:
@@ -146,7 +146,7 @@ enum APIError: Error {
         }
     }
     
-    // 로그인 필요 여부
+    
     var requiresLogin: Bool {
         switch self {
         case .unauthorized:

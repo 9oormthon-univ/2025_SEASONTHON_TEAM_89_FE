@@ -7,7 +7,6 @@
 
 import Foundation
 
-// 서버 응답 전체를 감싸는 모델
 struct LoginResponse: Codable {
     let accessToken: String
     let tokenType: String

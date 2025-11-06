@@ -6,7 +6,6 @@
 //
 import UIKit
 import SwiftUI
-import Combine
 
 class KeyboardViewController: UIInputViewController, ObservableObject {
 
@@ -17,8 +16,6 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
 
     // MARK: - Properties
     private let hangulEngine = HangulEngine()
-//    let typingDebounceManager = TypingDebounceManager()
-    private var cancellables = Set<AnyCancellable>()
     
     @Published var isShifted = false
     @Published var keyboardMode: KeyboardMode = .korean
@@ -41,7 +38,6 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-//        setupBindings()
     }
     
     private func setupUI() {
@@ -61,14 +57,6 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
             hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-//    private func setupBindings() {
-//        typingDebounceManager.objectWillChange
-//            .receive(on: DispatchQueue.main)
-//            .sink { [weak self] _ in
-//                self?.objectWillChange.send()
-//            }
-//            .store(in: &cancellables)
-//    }
 
     // MARK: - Text Input Management
     override func textWillChange(_ textInput: UITextInput?) {
@@ -76,13 +64,11 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
     }
     
     override func textDidChange(_ textInput: (any UITextInput)?) {
-        // 텍스트가 변경된 후, 텍스트 필드가 완전히 비었는지 확인합니다.
-           // (예: 메시지 전송 후)
+      
            let proxy = self.textDocumentProxy
            if proxy.documentContextBeforeInput?.isEmpty ?? true &&
               proxy.documentContextAfterInput?.isEmpty ?? true {
                
-               // 텍스트 필드가 비었다면, 한글 엔진의 상태를 깨끗하게 리셋합니다.
                hangulEngine.reset()
            }
     }
@@ -98,7 +84,6 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
 
     // MARK: - Key Handling
     func handleKeyPress(_ key: KeyType) {
-        // UIDevice.current.playInputClick()  // 필요시 주석 해제
         
         switch key {
         case .character(let char):
@@ -138,7 +123,7 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
             textDocumentProxy.insertText(String(char))
         }
         
-        // 영문/한글 모드에서 Shift 자동 해제
+      
         if isShifted && (keyboardMode == .korean || keyboardMode == .english) {
             isShifted = false
         }
@@ -190,7 +175,6 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
     }
 }
 
-// MARK: - Layouts
 private extension KeyboardViewController {
     var koreanLayout: [[KeyType]] {
         [

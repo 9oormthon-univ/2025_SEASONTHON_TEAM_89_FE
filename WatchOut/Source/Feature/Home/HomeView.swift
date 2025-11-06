@@ -14,11 +14,8 @@ struct HomeView: View {
         ScrollView(showsIndicators: false){
             Spacer()
                 .frame(height: 20)
-            // 타이틀
             TitleView()
                 .padding(.horizontal, 20)
-           
-            // 체험하기로 이동
             ExprienceButton()
                 .padding(.horizontal, 20)
             Spacer()
@@ -26,7 +23,7 @@ struct HomeView: View {
             
             HStack(spacing: 8) {
                 StatusRoundRectangle(iconName: "warningcountIcon", status: .warning, count: SharedUserDefaults.riskLevel2Count)
-                StatusRoundRectangle(iconName: "dangercountIcon", status: .danger, count: SharedUserDefaults.riskLevel3Count)
+                StatusRoundRectangle(iconName: "dangercountIcon1", status: .danger, count: SharedUserDefaults.riskLevel3Count)
             } .padding(.horizontal, 20)
             Spacer()
                 .frame(height: 16)

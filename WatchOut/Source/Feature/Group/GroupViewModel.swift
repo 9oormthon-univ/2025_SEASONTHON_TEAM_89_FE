@@ -21,7 +21,8 @@ class GroupViewModel: ObservableObject {
         warningCount: 0,
         dangerCount: 0,
         isCreator: false,
-        joinedAt: ""
+        joinedAt: "",
+        notificationEnabled: true
     )
     @Published var infoGroupRespose: InfoGroupRespose = .init(
         groupID: "",

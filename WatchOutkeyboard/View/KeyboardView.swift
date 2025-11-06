@@ -9,8 +9,7 @@ import SwiftUI
 struct KeyboardView: View {
     @ObservedObject var controller: KeyboardViewController
     
-    // ⭐️ 1. WebSocketService를 @ObservedObject로 선언
-    // 이렇게 하면 fraudResult가 바뀔 때마다 View의 body가 자동으로 다시 그려집니다.
+   
     @ObservedObject private var webSocketService = WebSocketService.shared
     
     @State private var webSocketURL = "wss://wiheome.ajb.kr/api/ws/fraud/"
@@ -20,10 +19,10 @@ struct KeyboardView: View {
     
     var body: some View {
         VStack(spacing: 8) {
-            // 1. 상단 배너 뷰 추가
+            
             bannerView()
             
-            // 2. 기존 키보드 키 레이아웃
+            
             ForEach(controller.keyLayout, id: \.self) { row in
                 HStack(spacing: 7) {
                     ForEach(row, id: \.self) { key in
@@ -31,27 +30,26 @@ struct KeyboardView: View {
                             controller.handleKeyPress(key)
                             let currentText = controller.textDocumentProxy.documentContextBeforeInput ?? ""
                             
-                            // ⭐️ 2. webSocketService 프로퍼티를 통해 메서드 호출
                             webSocketService.checkFraudMessage(currentText)
                         }) {
-                            keyView(for: key) // 각 키의 UI를 생성하는 헬퍼 뷰
+                            keyView(for: key)
                         }
-                        .buttonStyle(.plain) // 버튼의 기본 스타일 제거
+                        .buttonStyle(.plain)
                     }
                 }
             }
         }
         .onAppear {
-            // ⭐️ 2. webSocketService 프로퍼티를 통해 메서드 호출
+           
             webSocketService.connect(urlString: webSocketURL)
             status = "정상"
         }
         .onDisappear {
-            // ⭐️ 2. webSocketService 프로퍼티를 통해 메서드 호출
+          
             webSocketService.disconnect()
             status = "정상"
         }
-        // ⭐️ 3. onChange는 '동작'을 처리하는 역할로 그대로 둡니다.
+        
         .onChange(of: webSocketService.fraudResult?.riskLevel) {
             if let newRiskLevel = webSocketService.fraudResult?.riskLevel {
                 print("\(SharedUserDefaults.isTutorial)")
@@ -88,7 +86,7 @@ struct KeyboardView: View {
         .background(Color(.systemGray4).ignoresSafeArea())
     }
     
-    /// 상단 배너 UI를 구성하는 뷰입니다.
+// MARK: - BennerView
     @ViewBuilder
     private func bannerView() -> some View {
         let isTutorial = SharedUserDefaults.isTutorial
@@ -131,17 +129,14 @@ struct KeyboardView: View {
             } else {
                 Image("circle01")
             }
-            
-            //            } else {
-            //                Image("circle01")
-            //            }
+
         }
         .padding(.horizontal, 15)
         .frame(height: 40)
         .cornerRadius(8)
     }
     
-    /// 각 키의 타입에 따라 다른 UI를 그려주는 뷰 빌더입니다.
+    // MARK: - keyView
     @ViewBuilder
     private func keyView(for key: KeyType) -> some View {
         Group {
@@ -150,8 +145,6 @@ struct KeyboardView: View {
                 Image(controller.isShifted ? "shiftOn" : "shiftOff")
                     .scaledToFit()
                     .frame(width: 20)
-                
-                //                    .foregroundColor(controller.isShifted ? Color(.systemBlue) : .primary)
             case .backspace:
                 Image("deletebutton")
                 
@@ -178,10 +171,6 @@ struct KeyboardView: View {
                 Image("onetwo")
             case .switchToMoreSymbols:
                 Image("shopplus")
-                
-                
-                
-                
             default: // space, return, modeChange 등
                 Text(key.displayText)
                     .font(.keyboardFont)
@@ -194,8 +183,7 @@ struct KeyboardView: View {
         .cornerRadius(8.5)
         .shadow(color: .black.opacity(0.35), radius: 0.5, x: 0, y: 1)
     }
-    
-    /// 키의 배경색을 결정하는 헬퍼 함수입니다.
+    // MARK: - keyBackgroundColor
     private func keyBackgroundColor(for key: KeyType) -> Color {
         switch key {
         case .character:
@@ -215,7 +203,7 @@ struct KeyboardView: View {
         }
     }
     
-    /// 키의 너비를 결정하는 헬퍼 함수입니다.
+    // MARK: - keyWidth
     private func keyWidth(for key: KeyType) -> CGFloat? {
         switch key {
         case .switchToAlphabetic, .switchToMoreSymbols, .switchToSymbols:
