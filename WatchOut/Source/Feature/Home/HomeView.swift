@@ -35,7 +35,7 @@ struct HomeView: View {
             HStack(spacing: 8) {
                 
                 if SharedUserDefaults.isCreateGroup {
-                    GroupBoxRowView(title: "내 그릅 관리", imageName: "maingroup3")
+                    GroupBoxRowView(title: "내 그룹 관리", imageName: "maingroup3")
                         .onTapGesture {
                             pathModel.paths.append(.managementGroupView)
                         }
@@ -182,7 +182,7 @@ private struct GroupBoxRowView: View {
         }
         .frame(height: 120)
         .overlay {
-            RoundedRectangle(cornerRadius: 24)
+            RoundedRectangle(cornerRadius: 16)
                 .stroke(.gray300, lineWidth: 1)
         }
         
