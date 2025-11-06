@@ -191,8 +191,7 @@ extension GroupViewModel {
     
     private func CreateGorup() {
         guard !groupName.isEmpty else {
-            errorMessage = "그룹 이름을 입력해주세요."
-            showError = true
+            
             return
         }
         
@@ -241,8 +240,7 @@ extension GroupViewModel {
             stopPolling()
            
         case .networkError:
-            
-            
+            break
         case .serverError:
             
             errorMessage = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
