@@ -169,21 +169,20 @@ private struct ExperienceTitle: View {
     fileprivate var body: some View {
         HStack{
             ZStack{
-                Image("star") // "Star" 이미지가 없다면 SF Symbol로 대체
+                Image("star")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 24)
-                    // isSelected에 따라 색상 변경
                     .foregroundStyle(isSelected ? .main : Color.gray)
                 
-                Text(number) // 하드코딩된 "1" 대신 파라미터 사용
+                Text(number)
                     .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(.black)
             }
-            Text(title) // 하드코딩된 "위험 문장 감지" 대신 파라미터 사용
+            Text(title)
                 .font(.pHeadline02)
         }
-        .opacity(isSelected ? 1.0 : 0.4) // 선택 여부에 따라 투명도 조절
+        .opacity(isSelected ? 1.0 : 0.4)
     }
 }
 

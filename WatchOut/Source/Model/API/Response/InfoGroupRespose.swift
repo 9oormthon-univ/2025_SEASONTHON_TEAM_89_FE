@@ -33,7 +33,7 @@ struct Member: Codable {
     
     let isCreator: Bool
     let joinedAt: String
-
+    let notificationEnabled: Bool
     enum CodingKeys: String, CodingKey {
         case userID = "user_id"
         case nickname
@@ -42,5 +42,6 @@ struct Member: Codable {
         case dangerCount = "danger_count"
         case isCreator = "is_creator"
         case joinedAt = "joined_at"
+        case notificationEnabled = "notification_enabled"
     }
 }

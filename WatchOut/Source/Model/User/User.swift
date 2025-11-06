@@ -7,7 +7,6 @@
 
 import Foundation
 
-// 응답 JSON 내부의 "user" 객체를 위한 모델
 struct User: Codable {
     let userId: String
     let kakaoId: Int
