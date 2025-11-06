@@ -47,7 +47,10 @@ struct OnboardingView: View {
         }
         .onAppear{
             if isOnBoarding {
-                pathModel.paths.append(.mainTabView)
+                DispatchQueue.main.async{
+                    pathModel.paths.append(.mainTabView)
+                }
+                
             }
         }
         .environmentObject(pathModel)
