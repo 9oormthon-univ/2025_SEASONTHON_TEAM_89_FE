@@ -35,15 +35,13 @@ struct LoginView: View {
                 Button {
                     loginViewModel.handleKakaoLogin { success in
                                    if success {
-                                       // 로그인 성공 시, View가 직접 appState를 업데이트
                                        appState.isLoggedIn = true
                                    } else {
-                                       // 로그인 실패 시 사용자에게 알림 (예: Alert)
                                        print("최종 로그인 실패")
                                    }
                                }
                 } label: {
-                    Image("kakao_login_large_wide 1") // 카카오 공식 로그인 버튼 이미지 에셋
+                    Image("kakao_login_large_wide 1")
                 }
                 Spacer()
                     .frame(height: 20)

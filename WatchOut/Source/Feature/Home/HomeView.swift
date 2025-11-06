@@ -14,11 +14,8 @@ struct HomeView: View {
         ScrollView(showsIndicators: false){
             Spacer()
                 .frame(height: 20)
-            // 타이틀
             TitleView()
                 .padding(.horizontal, 20)
-           
-            // 체험하기로 이동
             ExprienceButton()
                 .padding(.horizontal, 20)
             Spacer()
@@ -26,7 +23,7 @@ struct HomeView: View {
             
             HStack(spacing: 8) {
                 StatusRoundRectangle(iconName: "warningcountIcon", status: .warning, count: SharedUserDefaults.riskLevel2Count)
-                StatusRoundRectangle(iconName: "dangercountIcon", status: .danger, count: SharedUserDefaults.riskLevel3Count)
+                StatusRoundRectangle(iconName: "dangercountIcon1", status: .danger, count: SharedUserDefaults.riskLevel3Count)
             } .padding(.horizontal, 20)
             Spacer()
                 .frame(height: 16)
@@ -90,11 +87,12 @@ private struct TitleView: View {
     fileprivate var body: some View {
         HStack{
             VStack(alignment: .leading) {
-                Text("\(user?.nickname ?? "위허메")님 환영해요!")
+                Text("\(user?.nickname ?? "위허메")님")
                     .font(.gHeadline01)
                 HStack{
-                    Text("위허매 키보드와 함께 금용 범죄를 예방해요")
+                    Text("환영해요!")
                         .font(.gHeadline01)
+                    
                     Image("star")
                         .foregroundStyle(.main)
                         

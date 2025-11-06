@@ -9,8 +9,7 @@ import SwiftUI
 struct KeyboardView: View {
     @ObservedObject var controller: KeyboardViewController
     
-    // ⭐️ 1. WebSocketService를 @ObservedObject로 선언
-    // 이렇게 하면 fraudResult가 바뀔 때마다 View의 body가 자동으로 다시 그려집니다.
+   
     @ObservedObject private var webSocketService = WebSocketService.shared
     
     @State private var webSocketURL = "wss://wiheome.ajb.kr/api/ws/fraud/"
@@ -19,39 +18,46 @@ struct KeyboardView: View {
     @State var oldText : String = ""
     
     var body: some View {
-        VStack(spacing: 8) {
-            // 1. 상단 배너 뷰 추가
-            bannerView()
-            
-            // 2. 기존 키보드 키 레이아웃
-            ForEach(controller.keyLayout, id: \.self) { row in
-                HStack(spacing: 7) {
-                    ForEach(row, id: \.self) { key in
-                        Button(action: {
-                            controller.handleKeyPress(key)
-                            let currentText = controller.textDocumentProxy.documentContextBeforeInput ?? ""
-                            
-                            // ⭐️ 2. webSocketService 프로퍼티를 통해 메서드 호출
-                            webSocketService.checkFraudMessage(currentText)
-                        }) {
-                            keyView(for: key) // 각 키의 UI를 생성하는 헬퍼 뷰
+        HStack {
+            Spacer()
+                .frame(width:1)
+            VStack(spacing: 8) {
+                
+                bannerView()
+                
+                
+                ForEach(controller.keyLayout, id: \.self) { row in
+                    HStack(spacing: 7) {
+                        ForEach(row, id: \.self) { key in
+                            Button(action: {
+                                controller.handleKeyPress(key)
+                                let currentText = controller.textDocumentProxy.documentContextBeforeInput ?? ""
+                                
+                                webSocketService.checkFraudMessage(currentText)
+                            }) {
+                                keyView(for: key)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain) // 버튼의 기본 스타일 제거
                     }
                 }
             }
+            .padding(2)
+            Spacer()
+                .frame(width:1)
+            
         }
         .onAppear {
-            // ⭐️ 2. webSocketService 프로퍼티를 통해 메서드 호출
+           
             webSocketService.connect(urlString: webSocketURL)
             status = "정상"
         }
         .onDisappear {
-            // ⭐️ 2. webSocketService 프로퍼티를 통해 메서드 호출
+          
             webSocketService.disconnect()
             status = "정상"
         }
-        // ⭐️ 3. onChange는 '동작'을 처리하는 역할로 그대로 둡니다.
+        
         .onChange(of: webSocketService.fraudResult?.riskLevel) {
             if let newRiskLevel = webSocketService.fraudResult?.riskLevel {
                 print("\(SharedUserDefaults.isTutorial)")
@@ -84,11 +90,10 @@ struct KeyboardView: View {
             }
             
         }
-        .padding(3)
-        .background(Color(.systemGray4).ignoresSafeArea())
+        .background(Color(.keyBoardNewBackground).ignoresSafeArea(.keyboard))
     }
     
-    /// 상단 배너 UI를 구성하는 뷰입니다.
+// MARK: - BannerView
     @ViewBuilder
     private func bannerView() -> some View {
         let isTutorial = SharedUserDefaults.isTutorial
@@ -104,48 +109,53 @@ struct KeyboardView: View {
             
             
             Spacer()
-            
-            // ⭐️ 4. webSocketService.fraudResult를 직접 사용하여 UI를 구성합니다.
-            //    이제 이 값이 바뀌면 bannerView가 자동으로 업데이트됩니다.
-            //            if let result = webSocketService.fraudResult {
-            //
+
             if status == "주의" {
                 if isTutorial {
                     
                     Image("risklevel2")
                         .resizable()
                         .scaledToFit()
+                    
+                    Image("status1")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25)
+                        .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel2Color)"))
+                } else {
+                    Image("status1")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25)
+                        .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel2Color)"))
                 }
-                Image("status1")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 25)
-                    .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel2Color)"))
+                
             } else if status == "위험" {
                 if isTutorial {
                     Image("risklevel3")
                         .resizable()
                         .scaledToFit()
+                    Image("status2")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25)
+                        .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel3Color)"))
+                } else {
+                    Image("status2")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25)
+                        .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel3Color)"))
                 }
-                Image("status2")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 25)
-                    .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel3Color)"))
-            } else {
-                Image("circle01")
+                
             }
-            
-            //            } else {
-            //                Image("circle01")
-            //            }
         }
         .padding(.horizontal, 15)
         .frame(height: 40)
         .cornerRadius(8)
     }
     
-    /// 각 키의 타입에 따라 다른 UI를 그려주는 뷰 빌더입니다.
+    // MARK: - keyView
     @ViewBuilder
     private func keyView(for key: KeyType) -> some View {
         Group {
@@ -154,8 +164,6 @@ struct KeyboardView: View {
                 Image(controller.isShifted ? "shiftOn" : "shiftOff")
                     .scaledToFit()
                     .frame(width: 20)
-                
-                //                    .foregroundColor(controller.isShifted ? Color(.systemBlue) : .primary)
             case .backspace:
                 Image("deletebutton")
                 
@@ -182,10 +190,6 @@ struct KeyboardView: View {
                 Image("onetwo")
             case .switchToMoreSymbols:
                 Image("shopplus")
-                
-                
-                
-                
             default: // space, return, modeChange 등
                 Text(key.displayText)
                     .font(.keyboardFont)
@@ -198,8 +202,7 @@ struct KeyboardView: View {
         .cornerRadius(8.5)
         .shadow(color: .black.opacity(0.35), radius: 0.5, x: 0, y: 1)
     }
-    
-    /// 키의 배경색을 결정하는 헬퍼 함수입니다.
+    // MARK: - keyBackgroundColor
     private func keyBackgroundColor(for key: KeyType) -> Color {
         switch key {
         case .character:
@@ -219,7 +222,7 @@ struct KeyboardView: View {
         }
     }
     
-    /// 키의 너비를 결정하는 헬퍼 함수입니다.
+    // MARK: - keyWidth
     private func keyWidth(for key: KeyType) -> CGFloat? {
         switch key {
         case .switchToAlphabetic, .switchToMoreSymbols, .switchToSymbols:

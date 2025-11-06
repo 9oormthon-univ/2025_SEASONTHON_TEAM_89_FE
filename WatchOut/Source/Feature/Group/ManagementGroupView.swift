@@ -6,13 +6,15 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ManagementGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
-    @EnvironmentObject private var groupViewModel: GroupViewModel
+    @StateObject private var groupViewModel = GroupViewModel()
     @EnvironmentObject private var userManager: UserManager
-    
+    @State private var isToastShown: Bool = false
     var body: some View {
+        
         VStack {
             CustomNavigationBar(leftBtnAction: {
                 pathModel.paths.removeLast()
@@ -23,9 +25,9 @@ struct ManagementGroupView: View {
                 HStack(alignment: .bottom) {
                     VStack {
                         HStack {
-                            Text(groupViewModel.infoGroupRespose.groupName)
+                            Text(groupViewModel.infoGroupRespose?.groupName ?? "")
                                 .font(.gHeadline01)
-                            Text("총 \(groupViewModel.infoGroupRespose.memberCount) 명")
+                            Text("총 \( groupViewModel.countMembers())명")
                         }
                         
                     }
@@ -38,13 +40,17 @@ struct ManagementGroupView: View {
                         .font(.pSubtitle03)
                         .foregroundStyle(.gray300)
                     Spacer()
-                    Text(groupViewModel.infoGroupRespose.joinCode)
+                    Text(groupViewModel.infoGroupRespose?.joinCode ?? "")
                         .font(.pBody01)
                         .underline()
                     Button {
                         
+                        UIPasteboard.general.strings = [groupViewModel.infoGroupRespose?.joinCode ?? ""]
+                        isToastShown.toggle()
                     } label: {
                         Image("CopyIcon")
+                    }.alert(isPresented: $isToastShown) {
+                        Alert(title: Text("복사되었습니다!"))
                     }
                     
                 }
@@ -57,8 +63,8 @@ struct ManagementGroupView: View {
                     HStack {
                         Spacer()
                             .frame(width: 20)
-                        ForEach(groupViewModel.infoGroupRespose.members, id: \.userID) { member in
-                            profileView(member: member)
+                        ForEach(groupViewModel.infoGroupRespose?.members ?? [], id: \.userID) { member in
+                            profileView(groupViewModel: groupViewModel, member: member)
                                 .onTapGesture {
                                     groupViewModel.selectMembers = member
                                 }
@@ -68,49 +74,59 @@ struct ManagementGroupView: View {
                     Spacer()
                 }
                 
-                UserInfoView()
+                UserInfoView(groupViewModel: groupViewModel)
             }
         }
-        .alert(isPresented: $groupViewModel.isLeave) {
-            Alert(title: Text("그룹을 해체하시겠습니까?"), message: Text("그룹을 해체하면 모든 그룹원이 강퇴됩니다."), primaryButton: .destructive(Text("나가기"), action: {
-                groupViewModel.LeaveGorupAction()
-                pathModel.paths.removeLast()
-                groupViewModel.isCreate = false
-                               }), secondaryButton: .cancel(Text("취소")))
+        .overlay {
+            if groupViewModel.isLoading {
+                WatingView()
+                    .background(Color.black.opacity(0.1))
+                    .scaledToFill()
+            }
         }
         .onAppear{
+            
             if let user = userManager.currentUser {
                 groupViewModel.user = user
             }
-            groupViewModel.loadInfoGroup()
-            if let member = groupViewModel.infoGroupRespose.members.first {
-                groupViewModel.selectMembers = member
+            groupViewModel.startPolling()
+        }
+        .onDisappear {
+            groupViewModel.stopPolling()
+        }.alert("오류", isPresented: $groupViewModel.showError) {
+            Button("확인", role: .cancel) {
+                pathModel.paths.removeLast()
             }
-             
-            
-           
+        } message: {
+            Text(groupViewModel.errorMessage)
         }
     }
+    
     
 }
 
 
+
+
+
+
 //MARK: - UserInfoView
 private struct UserInfoView: View {
-    @EnvironmentObject private var groupViewModel: GroupViewModel
+    @ObservedObject var groupViewModel: GroupViewModel
     @EnvironmentObject private var pathModel: PathModel
     
     fileprivate var body: some View {
         ZStack{
             RoundedRectangle(cornerRadius: 48)
                 .foregroundStyle(.gray100)
-
+            
             VStack(alignment: .center){
                 Spacer()
                     .frame(height: 44)
                 HStack {
                     Text("\(groupViewModel.selectMembers.nickname)")
                         .font(.pHeadline01)
+                        .foregroundStyle(.main)
                     Text("님의 경고 기록")
                     
                 }
@@ -120,25 +136,25 @@ private struct UserInfoView: View {
                         StatusRoundRectangle(iconName: "dangercountIcon", status: .danger, count: groupViewModel.selectMembers.dangerCount)
                         
                     }
-                    NotificationToggleButton()
+                    NotificationToggleButton(viewModel: groupViewModel)
                 }
                 .padding(.horizontal, 20)
-               
-               
+                
+                
                 
                 
                 Spacer()
-                    .frame(height: 200)
-                if(groupViewModel.infoGroupRespose.creatorID == groupViewModel.user.userId){
-                    Text("강퇴하기")
-                        .underline()
-                        .font(.pBody02)
-                        .foregroundStyle(.gray400)
-                    
+                    .frame(height: 50)
+                if(groupViewModel.infoGroupRespose?.creatorID == groupViewModel.user.userId){
+                    if (groupViewModel.infoGroupRespose?.creatorID != groupViewModel.selectMembers.userID) {
+                        Text("강퇴하기")
+                            .underline()
+                            .font(.pBody02)
+                            .foregroundStyle(.gray400)
+                    }
                     
                     Button {
                         groupViewModel.isLeave.toggle()
-                        
                     } label: {
                         HStack {
                             Spacer()
@@ -153,6 +169,13 @@ private struct UserInfoView: View {
                         
                     }
                     .padding(.horizontal,20)
+                    .alert(isPresented: $groupViewModel.isLeave) {
+                        Alert(title: Text("그룹을 해체하시겠습니까?"), message: Text("그룹을 해체하면 모든 그룹원이 강퇴됩니다."), primaryButton: .destructive(Text("나가기"), action: {
+                            groupViewModel.LeaveGorupAction()
+                            pathModel.paths.removeLast()
+                            groupViewModel.isCreate = false
+                        }), secondaryButton: .cancel(Text("취소")))
+                    }
                 } else {
                     Text("나가기")
                         .underline()
@@ -160,6 +183,13 @@ private struct UserInfoView: View {
                         .foregroundStyle(.gray400)
                         .onTapGesture {
                             groupViewModel.isLeave.toggle()
+                        }
+                        .alert(isPresented: $groupViewModel.isLeave) {
+                            Alert(title: Text("그룹을 나가시겠습니까?"), primaryButton: .destructive(Text("나가기"), action: {
+                                groupViewModel.LeaveGorupAction()
+                                pathModel.paths.removeLast()
+                                groupViewModel.isCreate = false
+                            }), secondaryButton: .cancel(Text("취소")))
                         }
                     
                 }
@@ -169,18 +199,21 @@ private struct UserInfoView: View {
             }
         }
         
-       
+        
         
     }
 }
 
 private struct NotificationToggleButton: View {
+    @ObservedObject var viewModel: GroupViewModel
     fileprivate var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 16)
                 .foregroundStyle(.white)
             HStack{
-                Toggle("위험 발생 시 팝업", isOn: .constant(true))
+                Toggle("위험 발생 시 팝업", isOn: Binding(get: { viewModel.selectMembers.notificationEnabled }, set: { _ in
+                    
+                }))
                     .font(.pBody02)
                     .tint(.main)
             }
@@ -201,7 +234,7 @@ private struct StatusRoundRectangle: View {
                 .foregroundStyle(.white)
             HStack {
                 Image(iconName)
-                    
+                
                 Spacer()
                 VStack(alignment: .center){
                     Text("\(count)회")
@@ -215,19 +248,16 @@ private struct StatusRoundRectangle: View {
                 
             }
             .padding()
-
+            
         }
     }
     
 }
 
 // MARK: - profileView
-private struct profileView: View {
-    @EnvironmentObject private var groupViewModel: GroupViewModel
+private struct ProfileView: View {
+    @ObservedObject var groupViewModel: GroupViewModel
     let member: Member
-    
-    
-    
     
     fileprivate var body: some View {
         VStack {
@@ -253,9 +283,9 @@ private struct profileView: View {
                             .foregroundStyle(.gray400.opacity(0.3))
                     }
                     Image("chek")
-                    }
                 }
-                
+            }
+            
             
             Text(member.nickname)
             

@@ -7,85 +7,62 @@
 
 import Foundation
 import Moya
-
 protocol GroupServiceType {
-    func CreateGroup(groupRequest: CreateGroupRequest, completion: @escaping (Result<CreateGroupResponse, Error>) -> Void)
+    func createGroup(groupRequest: CreateGroupRequest, completion: @escaping (Result<CreateGroupResponse, APIError>) -> Void)
+    func joinGroup(joinGroup: JoinGorupRequest, completion: @escaping (Result<Void, APIError>) -> Void)
+    func leaveGroup(userID: String, completion: @escaping (Result<Void, APIError>) -> Void)
+    func infoGroup(userID: String, completion: @escaping (Result<InfoGroupRespose, APIError>) -> Void)
 }
 
 class GroupService: GroupServiceType {
     
     static let shared = GroupService()
-    var provider = MoyaProvider<GroupAPI>(plugins: [MoyaLoggingPlugin()])
     
+    private let provider = MoyaProvider<GroupAPI>(
+        plugins: [MoyaLoggingPlugin()]
+    )
     
-    func joinGroup(joinGroup: JoinGorupRequest, completion: @escaping(Result<Void, any Error>) -> Void ){
-        provider.request(.joinGroup(joinRequest: joinGroup)) { result in
-            switch result {
-            case .success(_):
-                print("나가기 및 삭제 성공")
-                completion(.success(()))
-            case .failure(let error):
-                print("나가기 및 삭제 실패 \(error)")
-                completion(.failure(error))
-            }
-            
-        }
+    // MARK: - Join Group (Void 응답)
+    func joinGroup(
+        joinGroup: JoinGorupRequest,
+        completion: @escaping (Result<Void, APIError>) -> Void
+    ) {
+        provider.requestWithValidation(
+            .joinGroup(joinRequest: joinGroup),
+            completion: completion
+        )
     }
     
-    func CreateGroup(groupRequest: CreateGroupRequest, completion: @escaping (Result<CreateGroupResponse, any Error>) -> Void) {
-        provider.request(.createGroup(createRequest: groupRequest)) { result in
-            switch result {
-            case .success(let response):
-                do {
-                    let responseData =  try JSONDecoder().decode(CreateGroupResponse.self, from: response.data)
-                    completion(.success(responseData))
-                    print("응답: \(responseData)")
-                } catch {
-                    print("디코딩 오류: \(error)")
-                    completion(.failure(error))
-                }
-                
-            case .failure(let error):
-                Log.network("실패", error) // 기존의 로그를 사용
-                completion(.failure(error))
-            }
-        }
+    // MARK: - Create Group (데이터 응답)
+    func createGroup(
+        groupRequest: CreateGroupRequest,
+        completion: @escaping (Result<CreateGroupResponse, APIError>) -> Void
+    ) {
+        provider.requestWithValidation(
+            .createGroup(createRequest: groupRequest),
+            completion: completion
+        )
     }
     
-    func leaveGrou(userID: String, completion: @escaping(Result<Void, any Error>) -> Void ){
-        provider.request(.leveGroup(userID: userID)) { result in
-            switch result {
-            case .success(_):
-                print("나가기 및 삭제 성공")
-                completion(.success(()))
-            case .failure(let error):
-                print("나가기 및 삭제 실패 \(error)")
-                completion(.failure(error))
-            }
-            
-        }
+    // MARK: - Leave Group (Void 응답)
+    func leaveGroup(
+        userID: String,
+        completion: @escaping (Result<Void, APIError>) -> Void
+    ) {
+        provider.requestWithValidation(
+            .leveGroup(userID: userID),
+            completion: completion
+        )
     }
     
-    func infoGroup(userID: String, completion: @escaping(Result<InfoGroupRespose, any Error>) -> Void) {
-        provider.request(.infoGroup(userID: userID)) { result in
-            switch result {
-            case .success(let response):
-                do {
-                    let responseData = try JSONDecoder().decode(InfoGroupRespose.self, from: response.data)
-                    completion(.success(responseData))
-                } catch {
-                    print("디코딩 오류: \(error)")
-                    completion(.failure(error))
-                }
-            case .failure(let error):
-                Log.network("실패", error) // 기존의 로그를 사용
-                completion(.failure(error))
-            }
-            
-        }
+    // MARK: - Info Group (데이터 응답)
+    func infoGroup(
+        userID: String,
+        completion: @escaping (Result<InfoGroupRespose, APIError>) -> Void
+    ) {
+        provider.requestWithValidation(
+            .infoGroup(userID: userID),
+            completion: completion
+        )
     }
-        
-    
-    
-    
 }

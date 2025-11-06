@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MainTabView: View {
     @EnvironmentObject private var pathModel: PathModel
-    @EnvironmentObject private var mainTabViewModel: MainTabViewModel
+    @StateObject private var mainTabViewModel = MainTabViewModel()
     @EnvironmentObject private var appState: AppState
     var body: some View {
         VStack {
@@ -18,7 +18,6 @@ struct MainTabView: View {
             HStack {
                 ForEach(Tab.allCases, id: \.self) { tab in
                     Button(action: {
-                        // 탭을 누르면 selectedTab 상태를 변경
                         
                         withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                             mainTabViewModel.selectedTab = tab
@@ -28,7 +27,7 @@ struct MainTabView: View {
                     }) {
                         tabButton(for: tab)
                     }
-                    .buttonStyle(.plain) // 버튼의 기본 회색 배경 제거
+                    .buttonStyle(.plain)
                 }
                 Spacer()
                 Button(action: {
@@ -70,14 +69,12 @@ struct MainTabView: View {
                 .font(.pHeadline02)
                 .foregroundColor(isSelected ? .black : .gray)
             
-            // 선택된 탭에만 밑줄을 보여주고 애니메이션 적용
             if isSelected {
                 Capsule()
                     .frame(height: 3)
                     .foregroundColor(.black)
                 
             } else {
-                // 공간을 차지하기 위한 투명한 밑줄
                 Capsule().frame(height: 3).foregroundColor(.clear)
             }
         }
