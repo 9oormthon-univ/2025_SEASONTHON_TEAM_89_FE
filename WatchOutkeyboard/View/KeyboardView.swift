@@ -86,7 +86,7 @@ struct KeyboardView: View {
         .background(Color(.systemGray4).ignoresSafeArea())
     }
     
-// MARK: - BennerView
+// MARK: - BannerView
     @ViewBuilder
     private func bannerView() -> some View {
         let isTutorial = SharedUserDefaults.isTutorial
