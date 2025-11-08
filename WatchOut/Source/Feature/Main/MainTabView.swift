@@ -12,8 +12,8 @@ struct MainTabView: View {
     @StateObject private var mainTabViewModel = MainTabViewModel()
     @EnvironmentObject private var appState: AppState
     var body: some View {
-        VStack {
-            HStack {
+        VStack(spacing:0) {
+            HStack(spacing: 24) {
                 ForEach(Tab.allCases, id: \.self) { tab in
                     Button(action: {
                         withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
@@ -21,10 +21,7 @@ struct MainTabView: View {
                         }
                     }) {
                         tabButton(for: tab)
-                        Spacer()
-                            .frame(width: 24)
                     }
-                    
                     .fixedSize()
                 }
                 Spacer()
@@ -35,28 +32,28 @@ struct MainTabView: View {
                 }, label: {
                     VStack {
                         Image("LogOutImage")
-                        Capsule().frame(height: 3).foregroundColor(.clear)
+                        Capsule().frame(height: 3)
+                            .foregroundColor(.clear)
                     }
-                    
-                     
                 })
-                
                 .fixedSize()
             }
-
-            .padding(.horizontal)
+            .padding(.horizontal, 33)
             .padding(.top)
             .background(Color.gray100)
             
             if mainTabViewModel.selectedTab == .homeView {
                 HomeView()
+                    .navigationBarBackButtonHidden()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if mainTabViewModel.selectedTab == .settingView {
                 SettingView()
+                    .navigationBarBackButtonHidden()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
             } else if mainTabViewModel.selectedTab == .reportView {
                 ReportView()
+                    .navigationBarBackButtonHidden()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
