@@ -8,7 +8,7 @@
 import SwiftUI
 import DotLottie
 
-struct loadingView: View {
+struct LoadingView: View {
     var body: some View {
         VStack {
             Spacer()
@@ -30,5 +30,5 @@ struct loadingView: View {
 }
 
 #Preview {
-    loadingView()
+    LoadingView()
 }

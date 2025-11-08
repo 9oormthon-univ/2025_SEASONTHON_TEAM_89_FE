@@ -48,8 +48,8 @@ struct OnboardingView: View {
                 case .planView:
                     PlanView()
                         .navigationBarBackButtonHidden()
-                case .watingView:
-                    WatingView()
+                case .waitingView:
+                    WaitingView()
                         .navigationBarBackButtonHidden()
                 }
                 

@@ -49,7 +49,7 @@ struct LoginView: View {
         }
         .overlay {
             if loginViewModel.isLoading {
-                loadingView()
+                LoadingView()
             }
         }
     }

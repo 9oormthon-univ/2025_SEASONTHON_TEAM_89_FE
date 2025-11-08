@@ -1,5 +1,5 @@
 //
-//  WatingView.swift
+//  WaitingView.swift
 //  WatchOut
 //
 //  Created by 어재선 on 9/7/25.
@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import DotLottie
 
-struct WatingView: View {
+struct WaitingView: View {
     @EnvironmentObject var pathModel: PathModel
     var body: some View {
         VStack {
@@ -41,5 +41,5 @@ struct WatingView: View {
 }
 
 #Preview {
-    WatingView()
+    WaitingView()
 }

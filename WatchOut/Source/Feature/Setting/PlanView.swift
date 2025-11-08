@@ -59,7 +59,7 @@ struct PlanView: View {
             Spacer()
                 .frame(height: 24)
             Button {
-                pathModel.paths.append(.watingView)
+                pathModel.paths.append(.waitingView)
             } label: {
                 HStack {
                     Spacer()

@@ -12,5 +12,5 @@ enum PathType: Hashable {
   case joinGroupView
   case managementGroupView
   case planView
-  case watingView
+  case waitingView
 }
