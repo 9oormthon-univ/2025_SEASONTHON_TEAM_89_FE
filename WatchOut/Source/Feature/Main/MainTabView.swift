@@ -13,21 +13,19 @@ struct MainTabView: View {
     @EnvironmentObject private var appState: AppState
     var body: some View {
         VStack {
-            
-            
             HStack {
                 ForEach(Tab.allCases, id: \.self) { tab in
                     Button(action: {
-                        
                         withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                             mainTabViewModel.selectedTab = tab
-                            
                         }
-                        
                     }) {
                         tabButton(for: tab)
+                        Spacer()
+                            .frame(width: 24)
                     }
-                    .buttonStyle(.plain)
+                    
+                    .fixedSize()
                 }
                 Spacer()
                 Button(action: {
@@ -42,7 +40,10 @@ struct MainTabView: View {
                     
                      
                 })
+                
+                .fixedSize()
             }
+
             .padding(.horizontal)
             .padding(.top)
             .background(Color.gray100)
@@ -64,22 +65,24 @@ struct MainTabView: View {
     private func tabButton(for tab: Tab) -> some View {
         let isSelected = (mainTabViewModel.selectedTab == tab)
         
-        VStack(spacing: 8) {
+        VStack(alignment:.center,spacing: 8) {
             Text(tab.rawValue)
                 .font(.pHeadline02)
                 .foregroundColor(isSelected ? .black : .gray)
             
             if isSelected {
-                Capsule()
+            Rectangle()
                     .frame(height: 3)
                     .foregroundColor(.black)
                 
             } else {
-                Capsule().frame(height: 3).foregroundColor(.clear)
+                Rectangle()
+                    .frame(height: 3)
+                    .foregroundColor(.clear)
             }
         }
+        
     }
-    
 }
 
 #Preview {

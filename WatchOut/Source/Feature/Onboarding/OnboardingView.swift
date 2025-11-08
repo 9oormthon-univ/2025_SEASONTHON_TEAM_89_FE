@@ -12,7 +12,7 @@ struct OnboardingView: View {
     
     @StateObject private var pathModel = PathModel()
     @StateObject private var onboardingContentViewModel = OnboardingContentViewModel()
-    @StateObject private var maintTabViewModel = MainTabViewModel()
+    
     let isOnBoarding = SharedUserDefaults.isOnboarding
    
     var body: some View {
@@ -23,7 +23,7 @@ struct OnboardingView: View {
                     case .mainTabView:
                         MainTabView()
                             .navigationBarBackButtonHidden()
-                            .environmentObject(maintTabViewModel)
+                           
                         
                     case .exprienceView:
                         ExperienceView()
