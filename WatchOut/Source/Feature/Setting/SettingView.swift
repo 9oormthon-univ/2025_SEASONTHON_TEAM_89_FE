@@ -8,42 +8,14 @@
 import SwiftUI
 
 struct SettingView: View {
-    
+    @EnvironmentObject var pathModel: PathModel
     @StateObject private var settingViewModel = SettingViewModel()
     var body: some View {
         VStack {
-            VStack(alignment: .leading) {
-                Text("\(UserManager.shared.currentUser?.nickname ?? "")님은")
-                    .font(.pBody02)
-                HStack {
-                    Text("Basic 플랜")
-                        .font(.pHeadline02)
-                        .foregroundStyle(.main)
-                    Text("사용 중이에요")
-                        .font(.pBody02)
-                    Spacer()
-                    Text("더 알아보기 >")
-                        .font(.pCaption01)
-                        .foregroundStyle(.gray400)
+            PlanbarView()
+                .onTapGesture {
+                    pathModel.paths.append(.planView)
                 }
-            }
-            .padding(20)
-            .overlay {
-                RoundedRectangle(cornerRadius: 14)
-                    .strokeBorder(
-                        LinearGradient(
-                            stops: [
-                                .init(color: .orange, location: 0.0),
-                                .init(color: .red, location: 0.59),
-                                .init(color: .purple, location: 1.0)
-                            ],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
-            }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 32)
             
             Group{
                 SubTitle(text: "경고 아이콘 색상 변경")
@@ -83,6 +55,46 @@ struct SettingView: View {
  
     }
 }
+
+// MARK: - planView
+private struct PlanbarView: View {
+    fileprivate var body: some View {
+        VStack(alignment: .leading) {
+            Text("\(UserManager.shared.currentUser?.nickname ?? "")님은")
+                .font(.pBody02)
+            HStack {
+                Text("Basic 플랜")
+                    .font(.pHeadline02)
+                    .foregroundStyle(.main)
+                Text("사용 중이에요")
+                    .font(.pBody02)
+                Spacer()
+                Text("더 알아보기 >")
+                    .font(.pCaption01)
+                    .foregroundStyle(.gray400)
+            }
+        }
+        .padding(20)
+        .overlay {
+            RoundedRectangle(cornerRadius: 14)
+                .strokeBorder(
+                    LinearGradient(
+                        stops: [
+                            .init(color: .orange, location: 0.0),
+                            .init(color: .red, location: 0.59),
+                            .init(color: .purple, location: 1.0)
+                        ],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+        }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 32)
+    }
+}
+
+
 // MARK: - SheetView
 private struct SheetView: View {
     @ObservedObject var settingViewModel: SettingViewModel

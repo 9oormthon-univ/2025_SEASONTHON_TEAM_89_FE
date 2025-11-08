@@ -10,8 +10,18 @@ import SwiftUI
 import DotLottie
 
 struct WatingView: View {
+    @EnvironmentObject var pathModel: PathModel
     var body: some View {
         VStack {
+            HStack {
+                Spacer()
+                Button(action: {
+                    pathModel.paths.removeLast()
+                }) {
+                    Image("close")
+                }
+            }
+            .padding(.horizontal,20)
             Spacer()
                 .frame(height: 200)
             

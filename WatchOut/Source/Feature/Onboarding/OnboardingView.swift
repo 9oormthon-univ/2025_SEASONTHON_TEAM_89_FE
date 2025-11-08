@@ -45,6 +45,12 @@ struct OnboardingView: View {
                 case .managementGroupView:
                     ManagementGroupView()
                         .navigationBarBackButtonHidden()
+                case .planView:
+                    PlanView()
+                        .navigationBarBackButtonHidden()
+                case .watingView:
+                    WatingView()
+                        .navigationBarBackButtonHidden()
                 }
                 
             })
