@@ -14,7 +14,7 @@ struct CreateGroupView: View {
     var body: some View {
         VStack {
             CustomNavigationBar(leftBtnAction: {
-                pathModel.paths.removeLast()
+                _ = pathModel.paths.popLast()
             }, leftTitle: "")
             ScrollView {
                 HStack(alignment: .bottom) {
@@ -114,7 +114,7 @@ struct CreateGroupView: View {
         }
         .onChange(of: groupViewModel.isCreate) {
             if groupViewModel.isCreate {
-                pathModel.paths.removeLast()
+                _ = pathModel.paths.popLast()
                 pathModel.paths.append(.managementGroupView)
             }
         }
@@ -124,7 +124,7 @@ struct CreateGroupView: View {
         }
         .alert("오류", isPresented: $groupViewModel.showError) {
             Button("확인", role: .cancel) {
-                    pathModel.paths.removeLast()
+                _ = pathModel.paths.popLast()
             }
         } message: {
             Text(groupViewModel.errorMessage)

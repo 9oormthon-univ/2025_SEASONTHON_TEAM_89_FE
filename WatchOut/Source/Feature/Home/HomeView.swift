@@ -35,7 +35,7 @@ struct HomeView: View {
             HStack(spacing: 8) {
                 
                 if SharedUserDefaults.isCreateGroup {
-                    GroupBoxRowView(title: "내 그룹 관리", imageName: "maingroup3")
+                    GroupManagementRowView(title: "그룹 관리", subTitle: "가족과 함꼐 지켜봐요", imageName: "maingroup3")
                         .onTapGesture {
                             pathModel.paths.append(.managementGroupView)
                         }
@@ -44,7 +44,7 @@ struct HomeView: View {
                         .onTapGesture {
                             pathModel.paths.append(.createGroupView)
                         }
-    
+                    
                     GroupBoxRowView(title: "그룹 입장하기", imageName: "maingroup2")
                         .onTapGesture {
                             pathModel.paths.append(.joinGroupView)
@@ -53,8 +53,13 @@ struct HomeView: View {
                 
                 
             }
-            .padding(.horizontal, 20)
             
+            
+            .overlay {
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(.gray300, lineWidth: 1)
+            }
+            .padding(.horizontal, 20)
             Spacer()
                 .frame(height: 36)
             ExperienceListView()
@@ -83,7 +88,7 @@ struct HomeView: View {
 
 //MARK: - TitleView
 private struct TitleView: View {
- 
+    
     fileprivate var body: some View {
         HStack{
             VStack(alignment: .leading) {
@@ -95,7 +100,7 @@ private struct TitleView: View {
                     
                     Image("star")
                         .foregroundStyle(.main)
-                        
+                    
                     
                 }.offset(y: -15)
             }
@@ -147,7 +152,7 @@ private struct StatusRoundRectangle: View {
                 
             }
             .padding()
-
+            
         }
     }
     
@@ -180,12 +185,37 @@ private struct GroupBoxRowView: View {
             }
             Spacer()
         }
-        .frame(height: 120)
+        .padding(20)
         .overlay {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(.gray300, lineWidth: 1)
         }
-        
+    }
+}
+
+// MARK: - GroupManagementRowView
+
+private struct GroupManagementRowView: View {
+    let title: String
+    let subTitle: String
+    let imageName: String
+    fileprivate var body: some View {
+        HStack {
+            Spacer()
+            Image(imageName)
+            Spacer()
+                .frame(width:15)
+            VStack(alignment: .leading){
+                
+                Text(title)
+                    .font(.pBody02)
+                Text(subTitle)
+                    .font(.pCaption01)
+                    .foregroundStyle(.gray400)
+            }
+            Spacer()
+        }
+        .padding(20)
         
     }
 }

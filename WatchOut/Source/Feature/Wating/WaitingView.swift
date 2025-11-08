@@ -16,7 +16,7 @@ struct WaitingView: View {
             HStack {
                 Spacer()
                 Button(action: {
-                    pathModel.paths.removeLast()
+                    _ = pathModel.paths.popLast()
                 }) {
                     Image("close")
                 }

@@ -13,7 +13,7 @@ struct JoinGroupView: View {
     var body: some View {
         VStack {
             CustomNavigationBar(leftBtnAction: {
-                pathModel.paths.removeLast()
+                _ = pathModel.paths.popLast()
             }, leftTitle: "")
             ScrollView{
                 HStack(alignment: .bottom) {
@@ -119,7 +119,7 @@ struct JoinGroupView: View {
             self.endTextEditing()
         }
         .onChange(of: groupViewModel.isJoinGroup) {
-            pathModel.paths.removeLast()
+            _ = pathModel.paths.popLast()
             pathModel.paths.append(.managementGroupView)
         }
         .onDisappear {
@@ -128,7 +128,7 @@ struct JoinGroupView: View {
         }
         .alert("오류", isPresented: $groupViewModel.showError) {
                     Button("확인", role: .cancel) {
-                            pathModel.paths.removeLast()
+                        _ = pathModel.paths.popLast()
                     }
                 } message: {
                     Text(groupViewModel.errorMessage)
