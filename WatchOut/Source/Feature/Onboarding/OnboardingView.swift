@@ -14,58 +14,53 @@ struct OnboardingView: View {
     @StateObject private var onboardingContentViewModel = OnboardingContentViewModel()
     
     let isOnBoarding = SharedUserDefaults.isOnboarding
-   
+    
     var body: some View {
         NavigationStack(path: $pathModel.paths) {
-                OnboardingContentView(onboardingViewModel: onboardingContentViewModel)
-                .navigationDestination(for: PathType.self, destination: { pathType in
-                    switch pathType {
-                    case .mainTabView:
-                        MainTabView()
-                            .navigationBarBackButtonHidden()
-                           
-                        
-                    case .exprienceView:
-                        ExperienceView()
-                            .navigationBarBackButtonHidden()
-                    case .createGroupView:
-                        CreateGroupView()
-                            .navigationBarBackButtonHidden()
-
-                    case .joinGroupView:
-                        JoinGroupView()
-                            .navigationBarBackButtonHidden()
-
-        
-                    case .managementGroupView:
-                        ManagementGroupView()
-                            .navigationBarBackButtonHidden()
-
-                    }
+            Group {
+                if isOnBoarding {
+                    MainTabView()
+                } else {
+                    OnboardingContentView(onboardingViewModel: onboardingContentViewModel)
+                }
+            }
+            .navigationDestination(for: PathType.self, destination: { pathType in
+                switch pathType {
+                case .mainTabView:
+                    MainTabView()
+                        .navigationBarBackButtonHidden()
                     
-                })
-        }
-        .onAppear{
-            if isOnBoarding {
-                DispatchQueue.main.async{
-                    pathModel.paths.append(.mainTabView)
+                case .exprienceView:
+                    ExperienceView()
+                        .navigationBarBackButtonHidden()
+                case .createGroupView:
+                    CreateGroupView()
+                        .navigationBarBackButtonHidden()
+                    
+                case .joinGroupView:
+                    JoinGroupView()
+                        .navigationBarBackButtonHidden()
+                    
+                    
+                case .managementGroupView:
+                    ManagementGroupView()
+                        .navigationBarBackButtonHidden()
                 }
                 
-            }
+            })
         }
         .environmentObject(pathModel)
-       
+        
     }
-   
 }
 
 //MARK: - OnboardingContentView
 private struct OnboardingContentView: View {
     @ObservedObject private var onboardingViewModel: OnboardingContentViewModel
     
-      fileprivate init(onboardingViewModel: OnboardingContentViewModel) {
+    fileprivate init(onboardingViewModel: OnboardingContentViewModel) {
         self.onboardingViewModel = onboardingViewModel
-      }
+    }
     fileprivate var body: some View {
         ZStack {
             if !onboardingViewModel.getIsKeyboardEnabled() {
@@ -91,7 +86,7 @@ private struct OnboardingContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
             onboardingViewModel.checkKeyboardStatus()
         }
-
+        
     }
     
     
@@ -148,7 +143,7 @@ private struct OnboardingSecondView: View {
             }
             
             VStack {
-               
+                
                 Spacer()
                 
                 Button {
@@ -159,9 +154,9 @@ private struct OnboardingSecondView: View {
                         Text("선택완료")
                             .font(.pHeadline02)
                             .foregroundColor(.white)
-                            
+                        
                             .frame(maxWidth: .infinity)
-                            
+                        
                     }
                     
                 }
@@ -170,7 +165,7 @@ private struct OnboardingSecondView: View {
                 
                 TextField("", text: $hiddenText)
                     .focused($focusedField, equals: .hiddenTextField)
-
+                
                     .opacity(0)
                     .allowsHitTesting(false)
                     .frame(height: 39)
