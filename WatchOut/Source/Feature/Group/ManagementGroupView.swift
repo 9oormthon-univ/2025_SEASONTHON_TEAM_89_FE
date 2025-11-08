@@ -79,7 +79,7 @@ struct ManagementGroupView: View {
         }
         .overlay {
             if groupViewModel.isLoading {
-                WatingView()
+                loadingView()
                     .background(Color.black.opacity(0.1))
                     .scaledToFill()
             }

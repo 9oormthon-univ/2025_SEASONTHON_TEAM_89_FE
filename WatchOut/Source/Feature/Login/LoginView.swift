@@ -18,7 +18,7 @@ struct LoginView: View {
                 Spacer()
                     .frame(height: 100)
                 Image("status1")
-                    .foregroundStyle(.riskColor2)
+                    .foregroundStyle(.riskColor1)
                 Text("환영합니다.")
                     .font(.gHeadline01)
                 Spacer()
@@ -49,7 +49,7 @@ struct LoginView: View {
         }
         .overlay {
             if loginViewModel.isLoading {
-                WatingView()
+                loadingView()
             }
         }
     }
