@@ -139,13 +139,13 @@ struct KeyboardView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 25)
-                        .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel3Color)"))
+                        .foregroundStyle(Color("Risk1Color\(SharedUserDefaults.riskLevel3Color)"))
                 } else {
                     Image("status2")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 25)
-                        .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel3Color)"))
+                        .foregroundStyle(Color("Risk1Color\(SharedUserDefaults.riskLevel3Color)"))
                 }
                 
             }

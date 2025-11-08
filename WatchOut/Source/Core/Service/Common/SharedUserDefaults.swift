@@ -180,7 +180,7 @@ struct SharedUserDefaults {
     static var riskLevel2Color: String {
         get {
             // 기본값: "orange"
-            return shared.string(forKey: SettingsKey.riskLevel2Color.rawValue) ?? "2"
+            return shared.string(forKey: SettingsKey.riskLevel2Color.rawValue) ?? "1"
         }
         set {
             shared.set(newValue, forKey: SettingsKey.riskLevel2Color.rawValue)
