@@ -48,12 +48,12 @@ struct SettingView: View {
             Group{
                 SubTitle(text: "경고 아이콘 색상 변경")
                 VStack(spacing: 20){
-                    ColorPickerView(settingViewModel: settingViewModel, iconName: "status1", text: "주의", status: .warning)
+                    ColorPickerView(settingViewModel: settingViewModel, iconName: "status1", text: "주의 색상", status: .warning)
                         .onTapGesture {
                             settingViewModel.isShowSheet = true
                             settingViewModel.setStatus(status: .warning)
                         }
-                    ColorPickerView(settingViewModel: settingViewModel, iconName: "status2", text: "위험", status: .danger)
+                    ColorPickerView(settingViewModel: settingViewModel, iconName: "status2", text: "위험 색상", status: .danger)
                         .onTapGesture {
                             settingViewModel.isShowSheet = true
                                 settingViewModel.setStatus(status: .danger)
@@ -163,16 +163,19 @@ private struct ColorPickerView: View {
     let status: Status
     fileprivate var body: some View {
         HStack {
+            
+            Text(text)
+                .font(.pBody02)
+            Spacer()
+            
             Image(iconName)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 36)
             
                 .foregroundStyle(Color( status == .danger ? "Risk1Color\(settingViewModel.getRiskLevelColor(level: status))" : "RiskColor\(settingViewModel.getRiskLevelColor(level: status))"))
-            Text(text)
-                .font(.pBody02)
-            Spacer()
             Image(systemName: "chevron.down")
+                .foregroundStyle(.gray500)
             
         }
     }
