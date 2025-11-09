@@ -1,15 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "mainimage2.svg",
+      "filename" : "login.svg",
       "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "preserves-vector-representation" : true
   }
 }
