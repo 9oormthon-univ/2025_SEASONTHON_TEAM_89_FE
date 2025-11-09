@@ -23,6 +23,7 @@ struct LoadingView: View {
             }
             Spacer()
         }
+        .onAppear(perform: UserManager.shared.loadUserFromUserDefaults)
         .background(Color(.systemBackground))
 
     }

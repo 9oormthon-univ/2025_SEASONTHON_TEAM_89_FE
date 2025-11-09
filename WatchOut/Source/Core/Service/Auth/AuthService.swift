@@ -27,4 +27,16 @@ final class AuthService {
             }
             .eraseToAnyPublisher()
     }
+    
+    func kakaoDelte(userId: String) -> AnyPublisher<Void, Error> {
+        return provider.requestPublisher(.kakaoDelete(request:KakaoDeleteRequest(userId: userId)))
+            .tryMap { response in
+                guard (200...299).contains(response.statusCode) else {
+                    throw MoyaError.statusCode(response)
+                }
+            }
+            .eraseToAnyPublisher()
+       
+    }
+    
 }

@@ -67,9 +67,12 @@ struct HomeView: View {
                 .padding(.horizontal, 20)
         }
         .onAppear {
-            UserManager.shared.loadUserFromUserDefaults()
+            DispatchQueue.main.async {
+                UserManager.shared.loadUserFromUserDefaults()
+            }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                NotificationManager.instance.requestAuthorization()
+                UserManager.shared.loadUserFromUserDefaults()
+
             }
         }
     }
@@ -78,14 +81,14 @@ struct HomeView: View {
 
 //MARK: - TitleView
 private struct TitleView: View {
-    
+    @State var username: String? = UserManager.shared.currentUser?.nickname
     fileprivate var body: some View {
         HStack{
             VStack(alignment: .leading) {
                 Spacer()
                     .frame(height: 20)
                 HStack{
-                    Text("\(UserManager.shared.currentUser?.nickname ?? "위허메")님 환영해요")
+                    Text("\(username ?? "위허메")님 환영해요")
                         .font(.gHeadline01)
                     
                     Image("star")

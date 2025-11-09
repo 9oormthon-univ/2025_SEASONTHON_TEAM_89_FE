@@ -15,3 +15,11 @@ struct KakaoLoginRequest: Codable {
         case DeviceType = "device_token"
     }
 }
+
+struct KakaoDeleteRequest: Codable {
+    let userId: String
+    
+    enum CodingKeys: String, CodingKey {
+        case userId = "user_id"
+    }
+}

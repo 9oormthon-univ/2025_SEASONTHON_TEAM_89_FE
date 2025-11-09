@@ -60,7 +60,12 @@ struct MainTabView: View {
                 .alert("탈퇴하시겠습니까?", isPresented: $mainTabViewModel.showDeleteAccountAlert) {
                     Button("취소", role: .cancel) { }
                     Button("탈퇴하기", role: .destructive) {
-                        // 탈퇴 API 호출
+                        mainTabViewModel.loginDelete() {
+                            appState.isLoggedIn = false
+                            TokenManager.shared.clearAllTokens()
+                            UserManager.shared.clearUser()
+                        }
+                        
                     }
                 } message: {
                     Text("탈퇴하시면 계정이 영구적으로 삭제됩니다.")

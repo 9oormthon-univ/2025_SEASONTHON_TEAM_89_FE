@@ -55,6 +55,7 @@ struct OnboardingView: View {
                 
             })
         }
+        .onAppear(perform: UserManager.shared.loadUserFromUserDefaults)
         .environmentObject(pathModel)
         
     }

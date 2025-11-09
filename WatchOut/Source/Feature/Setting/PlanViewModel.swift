@@ -10,5 +10,5 @@ import Foundation
 class PlanViewModel: ObservableObject {
     @Published var selectedType: PlanType = .individual
     @Published var selectedPlan: String = ""
-    @Published var isCurrentlyUsed: String = Individual.basic.rawValue
+    @Published var isCurrentlyUsed: String = Family.familyA.rawValue
 }

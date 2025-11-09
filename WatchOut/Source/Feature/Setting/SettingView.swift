@@ -63,7 +63,7 @@ private struct PlanbarView: View {
             Text("\(UserManager.shared.currentUser?.nickname ?? "")님은")
                 .font(.pBody02)
             HStack {
-                Text("Basic 플랜")
+                Text("Family 플랜")
                     .font(.pHeadline02)
                     .foregroundStyle(.main)
                 Text("사용 중이에요")

@@ -32,7 +32,7 @@ extension GroupAPI: TargetType{
             return "/leave/\(userID)"
         case .infoGroup(userID: let userID):
             return "info/\(userID)"
-        case .verify(verifyRequest: let verifyRequest):
+        case .verify:
             return "/verify"
         }
     }

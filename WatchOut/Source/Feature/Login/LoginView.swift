@@ -47,6 +47,9 @@ struct LoginView: View {
                     .frame(height: 20)
             }
         }
+        .onChange(of: appState.isLoggedIn) {
+            UserManager.shared.loadUserFromUserDefaults()
+        }
         .overlay {
             if loginViewModel.isLoading {
                 LoadingView()
