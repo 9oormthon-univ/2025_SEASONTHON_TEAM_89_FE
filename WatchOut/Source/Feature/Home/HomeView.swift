@@ -9,20 +9,21 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject private var pathModel: PathModel
+    @StateObject private var homeViewModel = HomeViewModel()
     
     var body: some View {
         ScrollView(showsIndicators: false){
             Spacer()
                 .frame(height: 20)
-            TitleView()
+            TitleView(homeViewModel: homeViewModel)
                 .padding(.horizontal, 20)
             
             Spacer()
                 .frame(height: 34)
             
             HStack(spacing: 8) {
-                StatusRoundRectangle(iconName: "warningcountIcon", status: .warning, count: SharedUserDefaults.riskLevel2Count)
-                StatusRoundRectangle(iconName: "dangercountIcon1", status: .danger, count: SharedUserDefaults.riskLevel3Count)
+                StatusRoundRectangle(iconName: "warningcountIcon", status: .warning, count: homeViewModel.risk2Count)
+                StatusRoundRectangle(iconName: "dangercountIcon1", status: .danger, count: homeViewModel.risk3Count)
             } .padding(.horizontal, 20)
             Spacer()
                 .frame(height: 34)
@@ -68,27 +69,28 @@ struct HomeView: View {
         }
         .onAppear {
             DispatchQueue.main.async {
-                UserManager.shared.loadUserFromUserDefaults()
+                homeViewModel.loadData()
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 UserManager.shared.loadUserFromUserDefaults()
 
             }
         }
+        
     }
 }
 
 
 //MARK: - TitleView
 private struct TitleView: View {
-    @State var username: String? = UserManager.shared.currentUser?.nickname
+    @ObservedObject var homeViewModel: HomeViewModel
     fileprivate var body: some View {
         HStack{
             VStack(alignment: .leading) {
                 Spacer()
                     .frame(height: 20)
                 HStack{
-                    Text("\(username ?? "위허메")님 환영해요")
+                    Text("\(homeViewModel.username)님 환영해요")
                         .font(.gHeadline01)
                     
                     Image("star")
@@ -153,6 +155,7 @@ private struct StatusRoundRectangle: View {
             
         }
         .background(status == .warning ? .main.opacity(0.08) : .risk1Color1.opacity(0.08))
+        .cornerRadius(16, corners: .allCorners)
         .overlay {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(status == .warning ? .main : .risk1Color1, lineWidth: 1)

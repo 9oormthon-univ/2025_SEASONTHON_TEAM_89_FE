@@ -17,6 +17,12 @@ class MainTabViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     @Published var isLoading: Bool = false
 
+    
+    
+    init(selectedTab: Tab = .homeView) {
+        self.selectedTab = selectedTab
+    }
+    
     func loginDelete(completion: @escaping () -> Void) {
         guard let userId = UserManager.shared.currentUser?.userId else { return }
         
@@ -48,8 +54,4 @@ class MainTabViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    
-    init(selectedTab: Tab = .homeView) {
-        self.selectedTab = selectedTab
-    }
 }

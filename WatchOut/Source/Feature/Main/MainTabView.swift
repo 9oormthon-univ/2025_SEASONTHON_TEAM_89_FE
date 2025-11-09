@@ -17,7 +17,10 @@ struct MainTabView: View {
                 ForEach(Tab.allCases, id: \.self) { tab in
                     Button(action: {
                         withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
-                            mainTabViewModel.selectedTab = tab
+                            DispatchQueue.main.async {
+                                mainTabViewModel.selectedTab = tab
+                            }
+                            
                         }
                     }) {
                         tabButton(for: tab)

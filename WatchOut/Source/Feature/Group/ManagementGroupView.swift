@@ -167,9 +167,12 @@ private struct UserInfoView: View {
                     .padding(.horizontal,20)
                     .alert(isPresented: $groupViewModel.isLeave) {
                         Alert(title: Text("그룹을 해체하시겠습니까?"), message: Text("그룹을 해체하면 모든 그룹원이 강퇴됩니다."), primaryButton: .destructive(Text("나가기"), action: {
-                            groupViewModel.LeaveGorupAction()
-                            _ = pathModel.paths.popLast()
-                            groupViewModel.isCreate = false
+                            DispatchQueue.main.async {
+                                groupViewModel.LeaveGorupAction()
+                                _ = pathModel.paths.popLast()
+                                groupViewModel.isCreate = false
+                            }
+                            
                         }), secondaryButton: .cancel(Text("취소")))
                     }
                 } else {
@@ -182,9 +185,12 @@ private struct UserInfoView: View {
                         }
                         .alert(isPresented: $groupViewModel.isLeave) {
                             Alert(title: Text("그룹을 나가시겠습니까?"), primaryButton: .destructive(Text("나가기"), action: {
-                                groupViewModel.LeaveGorupAction()
-                                _ = pathModel.paths.popLast()
-                                groupViewModel.isCreate = false
+                                DispatchQueue.main.async {
+                                    groupViewModel.LeaveGorupAction()
+                                    _ = pathModel.paths.popLast()
+                                    groupViewModel.isCreate = false
+                                }
+                                
                             }), secondaryButton: .cancel(Text("취소")))
                         }
                     
