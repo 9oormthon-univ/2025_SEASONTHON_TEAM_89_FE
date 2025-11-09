@@ -11,6 +11,7 @@ import Moya
 // 'Auth' 관련 API를 모아놓은 enum입니다.
 enum AuthAPI {
     case kakaoLogin(request: KakaoLoginRequest)
+    case kakaoDelete(request: KakaoDeleteRequest)
     
     // case appleLogin(token: String) // 추후 애플 로그인 추가 시
     // case tokenRefresh(refreshToken: String) // 추후 토큰 리프레시 추가 시
@@ -28,7 +29,10 @@ extension AuthAPI: TargetType {
         switch self {
         case .kakaoLogin:
             return "/kakao/token" // 카카오 로그인 API 경로
+        case .kakaoDelete:
+            return "/kakao/delete"
         }
+        
     }
 
     // 3. HTTP Method (get, post, put, delete)
@@ -36,6 +40,8 @@ extension AuthAPI: TargetType {
         switch self {
         case .kakaoLogin:
             return .post
+        case .kakaoDelete(_):
+            return .delete
         }
     }
 
@@ -43,6 +49,8 @@ extension AuthAPI: TargetType {
     var task: Moya.Task {
         switch self {
         case .kakaoLogin(let request):     
+            return .requestJSONEncodable(request)
+        case .kakaoDelete(let request):
             return .requestJSONEncodable(request)
         }
     }

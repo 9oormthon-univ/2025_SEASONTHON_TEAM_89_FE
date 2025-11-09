@@ -11,15 +11,13 @@ import Combine
 import KakaoSDKUser
 
 final class LoginViewModel: ObservableObject {
-    
-    // ❌ @Published var isLoggedIn 과 init() 을 모두 제거합니다.
-    
-    private let authService = AuthService() // NetworkService를 AuthService로 사용하시는 것으로 보입니다.
-    private var cancellables = Set<AnyCancellable>()
 
+    
+    private let authService = AuthService()
+    private var cancellables = Set<AnyCancellable>()
+    @Published var isLoading: Bool = false
     // MARK: - 로그인 처리 함수
     
-    /// 카카오 로그인 전체 과정을 처리하고, 성공 여부를 completion 핸들러로 반환합니다.
     func handleKakaoLogin(completion: @escaping (_ success: Bool) -> Void) {
         if UserApi.isKakaoTalkLoginAvailable() {
             loginWithKakaoTalk(completion: completion)
@@ -55,8 +53,12 @@ final class LoginViewModel: ObservableObject {
     }
     
     private func requestLoginToServer(with kakaoToken: String, completion: @escaping (_ success: Bool) -> Void) {
+        isLoading = true
         authService.kakaoLogin(token: kakaoToken)
-            .sink { result in
+            .sink { [weak self]
+                result in
+                guard let self = self else { return }
+                self.isLoading = false
                 switch result {
                 case .finished:
                     break // 성공 케이스는 receiveValue에서 처리
@@ -68,7 +70,6 @@ final class LoginViewModel: ObservableObject {
                 // 서버로부터 받은 토큰을 키체인에 저장
                 UserManager.shared.setCurrentUser(loginResponse.user)
                 TokenManager.shared.saveAccessToken(loginResponse.accessToken)
-                
                 print("서버 로그인 성공! 사용자: \(loginResponse.user.nickname)")
 
                 // ✅ 모든 과정이 성공했으므로 true를 반환

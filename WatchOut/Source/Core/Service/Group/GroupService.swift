@@ -12,15 +12,22 @@ protocol GroupServiceType {
     func joinGroup(joinGroup: JoinGorupRequest, completion: @escaping (Result<Void, APIError>) -> Void)
     func leaveGroup(userID: String, completion: @escaping (Result<Void, APIError>) -> Void)
     func infoGroup(userID: String, completion: @escaping (Result<InfoGroupRespose, APIError>) -> Void)
+    func verifyGroupCode(groupCode: VerifyRequest, completion: @escaping(Result<VerifyResponse,APIError>) -> Void)
 }
 
 class GroupService: GroupServiceType {
+   
+    
     
     static let shared = GroupService()
     
     private let provider = MoyaProvider<GroupAPI>(
         plugins: [MoyaLoggingPlugin()]
     )
+    
+    func verifyGroupCode(groupCode: VerifyRequest, completion: @escaping (Result<VerifyResponse, APIError>) -> Void) {
+        provider.requestWithValidation(.verify(verifyRequest: groupCode), completion: completion)
+    }
     
     // MARK: - Join Group (Void 응답)
     func joinGroup(

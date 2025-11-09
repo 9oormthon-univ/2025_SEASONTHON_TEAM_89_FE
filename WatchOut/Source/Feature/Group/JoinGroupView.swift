@@ -13,7 +13,7 @@ struct JoinGroupView: View {
     var body: some View {
         VStack {
             CustomNavigationBar(leftBtnAction: {
-                pathModel.paths.removeLast()
+                _ = pathModel.paths.popLast()
             }, leftTitle: "")
             ScrollView{
                 HStack(alignment: .bottom) {
@@ -46,18 +46,31 @@ struct JoinGroupView: View {
                         Spacer()
                     }
                     
-                    TextField("사용할 별명을 입력하세요", text: $groupViewModel.userName)
+                    TextField(groupViewModel.user.nickname, text: $groupViewModel.userName)
                         .font(.pBody01)
                         .padding()
-                        .background()
+                        .background(groupViewModel.userNameMessage.isEmpty  ? .white : .red.opacity(0.1))
                         .cornerRadius(47)
                         .overlay {
                             RoundedRectangle(cornerRadius: 47)
-                                .stroke(.gray300,lineWidth: 1)
+                                .stroke(groupViewModel.userNameMessage.isEmpty  ? .gray300 : .red ,lineWidth: 1)
                         }
-                    
-                    Spacer()
-                        .frame(height: 50)
+                    ZStack {
+                        Spacer()
+                            .frame(height: 50)
+                        VStack {
+                            HStack{
+                                if !groupViewModel.userNameMessage.isEmpty {
+                                    Text(groupViewModel.userNameMessage)
+                                        .font(.pCaption01)
+                                        .foregroundColor(.red)
+                                    Spacer()
+                                        
+                                }
+                            }
+                            Spacer()
+                        }
+                    }
                     
                     VStack {
                         HStack {
@@ -83,14 +96,33 @@ struct JoinGroupView: View {
                         .padding(
                             
                         )
-                        .background()
+                        .background(groupViewModel.groupCodeMessage.contains("존재하지 않는 코드입니다") ? .red.opacity(0.1) : .white)
                         .cornerRadius(47)
                         .overlay {
                             RoundedRectangle(cornerRadius: 47)
-                                .stroke(.gray300,lineWidth:     1)
+                                .stroke(groupViewModel.groupCodeMessage.contains("존재하지 않는 코드입니다") ? .red : .gray300, lineWidth:1)
                         }
-                    Spacer()
-                        .frame(height: 200)
+                    ZStack {
+                        Spacer()
+                            .frame(height: 200)
+                        VStack {
+                            HStack{
+                                if groupViewModel.isValidGroupCodeLoding {
+                                    ProgressView()
+                                } else {
+                                    if !groupViewModel.groupCodeMessage.isEmpty {
+                                        Text(groupViewModel.groupCodeMessage)
+                                            .font(.pCaption01)
+                                            .foregroundColor(groupViewModel.groupCodeMessage.contains("존재하지 않는 코드입니다") ? .red : .green)
+                                        
+                                            
+                                    }
+                                }
+                                Spacer()
+                            }
+                            Spacer()
+                        }
+                    }
                     Button {
                         groupViewModel.joinGroupAction()
                         
@@ -103,7 +135,8 @@ struct JoinGroupView: View {
                         Spacer()
                     
                     }
-                    .background(.main)
+                    .disabled(!groupViewModel.isJoinButtonEnabled)
+                    .background(groupViewModel.isJoinButtonEnabled ? .main : .gray400)
                     .cornerRadius(8)
                     Spacer()
                         .frame(height: 10)
@@ -119,7 +152,7 @@ struct JoinGroupView: View {
             self.endTextEditing()
         }
         .onChange(of: groupViewModel.isJoinGroup) {
-            pathModel.paths.removeLast()
+            _ = pathModel.paths.popLast()
             pathModel.paths.append(.managementGroupView)
         }
         .onDisappear {
@@ -128,7 +161,7 @@ struct JoinGroupView: View {
         }
         .alert("오류", isPresented: $groupViewModel.showError) {
                     Button("확인", role: .cancel) {
-                            pathModel.paths.removeLast()
+                        _ = pathModel.paths.popLast()
                     }
                 } message: {
                     Text(groupViewModel.errorMessage)

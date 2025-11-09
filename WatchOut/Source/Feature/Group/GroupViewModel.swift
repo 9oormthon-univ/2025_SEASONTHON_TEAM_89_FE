@@ -6,13 +6,26 @@
 //
 
 import Foundation
+import Combine
 
 class GroupViewModel: ObservableObject {
     
     @Published var groupName: String
+    @Published var groupNameMessage: String = ""
+    @Published var isValidGroupName: Bool = false
+    
     @Published var userName: String
+    @Published var userNameMessage: String = ""
+    @Published var isValidUserName: Bool = false
+    
     @Published var selectUser: String
     @Published var groupCode: String
+    @Published var groupCodeMessage: String = ""
+    @Published var isValidGroupCode: Bool = false
+    @Published var isValidGroupCodeLoding: Bool = false
+    
+    @Published var isCreateButtonEnabled: Bool = false
+    @Published var isJoinButtonEnabled: Bool = false
     @Published var user: User
     @Published var selectMembers: Member = .init(
         userID: "",
@@ -40,6 +53,9 @@ class GroupViewModel: ObservableObject {
     private var service = GroupService.shared
     private var userManager = UserManager.shared
     private var timer: Timer?
+    
+    private var cancellables = Set<AnyCancellable>()
+    
     init(
         groupName: String = "",
         userName: String = "",
@@ -65,14 +81,83 @@ class GroupViewModel: ObservableObject {
             self.user = user
             print("저장된 유저 없음\(user)")
         }
+        $groupName
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .map { groupName in
+                if groupName.isEmpty {
+                    self.isValidGroupName = false
+                    return ""
+                } else if groupName.count > 8 {
+                    self.isValidGroupName = false
+                    return "최대 8글자 입력 가능합니다"
+                } else {
+                    self.isValidGroupName = true
+                    return ""
+                }
+            }
+            .assign(to: &$groupNameMessage)
         
+        $userName
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .map { groupName in
+                if groupName.isEmpty {
+                    self.isValidUserName = true
+                    return ""
+                } else if groupName.count > 6 {
+                    self.isValidUserName = false
+                    return "최대 6글자 입력 가능합니다"
+                } else {
+                    self.isValidUserName = true
+                    return ""
+                }
+            }
+            .assign(to: &$userNameMessage)
+        
+        $groupCode
+            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
+            .map { groupCode in
+                if groupCode.isEmpty {
+                    return ""
+                } else if groupCode.count == 10 {
+                    self.verifyGroupCode() { [weak self] in
+                        guard let self = self else { return }
+                        if self.isValidGroupCode {
+                            groupCodeMessage = "존재하는 코드입니다."
+                        } else {
+                            self.isValidGroupCode = false
+                            groupCodeMessage = "존재하지 않는 코드입니다"
+                        }
+                    }
+                    return ""
+                } else {
+                    self.isValidGroupCode = false
+                    return "존재하지 않는 코드입니다"
+                }
+            }
+            .assign(to: &$groupCodeMessage)
+        
+        Publishers.CombineLatest($isValidUserName, $isValidGroupCode)
+            .map{ valid1, valid2 in
+                    return valid1 && valid2
+            }
+            .assign(to: &$isJoinButtonEnabled)
+        
+        Publishers.CombineLatest($isValidGroupName, $isValidUserName)
+            .map{ valid1, valid2 in
+                return valid1 && valid2
+            }
+            .assign(to: &$isCreateButtonEnabled)
     }
+    
     
     
 }
 
 
 extension GroupViewModel {
+    
+    
+    
     func countMembers() -> Int {
         guard let infoGroup = self.infoGroupRespose else { return 0}
         
@@ -114,8 +199,6 @@ extension GroupViewModel {
         timer?.invalidate()
         timer = nil
     }
-    
-    
     private func joinGroup() {
         self.service.joinGroup(
             joinGroup: JoinGorupRequest(
@@ -138,6 +221,24 @@ extension GroupViewModel {
                     self.handleError(error)
                 }
             }
+        }
+    }
+    
+    private func verifyGroupCode(completion: (() -> Void)? = nil) {
+        isValidGroupCodeLoding = true
+        self.service.verifyGroupCode(groupCode: VerifyRequest(joinCode: groupCode)) { [weak self] result in
+            guard let self = self else { return }
+            isValidGroupCodeLoding = false
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.isValidGroupCode = response.isValid
+                    completion?()
+                case .failure(let error):
+                    print(error)
+                }
+            }
+            
         }
     }
     

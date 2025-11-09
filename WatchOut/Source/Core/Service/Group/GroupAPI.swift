@@ -13,6 +13,7 @@ enum GroupAPI{
     case joinGroup(joinRequest: JoinGorupRequest)
     case leveGroup(userID: String)
     case infoGroup(userID: String)
+    case verify(verifyRequest: VerifyRequest)
 }
 
 extension GroupAPI: TargetType{
@@ -31,6 +32,8 @@ extension GroupAPI: TargetType{
             return "/leave/\(userID)"
         case .infoGroup(userID: let userID):
             return "info/\(userID)"
+        case .verify:
+            return "/verify"
         }
     }
     
@@ -45,6 +48,8 @@ extension GroupAPI: TargetType{
             return .delete
         case .infoGroup(_):
             return .get
+        case .verify:
+            return .post
         }
     }
     
@@ -58,6 +63,8 @@ extension GroupAPI: TargetType{
             return .requestPlain
         case .infoGroup(_):
             return .requestPlain
+        case .verify(verifyRequest: let request):
+            return .requestJSONEncodable(request)
         }
     }
     

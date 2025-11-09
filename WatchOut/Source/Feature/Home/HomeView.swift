@@ -9,93 +9,93 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject private var pathModel: PathModel
+    @StateObject private var homeViewModel = HomeViewModel()
     
     var body: some View {
         ScrollView(showsIndicators: false){
             Spacer()
                 .frame(height: 20)
-            TitleView()
+            TitleView(homeViewModel: homeViewModel)
                 .padding(.horizontal, 20)
-            ExprienceButton()
-                .padding(.horizontal, 20)
+            
             Spacer()
-                .frame(height: 36)
+                .frame(height: 34)
             
             HStack(spacing: 8) {
-                StatusRoundRectangle(iconName: "warningcountIcon", status: .warning, count: SharedUserDefaults.riskLevel2Count)
-                StatusRoundRectangle(iconName: "dangercountIcon1", status: .danger, count: SharedUserDefaults.riskLevel3Count)
+                StatusRoundRectangle(iconName: "warningcountIcon", status: .warning, count: homeViewModel.risk2Count)
+                StatusRoundRectangle(iconName: "dangercountIcon1", status: .danger, count: homeViewModel.risk3Count)
             } .padding(.horizontal, 20)
             Spacer()
-                .frame(height: 16)
+                .frame(height: 34)
+            CustomDivider()
+            Spacer()
+                .frame(height: 34)
             GroupTitleView()
                 .padding(.horizontal, 20)
             
             Spacer()
                 .frame(height: 16)
-            HStack(spacing: 8) {
+            VStack(spacing: 8) {
                 
                 if SharedUserDefaults.isCreateGroup {
-                    GroupBoxRowView(title: "내 그릅 관리", imageName: "maingroup3")
+                    GroupBoxRowView(title: "내 그룹 관리", subTitle: "가족 그룹을 관리해 보세요", imageName: "maingroup3")
                         .onTapGesture {
                             pathModel.paths.append(.managementGroupView)
                         }
                 } else {
-                    GroupBoxRowView(title: "그룹 만들기", imageName: "maingroup1")
+                    GroupBoxRowView(title: "그룹 만들기", subTitle: "가족과 함께 지켜봐요", imageName: "person-add")
                         .onTapGesture {
                             pathModel.paths.append(.createGroupView)
                         }
-    
-                    GroupBoxRowView(title: "그룹 입장하기", imageName: "maingroup2")
+                    
+                    GroupBoxRowView(title: "그룹 입장하기", subTitle: "가족이 만든 그룹에 입장해 보세요", imageName: "login")
                         .onTapGesture {
                             pathModel.paths.append(.joinGroupView)
                         }
                 }
-                
-                
             }
-            .padding(.horizontal, 20)
-            
             Spacer()
-                .frame(height: 36)
+                .frame(height: 34)
+            CustomDivider()
+            Spacer()
+                .frame(height: 34)
+            SubTitleView(title: "플러스 플랜을 체험해봐요", subTtile: "더 나은 예방을 위해")
+                .padding(.horizontal, 20)
             ExperienceListView()
-                .padding(.horizontal,20)
-            CustomDivider()
-                .frame(maxWidth: .infinity)
-            
-            DetailSettingListView()
-                .padding(.horizontal,20)
-            CustomDivider()
             Spacer()
-            ReportListView()
-                .padding(.horizontal,20)
-            
-            
+                .frame(height: 16)
+            ExprienceButton()
+                .padding(.horizontal, 20)
         }
         .onAppear {
+            DispatchQueue.main.async {
+                homeViewModel.loadData()
+            }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                NotificationManager.instance.requestAuthorization()
+                UserManager.shared.loadUserFromUserDefaults()
+
             }
         }
         
-       
     }
 }
 
+
 //MARK: - TitleView
 private struct TitleView: View {
-    private let user = UserManager.shared.currentUser
+    @ObservedObject var homeViewModel: HomeViewModel
     fileprivate var body: some View {
         HStack{
             VStack(alignment: .leading) {
-                Text("\(user?.nickname ?? "위허메")님")
-                    .font(.gHeadline01)
+                Spacer()
+                    .frame(height: 20)
                 HStack{
-                    Text("환영해요!")
+                    Text("\(homeViewModel.username)님 환영해요")
                         .font(.gHeadline01)
                     
                     Image("star")
                         .foregroundStyle(.main)
-                        
+                    
                     
                 }.offset(y: -15)
             }
@@ -129,25 +129,36 @@ private struct StatusRoundRectangle: View {
     let status: Status
     let count: Int
     fileprivate var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 16)
-                .foregroundStyle(.gray100)
+        VStack {
+            
             HStack {
-                Image(iconName)
                 Spacer()
-                VStack(alignment: .center){
-                    Text("\(count)회")
-                        .font(.pHeadline03)
+                VStack{
+                    Image(iconName)
+                    Spacer()
+                }
+                VStack(alignment: .leading){
+                    Spacer()
+                        .frame(height: 30)
+                    Text(status.rawValue)
+                        .font(.pBody01)
+                    Text("총 \(count)회")
+                        .font(.pHeadline01)
                         .font(.system(size: 18))
                         .foregroundStyle(.main)
-                    Text(status.rawValue)
-                        .font(.pHeadline02)
+                    
                 }
                 Spacer()
-                
             }
-            .padding()
-
+            .padding(.vertical,14)
+            .padding(.horizontal,20)
+            
+        }
+        .background(status == .warning ? .main.opacity(0.08) : .risk1Color1.opacity(0.08))
+        .cornerRadius(16, corners: .allCorners)
+        .overlay {
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(status == .warning ? .main : .risk1Color1, lineWidth: 1)
         }
     }
     
@@ -158,34 +169,43 @@ private struct StatusRoundRectangle: View {
 private struct GroupTitleView: View  {
     fileprivate var body: some View {
         HStack {
-            Text("가족과 함께 사용해 보세요!")
-                .font(.pHeadline02)
+            VStack(alignment: .leading) {
+                Text("그룹 생성 및 참가")
+                    .font(.pHeadline03)
+                    .foregroundStyle(.main)
+                Text("가족과 함께 사용해 보세요!")
+                    .font(.pHeadline01)
+                Spacer()
+            }
             Spacer()
         }
+        
     }
 }
 
 // MARK: - GroupBoxRowView
 private struct GroupBoxRowView: View {
     let title: String
+    let subTitle: String
     let imageName: String
     fileprivate var body: some View {
         HStack {
-            Spacer()
-            VStack{
-                Image(imageName)
-                
+            Image(imageName)
+                .padding(8)
+                .background(.gray100.opacity(0.5))
+                .cornerRadius(12, corners: .allCorners)
+            VStack(alignment: .leading){
                 Text(title)
-                    .font(.pBody02)
+                    .font(.pBody01)
+                Text(subTitle)
+                    .font(.pCaption01)
+                    .foregroundStyle(.gray400)
             }
             Spacer()
+            Image("chevron-right-small")
         }
-        .frame(height: 120)
-        .overlay {
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(.gray300, lineWidth: 1)
-        }
-        
+        .padding(.vertical,10)
+        .padding(.horizontal,20)
         
     }
 }
@@ -193,11 +213,16 @@ private struct GroupBoxRowView: View {
 // MARK: - subTitleView
 private struct SubTitleView: View {
     let title: String
+    let subTtile: String
     fileprivate var body: some View {
         HStack {
-            Text(title)
-                .font(.pHeadline03)
-                .foregroundStyle(.main)
+            VStack(alignment: .leading) {
+                Text(subTtile)
+                    .font(.pHeadline03)
+                    .foregroundStyle(.main)
+                Text(title)
+                    .font(.pHeadline01)
+            }
             Spacer()
         }
     }
@@ -206,61 +231,47 @@ private struct SubTitleView: View {
 // MARK: - ListRowView
 private struct ListRowView: View {
     let title: String
-    let description: String
     let imageName: String
     fileprivate var body: some View {
         HStack{
-            Image(imageName)
-            VStack(alignment: .leading){
+            Spacer()
+            VStack(alignment: .center){
+                Spacer()
+                Image(imageName)
+                    .padding(.top,16)
                 Text(title)
                     .font(.pBody02)
+                    .multilineTextAlignment(.center)
                     .foregroundStyle(.black)
-                Text(description)
-                    .font(.pCaption01)
-                    .foregroundStyle(.gray400)
+                Spacer()
             }
             Spacer()
-            Image(systemName: "chevron.right")
-                .foregroundStyle(.black)
         }
-        .padding(.vertical, 8)
+        .background(.gray100.opacity(0.5))
+        .cornerRadius(16, corners: .allCorners)
     }
 }
 
 // MARK: - ExperienceListView
 private struct ExperienceListView: View {
     fileprivate var body: some View {
-        VStack {
-            SubTitleView(title: "체험 하기")
-            ListRowView(
-                title: "위험 문장 감지",
-                description: "금융사기 관련 위험 문장을 빠르게 감지해요!", imageName: "mainimage1"
-            )
-            ListRowView(title: "위험도 시각화 + 경고 진동", description: "문장의 위험도가 색상으로 표시되고 진동과 팝업으로 경고가 떠요!", imageName: "mainimage2")
-            ListRowView(title: "신고 연결", description: "리딩방, 수익보장형 사기 등 다양한 금융범죄 유형에 맞춰 맞춤 경고를 제공해요!", imageName: "mainimage3")
+        HStack {
+            let columns: [GridItem] = [
+                GridItem(.adaptive(minimum: 114), spacing:10)
+            ]
+            LazyVGrid(columns:columns,alignment: .center) {
+                ListRowView(
+                    title: "위험 문장 감지 가능",imageName: "alert-triangle"
+                )
+                
+                ListRowView(title: "위험도 시각화 가능", imageName: "siren")
+                
+                ListRowView(title: "가족 그룹 생성 가능", imageName: "person-add")
+            }
         }
+        .padding(.horizontal,20)
     }
     
-}
-
-// MARK: - DetailSettingListView
-private struct DetailSettingListView: View {
-    fileprivate var body: some View {
-        VStack {
-            SubTitleView(title: "상세 설정")
-            ListRowView(title: "키보드 커스텀", description: "키보드에 표시되는 경고 신호 색상을 취향껏 꾸며봐요! ", imageName: "mainimage4")
-            ListRowView(title: "팝업 및 진동", description: "팝업과 진동의 유뮤를 설정해요", imageName: "mainimage5")
-        }
-    }
-}
-// MARK: - ReportListView
-private struct ReportListView: View {
-    fileprivate var body: some View {
-        VStack {
-            SubTitleView(title: "신고하기")
-            ListRowView(title: "신고 전화번호", description: "리딩방, 수익보장형 사기 등 다양한 금융범죄 유형에 맞춰 맞춤 경고를 제공해요!", imageName: "mainimage6")
-        }
-    }
 }
 
 // MARK: - CustomDivider

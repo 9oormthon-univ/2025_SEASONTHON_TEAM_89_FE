@@ -17,29 +17,23 @@ final class UserManager: ObservableObject {
     private let userDefaultsKey = "currentUser"
 
     private init() {
-        // ✅ 2. 앱 시작 시(UserManager가 처음 생성될 때) UserDefaults에서 사용자 정보를 불러옵니다.
         loadUserFromUserDefaults()
     }
 
-    /// 로그인 성공 시 호출하여 현재 사용자 정보를 메모리와 UserDefaults에 저장합니다.
     func setCurrentUser(_ user: User) {
         DispatchQueue.main.async {
             self.currentUser = user
-            // ✅ 1. 메모리에 저장하는 것과 동시에 UserDefaults에도 저장합니다.
             self.saveUserToUserDefaults(user)
         }
     }
 
-    /// 로그아웃 시 호출하여 사용자 정보를 메모리와 UserDefaults에서 모두 삭제합니다.
     func clearUser() {
         DispatchQueue.main.async {
             self.currentUser = nil
-            // ✅ 3. UserDefaults에서도 데이터를 삭제하여 완벽하게 로그아웃합니다.
             self.removeUserFromUserDefaults()
         }
     }
     
-    // MARK: - UserDefaults Helper Methods
     
     private func saveUserToUserDefaults(_ user: User) {
         let encoder = JSONEncoder()
@@ -47,12 +41,13 @@ final class UserManager: ObservableObject {
             let userData = try encoder.encode(user)
             UserDefaults.standard.set(userData, forKey: userDefaultsKey)
             print("UserDefaults에 사용자 정보 저장 완료")
+            self.loadUserFromUserDefaults()
         } catch {
             print("UserDefaults 저장 실패: \(error.localizedDescription)")
         }
     }
     
-    private func loadUserFromUserDefaults() {
+    func loadUserFromUserDefaults() {
         guard let userData = UserDefaults.standard.data(forKey: userDefaultsKey) else { return }
         
         let decoder = JSONDecoder()

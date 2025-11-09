@@ -17,7 +17,7 @@ struct ManagementGroupView: View {
         
         VStack {
             CustomNavigationBar(leftBtnAction: {
-                pathModel.paths.removeLast()
+                _ = pathModel.paths.popLast()
             }, leftTitle: "")
             ScrollView {
                 Spacer()
@@ -79,7 +79,7 @@ struct ManagementGroupView: View {
         }
         .overlay {
             if groupViewModel.isLoading {
-                WatingView()
+                LoadingView()
                     .background(Color.black.opacity(0.1))
                     .scaledToFill()
             }
@@ -95,7 +95,7 @@ struct ManagementGroupView: View {
             groupViewModel.stopPolling()
         }.alert("오류", isPresented: $groupViewModel.showError) {
             Button("확인", role: .cancel) {
-                pathModel.paths.removeLast()
+                _ = pathModel.paths.popLast()
             }
         } message: {
             Text(groupViewModel.errorMessage)
@@ -104,10 +104,6 @@ struct ManagementGroupView: View {
     
     
 }
-
-
-
-
 
 
 //MARK: - UserInfoView
@@ -171,9 +167,12 @@ private struct UserInfoView: View {
                     .padding(.horizontal,20)
                     .alert(isPresented: $groupViewModel.isLeave) {
                         Alert(title: Text("그룹을 해체하시겠습니까?"), message: Text("그룹을 해체하면 모든 그룹원이 강퇴됩니다."), primaryButton: .destructive(Text("나가기"), action: {
-                            groupViewModel.LeaveGorupAction()
-                            pathModel.paths.removeLast()
-                            groupViewModel.isCreate = false
+                            DispatchQueue.main.async {
+                                groupViewModel.LeaveGorupAction()
+                                _ = pathModel.paths.popLast()
+                                groupViewModel.isCreate = false
+                            }
+                            
                         }), secondaryButton: .cancel(Text("취소")))
                     }
                 } else {
@@ -186,9 +185,12 @@ private struct UserInfoView: View {
                         }
                         .alert(isPresented: $groupViewModel.isLeave) {
                             Alert(title: Text("그룹을 나가시겠습니까?"), primaryButton: .destructive(Text("나가기"), action: {
-                                groupViewModel.LeaveGorupAction()
-                                pathModel.paths.removeLast()
-                                groupViewModel.isCreate = false
+                                DispatchQueue.main.async {
+                                    groupViewModel.LeaveGorupAction()
+                                    _ = pathModel.paths.popLast()
+                                    groupViewModel.isCreate = false
+                                }
+                                
                             }), secondaryButton: .cancel(Text("취소")))
                         }
                     

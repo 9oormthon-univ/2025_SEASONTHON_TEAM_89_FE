@@ -33,7 +33,9 @@ struct ExperienceView: View {
     @EnvironmentObject private var pathModel: PathModel
     var body: some View {
         VStack {
-            CustomNavigationBar(leftBtnAction: {pathModel.paths.removeLast()}, leftTitle: "체험하기")
+            CustomNavigationBar(leftBtnAction: {
+               _ = pathModel.paths.popLast()
+            }, leftTitle: "체험하기")
             ScrollViewReader { scrollViewProxy in
                 ScrollView(.horizontal, showsIndicators: false) {
                     // 3. ForEach를 사용해 반복 코드 제거

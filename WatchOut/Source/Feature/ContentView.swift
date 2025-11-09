@@ -17,9 +17,11 @@ struct ContentView: View {
             if !appState.isLoggedIn {
         
                 LoginView()
+                    .navigationBarBackButtonHidden()
                     .environmentObject(appState)
             } else {
                 OnboardingView()
+                    .navigationBarBackButtonHidden()
                     .environmentObject(appState)
             }
         }
