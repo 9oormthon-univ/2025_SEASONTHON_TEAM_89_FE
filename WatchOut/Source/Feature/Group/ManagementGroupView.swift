@@ -106,10 +106,6 @@ struct ManagementGroupView: View {
 }
 
 
-
-
-
-
 //MARK: - UserInfoView
 private struct UserInfoView: View {
     @ObservedObject var groupViewModel: GroupViewModel

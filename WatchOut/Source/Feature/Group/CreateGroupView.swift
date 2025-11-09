@@ -54,14 +54,32 @@ struct CreateGroupView: View {
                         TextField("그룹 이름을 정해주세요.", text: $groupViewModel.groupName)
                             .font(.pBody01)
                             .padding()
-                            .background()
+                            .background(groupViewModel.groupNameMessage.isEmpty ? .white : .red.opacity(0.1))
                             .cornerRadius(47)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 47)
-                                    .stroke(.gray300,lineWidth:     1)
+                                    .stroke(groupViewModel.groupNameMessage.isEmpty ? .gray300 : .red,lineWidth: 1)
                             }
-                        Spacer()
-                            .frame(height: 52)
+                        ZStack {
+                            Spacer()
+                                .frame(height: 52)
+                            VStack {
+                                HStack{
+                                    if !groupViewModel.groupNameMessage.isEmpty {
+                                        Text(groupViewModel.groupNameMessage)
+                                            .font(.pCaption01)
+                                            .foregroundColor(.red)
+                                        Spacer()
+                                            
+                                    }
+                                }
+                                Spacer()
+                            }
+                            
+                            
+                            
+                        }
+                        
                         
                         HStack {
                             Text("사용할 별명")
@@ -75,15 +93,30 @@ struct CreateGroupView: View {
                         TextField(groupViewModel.user.nickname, text: $groupViewModel.userName)
                             .font(.pBody01)
                             .padding()
-                            .background()
+                            .background(groupViewModel.userNameMessage.isEmpty ? .white : .red.opacity(0.1))
                             .cornerRadius(47)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 47)
-                                    .stroke(.gray300,lineWidth:     1)
+                                    .stroke(groupViewModel.userNameMessage.isEmpty ? .gray300 : .red, lineWidth: 1)
                             }
                         
-                        Spacer()
-                            .frame(height: 230)
+                        ZStack {
+                            Spacer()
+                                .frame(height: 230)
+                            VStack {
+                                HStack{
+                                    if !groupViewModel.userNameMessage.isEmpty {
+                                        Text(groupViewModel.userNameMessage)
+                                            .font(.pCaption01)
+                                            .foregroundColor(.red)
+                                        Spacer()
+                                            
+                                    }
+                                }
+                                Spacer()
+                            }
+                        }
+
                         
                         Button {
                             groupViewModel.CreateGorupAction()
@@ -96,9 +129,10 @@ struct CreateGroupView: View {
                                     .foregroundStyle(.white)
                                 Spacer()
                             }
-                            .background(.main)
+                            .background(groupViewModel.isCreateButtonEnabled ? .main : .gray400)
                             .cornerRadius(8)
                         }
+                        .disabled(!groupViewModel.isCreateButtonEnabled)
                       Spacer()
                     }
                     .padding(.vertical,48)
