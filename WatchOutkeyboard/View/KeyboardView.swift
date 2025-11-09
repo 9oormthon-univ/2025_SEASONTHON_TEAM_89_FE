@@ -8,63 +8,136 @@ import SwiftUI
 
 struct KeyboardView: View {
     @ObservedObject var controller: KeyboardViewController
-
+    
+    
+    @ObservedObject private var webSocketService = WebSocketService.shared
+    
+    @State private var webSocketURL = "wss://wiheome.ajb.kr/api/ws/fraud/"
+    @State var status = "정상"
+    @State var count = 0
+    @State var oldText : String = ""
+    
     var body: some View {
-        VStack(spacing: 8) {
-            // 1. 상단 배너 뷰 추가
-            bannerView()
-            
-            // 2. 기존 키보드 키 레이아웃
-            ForEach(controller.keyLayout, id: \.self) { row in
-                HStack(spacing: 7) {
-                    ForEach(row, id: \.self) { key in
-                        Button(action: {
-                            controller.handleKeyPress(key)
-                            
-                        }) {
-                            keyView(for: key) // 각 키의 UI를 생성하는 헬퍼 뷰
+        HStack {
+            Spacer()
+                .frame(width:1)
+            VStack(spacing: 8) {
+                
+                bannerView()
+                
+                
+                ForEach(controller.keyLayout, id: \.self) { row in
+                    HStack(spacing: 7) {
+                        ForEach(row, id: \.self) { key in
+                            Button(action: {
+                                controller.handleKeyPress(key)
+                                let currentText = controller.textDocumentProxy.documentContextBeforeInput ?? ""
+                                
+                                webSocketService.checkFraudMessage(currentText)
+                            }) {
+                                keyView(for: key)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain) // 버튼의 기본 스타일 제거
                     }
                 }
             }
+            .padding(2)
+            Spacer()
+                .frame(width:1)
+            
         }
-        .padding(3)
-        .background(Color(.systemGray4).ignoresSafeArea())
+        .onAppear {
+            
+            webSocketService.connect(urlString: webSocketURL)
+            status = "정상"
+        }
+        .onDisappear {
+            
+            webSocketService.disconnect()
+            status = "정상"
+        }
+        
+        .onChange(of: webSocketService.fraudResult?.riskLevel) {
+            if let newRiskLevel = webSocketService.fraudResult?.riskLevel {
+                print("\(SharedUserDefaults.isTutorial)")
+                status = newRiskLevel
+                
+                if status == "주의" {
+                    if SharedUserDefaults.isWarningHaptic {
+                        Haptic.notification(type: .warning)
+                        
+                    }
+                    if SharedUserDefaults.isTutorial == false {
+                        SharedUserDefaults.riskLevel2Count += 1
+                    }
+                    
+                } else if status == "위험" {
+                    count += 1
+                    if SharedUserDefaults.isTutorial  == false {
+                        SharedUserDefaults.riskLevel3Count += 1
+                    }
+                    if count % 3 == 0 {
+                        if SharedUserDefaults.isDangerNotification {
+                            NotificationManager.instance.scheduleNotification(title: "위험한 문장이 반복 감지되었어요", subtitle: "필요하다면 즉시 신고를 도와드릴 수 있어요.", secondsLater: 1)
+                        }
+                    }
+                    
+                    if SharedUserDefaults.isDangerHaptic {
+                        Haptic.notification(type: .error)
+                    }
+                }
+            }
+            
+        }
+        .background(Color(.keyBoardNewBackground).ignoresSafeArea(.keyboard))
     }
-
-    /// 상단 배너 UI를 구성하는 뷰입니다.
+    
+    // MARK: - BannerView
     @ViewBuilder
     private func bannerView() -> some View {
         HStack(spacing: 12) {
-            // 예시 로고
-          Image("keyboardicon")
-                
+            
+            if webSocketService.isConnected {
+                Image("keyboardicon")
+                    .foregroundStyle(.main)
+            } else {
+                Image("keyboardicon")
+                    .foregroundStyle(.gray400)
+            }
+            
             
             Spacer()
-            Button("알림 권한 요청하기  Permission 🙏") {
-                            NotificationManager.instance.requestAuthorization()
-                        }
-                        .buttonStyle(.borderedProminent)
-                        
-                        // 5초 후 알림 예약 버튼
-                        Button("5초 후 알림 예약하기 Schedule ⏰") {
-                            NotificationManager.instance.scheduleNotification(
-                                title: "위험한 문장이 반복 감지되었어요",
-                                subtitle: "필요하다면 즉시 신고를 도와드릴 수 있어요.",
-                                secondsLater: 1
-                            )
-                        }
-                        .buttonStyle(.bordered)
-            Image("circle01")
+            
+            if status == "주의" {
+                
+                Image("status1")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 25)
+                    .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel2Color)"))
+                
+                
+            } else if status == "위험" {
+                
+                Text("민감한 정보가 포함된 문장입니다")
+                    .font(.pHeadline03)
+                    .foregroundStyle(Color("Risk1Color\(SharedUserDefaults.riskLevel3Color)"))
+                Image("status2")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 25)
+                    .foregroundStyle(Color("Risk1Color\(SharedUserDefaults.riskLevel3Color)"))
+                
+                
+            }
         }
         .padding(.horizontal, 15)
         .frame(height: 40)
-
         .cornerRadius(8)
     }
-
-    /// 각 키의 타입에 따라 다른 UI를 그려주는 뷰 빌더입니다.
+    
+    // MARK: - keyView
     @ViewBuilder
     private func keyView(for key: KeyType) -> some View {
         Group {
@@ -73,16 +146,14 @@ struct KeyboardView: View {
                 Image(controller.isShifted ? "shiftOn" : "shiftOff")
                     .scaledToFit()
                     .frame(width: 20)
-                    
-//                    .foregroundColor(controller.isShifted ? Color(.systemBlue) : .primary)
             case .backspace:
                 Image("deletebutton")
-                    
+                
             case .character(let char):
                 Text(String(char))
                     .font(.system(size: 22))
             case .enter:
-                Image("entericon")
+                Image("enterIcon")
                     .resizable()
                     .scaledToFit()
                     .foregroundStyle(.white)
@@ -90,21 +161,17 @@ struct KeyboardView: View {
             case .modeChange:
                 if controller.keyboardMode == .english {
                     Image("ㄱㄴㄷ")
-                
+                    
                 } else {
                     Image("ABC")
-                            
+                    
                 }
             case .space:
                 Text("")
             case .switchToSymbols:
-               Image("onetwo")
+                Image("onetwo")
             case .switchToMoreSymbols:
                 Image("shopplus")
-                
-
-                
-                    
             default: // space, return, modeChange 등
                 Text(key.displayText)
                     .font(.keyboardFont)
@@ -117,8 +184,7 @@ struct KeyboardView: View {
         .cornerRadius(8.5)
         .shadow(color: .black.opacity(0.35), radius: 0.5, x: 0, y: 1)
     }
-
-    /// 키의 배경색을 결정하는 헬퍼 함수입니다.
+    // MARK: - keyBackgroundColor
     private func keyBackgroundColor(for key: KeyType) -> Color {
         switch key {
         case .character:
@@ -138,7 +204,7 @@ struct KeyboardView: View {
         }
     }
     
-    /// 키의 너비를 결정하는 헬퍼 함수입니다.
+    // MARK: - keyWidth
     private func keyWidth(for key: KeyType) -> CGFloat? {
         switch key {
         case .switchToAlphabetic, .switchToMoreSymbols, .switchToSymbols:
@@ -152,13 +218,13 @@ struct KeyboardView: View {
                 return 49
             }
             return 33
-                
+            
         case .shift, .backspace:
             return 66
             
         case .enter:
             return 96
-    
+            
         }
     }
 }
