@@ -9,7 +9,7 @@ import SwiftUI
 struct KeyboardView: View {
     @ObservedObject var controller: KeyboardViewController
     
-   
+    
     @ObservedObject private var webSocketService = WebSocketService.shared
     
     @State private var webSocketURL = "wss://wiheome.ajb.kr/api/ws/fraud/"
@@ -48,12 +48,12 @@ struct KeyboardView: View {
             
         }
         .onAppear {
-           
+            
             webSocketService.connect(urlString: webSocketURL)
             status = "정상"
         }
         .onDisappear {
-          
+            
             webSocketService.disconnect()
             status = "정상"
         }
@@ -93,10 +93,9 @@ struct KeyboardView: View {
         .background(Color(.keyBoardNewBackground).ignoresSafeArea(.keyboard))
     }
     
-// MARK: - BannerView
+    // MARK: - BannerView
     @ViewBuilder
     private func bannerView() -> some View {
-        let isTutorial = SharedUserDefaults.isTutorial
         HStack(spacing: 12) {
             
             if webSocketService.isConnected {
@@ -109,44 +108,27 @@ struct KeyboardView: View {
             
             
             Spacer()
-
+            
             if status == "주의" {
-                if isTutorial {
-                    
-                    Image("risklevel2")
-                        .resizable()
-                        .scaledToFit()
-                    
-                    Image("status1")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 25)
-                        .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel2Color)"))
-                } else {
-                    Image("status1")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 25)
-                        .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel2Color)"))
-                }
+                
+                Image("status1")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 25)
+                    .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel2Color)"))
+                
                 
             } else if status == "위험" {
-                if isTutorial {
-                    Image("risklevel3")
-                        .resizable()
-                        .scaledToFit()
-                    Image("status2")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 25)
-                        .foregroundStyle(Color("Risk1Color\(SharedUserDefaults.riskLevel3Color)"))
-                } else {
-                    Image("status2")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 25)
-                        .foregroundStyle(Color("Risk1Color\(SharedUserDefaults.riskLevel3Color)"))
-                }
+                
+                Text("민감한 정보가 포함된 문장입니다")
+                    .font(.pHeadline03)
+                    .foregroundStyle(Color("Risk1Color\(SharedUserDefaults.riskLevel3Color)"))
+                Image("status2")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 25)
+                    .foregroundStyle(Color("Risk1Color\(SharedUserDefaults.riskLevel3Color)"))
+                
                 
             }
         }
