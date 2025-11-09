@@ -25,18 +25,46 @@ struct MainTabView: View {
                     .fixedSize()
                 }
                 Spacer()
-                Button(action: {
-                    appState.isLoggedIn = false
-                    TokenManager.shared.clearAllTokens()
-                    UserManager.shared.clearUser()
-                }, label: {
+                Menu {
+                    Button {
+                        mainTabViewModel.showLogoutAlert = true
+                    } label: {
+                        Label("로그아웃", image: "LogOutImage")
+                    }
+                    
+                    Button {
+                        mainTabViewModel.showDeleteAccountAlert = true
+                    } label: {
+                        Label("탈퇴하기", systemImage: "person.crop.circle.badge.xmark")
+                    }
+                    
+                } label: {
                     VStack {
                         Image("LogOutImage")
-                        Capsule().frame(height: 3)
+                        Capsule()
+                            .frame(height: 3)
                             .foregroundColor(.clear)
                     }
-                })
+                }
                 .fixedSize()
+                .alert("로그아웃 하시겠습니까?", isPresented: $mainTabViewModel.showLogoutAlert) {
+                    Button("취소", role: .cancel) { }
+                    Button("로그아웃", role: .destructive) {
+                        appState.isLoggedIn = false
+                        TokenManager.shared.clearAllTokens()
+                        UserManager.shared.clearUser()
+                    }
+                } message: {
+                    Text("로그아웃 하시면 자동으로 그룹에서 강퇴됩니다.")
+                }
+                .alert("탈퇴하시겠습니까?", isPresented: $mainTabViewModel.showDeleteAccountAlert) {
+                    Button("취소", role: .cancel) { }
+                    Button("탈퇴하기", role: .destructive) {
+                        // 탈퇴 API 호출
+                    }
+                } message: {
+                    Text("탈퇴하시면 계정이 영구적으로 삭제됩니다.")
+                }
             }
             .padding(.horizontal, 33)
             .padding(.top)

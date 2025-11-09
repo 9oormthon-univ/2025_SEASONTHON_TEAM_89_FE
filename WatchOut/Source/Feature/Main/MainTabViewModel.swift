@@ -10,6 +10,8 @@ import Foundation
 
 class MainTabViewModel: ObservableObject {
     @Published var selectedTab: Tab
+    @Published var showLogoutAlert: Bool = false
+    @Published var showDeleteAccountAlert: Bool = false
     
     init(selectedTab: Tab = .homeView) {
         self.selectedTab = selectedTab
