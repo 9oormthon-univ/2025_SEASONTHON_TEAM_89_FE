@@ -13,12 +13,12 @@ enum KeyType: Hashable {
     case backspace
     case space
     case enter
-    case modeChange // 한/영 전환
+    case modeChange 
     case switchToSymbols
     case switchToAlphabetic
     case switchToMoreSymbols
     
-    // 키보드 UI에 표시될 텍스트
+    
     var displayText: String {
         switch self {
         case .character(let char):
