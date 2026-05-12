@@ -10,16 +10,16 @@ import Foundation
 /// 한글 엔진의 처리 결과를 담는 구조체
 /// - textToInsert: 텍스트 필드에 새로 삽입할 문자열
 /// - charactersToDelete: 텍스트 필드에서 지워야 할 글자 수
-struct EngineOutput {
+public struct EngineOutput {
     let textToInsert: String
     let charactersToDelete: Int
 }
 
-class HangulEngine {
+public class HangulEngine {
     
     private var status: Hangul?
 
-    func process(jamo: Character) -> EngineOutput {
+    public func process(jamo: Character) -> EngineOutput {
         
         guard let existingStatus = status else {
             self.status = Hangul(jamo)
@@ -69,7 +69,7 @@ class HangulEngine {
         return finalizedOutput
     }
     
-    func deleteBackward() -> EngineOutput {
+    public func deleteBackward() -> EngineOutput {
         guard let currentStatus = status, let currentChar = currentStatus.character else {
             return EngineOutput(textToInsert: "", charactersToDelete: 1)
         }
@@ -84,14 +84,14 @@ class HangulEngine {
     }
 
     
-    func finalize() -> EngineOutput {
+     public func finalize() -> EngineOutput {
         if status != nil {
             self.status = nil
         }
         return EngineOutput(textToInsert: "", charactersToDelete: 0)
     }
     
-    func reset() {
+     public func reset() {
         self.status = nil
     }
 }

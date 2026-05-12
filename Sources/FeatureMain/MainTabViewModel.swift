@@ -7,9 +7,11 @@
 
 import Foundation
 import Combine
+import Domain
+import Data
 
 class MainTabViewModel: ObservableObject {
-    @Published var selectedTab: Tab
+    @Published var selectedTab: WatchOutTab
     @Published var showLogoutAlert: Bool = false
     @Published var showDeleteAccountAlert: Bool = false
     
@@ -19,7 +21,7 @@ class MainTabViewModel: ObservableObject {
 
     
     
-    init(selectedTab: Tab = .homeView) {
+    init(selectedTab: WatchOutTab = .homeView) {
         self.selectedTab = selectedTab
     }
     

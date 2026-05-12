@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import KakaoSDKUser
+import Data
 
 final class LoginViewModel: ObservableObject {
 

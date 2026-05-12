@@ -1,31 +1,31 @@
 import Foundation
 
 
-struct RequestMessage: Encodable {
-    let type: String
-    let message: String?
+public struct RequestMessage: Encodable {
+    public let type: String
+    public let message: String?
 }
 
-struct ResponseMessage: Decodable {
-    let type: String
-    let message: String?
+public struct ResponseMessage: Decodable {
+    public let type: String
+    public let message: String?
 }
 
 
 
-struct FraudCheckResponse: Decodable {
-    let result: FraudResult
+public struct FraudCheckResponse: Decodable {
+    public let result: FraudResult
 }
 
-struct FraudResult: Decodable, Identifiable, Equatable {
-    let id = UUID()
-    let riskLevel: String
-    let confidence: Double
-    let detectedPatterns: [String]
-    let explanation: String
-    let recommendedAction: String
+public struct FraudResult: Decodable, Identifiable, Equatable {
+    public let id = UUID()
+    public let riskLevel: String
+    public let confidence: Double
+    public let detectedPatterns: [String]
+    public let explanation: String
+    public let recommendedAction: String
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case riskLevel = "risk_level"
         case confidence
         case detectedPatterns = "detected_patterns"

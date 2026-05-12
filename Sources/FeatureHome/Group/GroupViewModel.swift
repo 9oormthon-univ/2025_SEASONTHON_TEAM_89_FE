@@ -7,6 +7,9 @@
 
 import Foundation
 import Combine
+import Domain
+import Core
+import Data
 
 class GroupViewModel: ObservableObject {
     

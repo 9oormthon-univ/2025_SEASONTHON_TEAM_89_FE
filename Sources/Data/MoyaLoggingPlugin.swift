@@ -8,10 +8,9 @@
 import UIKit
 import Moya
 import OSLog
+import Core
 
 public class MoyaLoggingPlugin: PluginType {
-    
-    public init() {}
     
     public func prepare(_ request: URLRequest, target: TargetType) -> URLRequest {
         return request

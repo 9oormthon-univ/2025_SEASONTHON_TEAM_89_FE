@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import Domain
+import Core
+import Data
 
-struct HomeView: View {
+public struct HomeView: View {
     @EnvironmentObject private var pathModel: PathModel
-    @StateObject private var homeViewModel = HomeViewModel()
+    @StateObject private var homeViewModel: HomeViewModel = HomeViewModel()
     
-    var body: some View {
+    public init() { }
+    
+    public var body: some View {
         ScrollView(showsIndicators: false){
             Spacer()
                 .frame(height: 20)
@@ -94,7 +99,7 @@ private struct TitleView: View {
                         .font(.gHeadline01)
                     
                     Image("star")
-                        .foregroundStyle(.main)
+                        .foregroundStyle(Color.main)
                     
                     
                 }.offset(y: -15)
@@ -104,7 +109,7 @@ private struct TitleView: View {
         HStack {
             Text("위허메와 함께 금융 범죄를 예방해요!")
                 .font(.pBody01)
-                .foregroundStyle(.gray500)
+                .foregroundStyle(Color.gray500)
                 .offset(y: -15)
             Spacer()
         }
@@ -145,7 +150,7 @@ private struct StatusRoundRectangle: View {
                     Text("총 \(count)회")
                         .font(.pHeadline01)
                         .font(.system(size: 18))
-                        .foregroundStyle(.main)
+                        .foregroundStyle(Color.main)
                     
                 }
                 Spacer()
@@ -154,11 +159,11 @@ private struct StatusRoundRectangle: View {
             .padding(.horizontal,20)
             
         }
-        .background(status == .warning ? .main.opacity(0.08) : .risk1Color1.opacity(0.08))
+        .background(status == .warning ? Color.main.opacity(0.08) : Color.risk1Color1.opacity(0.08))
         .cornerRadius(16, corners: .allCorners)
         .overlay {
             RoundedRectangle(cornerRadius: 16)
-                .stroke(status == .warning ? .main : .risk1Color1, lineWidth: 1)
+                .stroke(status == .warning ? Color.main : Color.risk1Color1, lineWidth: 1)
         }
     }
     
@@ -172,7 +177,7 @@ private struct GroupTitleView: View  {
             VStack(alignment: .leading) {
                 Text("그룹 생성 및 참가")
                     .font(.pHeadline03)
-                    .foregroundStyle(.main)
+                    .foregroundStyle(Color.main)
                 Text("가족과 함께 사용해 보세요!")
                     .font(.pHeadline01)
                 Spacer()
@@ -192,14 +197,14 @@ private struct GroupBoxRowView: View {
         HStack {
             Image(imageName)
                 .padding(8)
-                .background(.gray100.opacity(0.5))
+                .background(Color.gray100.opacity(0.5))
                 .cornerRadius(12, corners: .allCorners)
             VStack(alignment: .leading){
                 Text(title)
                     .font(.pBody01)
                 Text(subTitle)
                     .font(.pCaption01)
-                    .foregroundStyle(.gray400)
+                    .foregroundStyle(Color.gray400)
             }
             Spacer()
             Image("chevron-right-small")
@@ -219,7 +224,7 @@ private struct SubTitleView: View {
             VStack(alignment: .leading) {
                 Text(subTtile)
                     .font(.pHeadline03)
-                    .foregroundStyle(.main)
+                    .foregroundStyle(Color.main)
                 Text(title)
                     .font(.pHeadline01)
             }
@@ -247,7 +252,7 @@ private struct ListRowView: View {
             }
             Spacer()
         }
-        .background(.gray100.opacity(0.5))
+        .background(Color.gray100.opacity(0.5))
         .cornerRadius(16, corners: .allCorners)
     }
 }
@@ -279,7 +284,7 @@ private struct CustomDivider: View {
     fileprivate var body: some View {
         Rectangle()
             .frame(height: 8)
-            .foregroundStyle(.gray100)
+            .foregroundStyle(Color.gray100)
     }
 }
 

@@ -71,7 +71,7 @@ public struct Log {
     }
     
     
-    static func log(_ message: Any, _ arguments: [Any], level: LogLevel) {
+    public static func log(_ message: Any, _ arguments: [Any], level: LogLevel) {
         #if DEBUG
         if #available(iOS 14.0, *) {
             let extraMessage: String = arguments.map({ String(describing: $0) }).joined(separator: " ")

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Core
 
 // MARK: - OnboardingContentViewModel
 final class OnboardingContentViewModel: ObservableObject {

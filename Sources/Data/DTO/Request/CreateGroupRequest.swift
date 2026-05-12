@@ -8,10 +8,16 @@
 import Foundation
 
 // MARK: - CreateGorupRequest
-struct CreateGroupRequest: Codable {
-    let userID, groupName,nickname: String
+public struct CreateGroupRequest: Codable {
+    public let userID, groupName,nickname: String
 
-    enum CodingKeys: String, CodingKey {
+    public init(userID: String, groupName: String, nickname: String) {
+        self.userID = userID
+        self.groupName = groupName
+        self.nickname = nickname
+    }
+    
+    public enum CodingKeys: String, CodingKey {
         case userID = "user_id"
         case groupName = "group_name"
         case nickname = "nickname"

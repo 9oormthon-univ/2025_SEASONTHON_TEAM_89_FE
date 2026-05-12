@@ -18,10 +18,14 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Moya/Moya.git", from: "15.0.0"),
+        .package(url: "https://github.com/LottieFiles/dotlottie-ios.git", from: "1.0.0"),
     ],
     targets: [
         .target(
             name: "Shared",
+            dependencies: [
+                    .product(name: "DotLottie", package: "dotlottie-ios"),
+                ],
             path: "Sources/Shared",
             resources: [
                 .process("Resource/Assets.xcassets"),
@@ -50,6 +54,7 @@ let package = Package(
                 "Domain",
                 "Core",
                 .product(name: "Moya", package: "Moya"),
+                
             ],
             path: "Sources/Data"
         ),
@@ -57,11 +62,6 @@ let package = Package(
             name: "FeatureAuth",
             dependencies: ["Domain", "Data", "Shared", "Core"],
             path: "Sources/FeatureAuth"
-        ),
-        .target(
-            name: "FeatureMain",
-            dependencies: ["Domain", "Data", "Shared", "Core"],
-            path: "Sources/FeatureMain"
         ),
         .target(
             name: "FeatureHome",
@@ -77,6 +77,20 @@ let package = Package(
             name: "FeatureReport",
             dependencies: ["Domain", "Shared", "Core"],
             path: "Sources/FeatureReport"
+        ),
+        .target(
+            name: "FeatureMain",
+            dependencies: [
+                "Domain",
+                "Data",
+                "Shared",
+                "Core",
+                "FeatureAuth",
+                "FeatureHome",
+                "FeatureSetting",
+                "FeatureReport",
+            ],
+            path: "Sources/FeatureMain"
         ),
     ]
 )

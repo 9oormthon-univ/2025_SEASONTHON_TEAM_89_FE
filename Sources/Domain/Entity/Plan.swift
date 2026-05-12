@@ -8,18 +8,18 @@
 import Foundation
 
 
-enum PlanType: String, CaseIterable {
+public enum PlanType: String, CaseIterable {
     case individual = "개인"
     case family = "패밀리"
     
 }
 
-enum Individual: String, CaseIterable {
+public enum Individual: String, CaseIterable {
     case basic = "Basic"
     case plus = "Plus"
 }
 
-enum Family: String, CaseIterable {
+public enum Family: String, CaseIterable {
     case familyA = "Family A"
     case familyB = "Family B"
 }

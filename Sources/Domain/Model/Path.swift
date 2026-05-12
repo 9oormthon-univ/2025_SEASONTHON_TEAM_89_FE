@@ -9,10 +9,10 @@ import Foundation
 
 import Foundation
 
-class PathModel: ObservableObject {
-  @Published var paths: [PathType]
+public class PathModel: ObservableObject {
+  @Published public var paths: [PathType]
   
-  init(paths: [PathType] = []) {
+    public init(paths: [PathType] = []) {
     self.paths = paths
   }
 }

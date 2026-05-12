@@ -7,15 +7,18 @@
 
 import SwiftUI
 import DotLottie
+import Domain
+import Core
+import Data
 
-struct OnboardingView: View {
+public struct OnboardingView: View {
     
     @StateObject private var pathModel = PathModel()
     @StateObject private var onboardingContentViewModel = OnboardingContentViewModel()
     
-    let isOnBoarding = SharedUserDefaults.isOnboarding
-    
-    var body: some View {
+    public let isOnBoarding = SharedUserDefaults.isOnboarding
+    public init() { }
+    public var body: some View {
         NavigationStack(path: $pathModel.paths) {
             Group {
                 if isOnBoarding {
@@ -168,7 +171,7 @@ private struct OnboardingSecondView: View {
                     
                 }
                 .frame(height: 58)
-                .background(.main)
+                .background(Color.main)
                 
                 TextField("", text: $hiddenText)
                     .focused($focusedField, equals: .hiddenTextField)

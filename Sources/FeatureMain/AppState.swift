@@ -7,12 +7,14 @@
 
 
 import Foundation
+import Data
+import Core
 
-class AppState: ObservableObject {
-    @Published var isLoggedIn: Bool
-    @Published var isOnboardingCompleted: Bool
+public class AppState: ObservableObject {
+    @Published public var isLoggedIn: Bool
+    @Published public var isOnboardingCompleted: Bool
 
-    init() {
+    public init() {
         // TODO: 키체인에서 토큰 유무를 확인하여 로그인 상태 초기화
         if let accessToken = TokenManager.shared.loadAccessToken() {
                     self.isLoggedIn = !accessToken.isEmpty

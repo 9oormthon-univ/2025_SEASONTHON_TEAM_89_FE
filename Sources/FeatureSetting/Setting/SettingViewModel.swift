@@ -6,6 +6,9 @@
 //
 
 import Foundation
+import Data
+import Core
+import Domain
 
 class SettingViewModel: ObservableObject {
     @Published var isWarningNotification: Bool {
@@ -37,7 +40,7 @@ class SettingViewModel: ObservableObject {
     @Published private var riskLevel2Color: String
     @Published private var riskLevel3Color: String
     @Published var isShowSheet: Bool = false
-    @Published private var status:Status
+    @Published private var status: Status
     init(
         isWarningNotification: Bool = true,
         isDangerNotification: Bool = true,

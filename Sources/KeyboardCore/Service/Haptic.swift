@@ -7,13 +7,13 @@
 import Foundation
 import UIKit
 
-class Haptic {
-    static func notification(type: UINotificationFeedbackGenerator.FeedbackType) {
+public class Haptic {
+    public static func notification(type: UINotificationFeedbackGenerator.FeedbackType) {
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(type)
     }
     
-    static func impact(style: UIImpactFeedbackGenerator.FeedbackStyle) {
+    public static func impact(style: UIImpactFeedbackGenerator.FeedbackStyle) {
         let generator = UIImpactFeedbackGenerator(style: style)
         generator.impactOccurred()
     }

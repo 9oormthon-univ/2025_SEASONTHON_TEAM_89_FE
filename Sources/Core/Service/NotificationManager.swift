@@ -9,14 +9,14 @@ import Foundation
 import UserNotifications
 
 // 알림을 관리하는 클래스 (싱글톤으로 구현)
-class NotificationManager {
+public class NotificationManager {
     
     // NotificationManager의 유일한 인스턴스에 접근하기 위한 정적 프로퍼티
-    static let instance = NotificationManager()
+    public static let instance = NotificationManager()
     private init() {} // 다른 곳에서 인스턴스를 생성하는 것을 방지
     
     // 1. 알림 권한 요청 함수
-    func requestAuthorization() {
+    public func requestAuthorization() {
         let options: UNAuthorizationOptions = [.alert, .sound, .badge]
         UNUserNotificationCenter.current().requestAuthorization(options: options) { (success, error) in
             if let error = error {
@@ -28,7 +28,7 @@ class NotificationManager {
     }
     
     // 2. 알림 예약(전송) 함수
-    func scheduleNotification(title: String, subtitle: String, secondsLater: TimeInterval) {
+    public func scheduleNotification(title: String, subtitle: String, secondsLater: TimeInterval) {
         
         // 알림 콘텐츠 설정
         let content = UNMutableNotificationContent()
@@ -54,7 +54,7 @@ class NotificationManager {
     }
     
     // 3. 예정된 모든 알림 취소 함수
-    func cancelAllNotifications() {
+    public func cancelAllNotifications() {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
         print("All pending notifications cancelled.")
     }

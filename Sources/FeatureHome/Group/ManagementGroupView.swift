@@ -7,6 +7,10 @@
 
 import SwiftUI
 import UIKit
+import Domain
+import Data
+import Shared
+
 
 struct ManagementGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
@@ -38,7 +42,7 @@ struct ManagementGroupView: View {
                 HStack {
                     Text("그룹 참여 코드")
                         .font(.pSubtitle03)
-                        .foregroundStyle(.gray300)
+                        .foregroundStyle(Color.gray300)
                     Spacer()
                     Text(groupViewModel.infoGroupRespose?.joinCode ?? "")
                         .font(.pBody01)
@@ -80,6 +84,7 @@ struct ManagementGroupView: View {
         .overlay {
             if groupViewModel.isLoading {
                 LoadingView()
+                    .onAppear(perform: UserManager.shared.loadUserFromUserDefaults)
                     .background(Color.black.opacity(0.1))
                     .scaledToFill()
             }
@@ -114,7 +119,7 @@ private struct UserInfoView: View {
     fileprivate var body: some View {
         ZStack{
             RoundedRectangle(cornerRadius: 48)
-                .foregroundStyle(.gray100)
+                .foregroundStyle(Color.gray100)
             
             VStack(alignment: .center){
                 Spacer()
@@ -122,7 +127,7 @@ private struct UserInfoView: View {
                 HStack {
                     Text("\(groupViewModel.selectMembers.nickname)")
                         .font(.pHeadline01)
-                        .foregroundStyle(.main)
+                        .foregroundStyle(Color.main)
                     Text("님의 경고 기록")
                     
                 }
@@ -146,7 +151,7 @@ private struct UserInfoView: View {
                         Text("강퇴하기")
                             .underline()
                             .font(.pBody02)
-                            .foregroundStyle(.gray400)
+                            .foregroundStyle(Color.gray400)
                     }
                     
                     Button {
@@ -179,7 +184,7 @@ private struct UserInfoView: View {
                     Text("나가기")
                         .underline()
                         .font(.pBody02)
-                        .foregroundStyle(.gray400)
+                        .foregroundStyle(Color.gray400)
                         .onTapGesture {
                             groupViewModel.isLeave.toggle()
                         }
@@ -242,7 +247,7 @@ private struct StatusRoundRectangle: View {
                     Text("\(count)회")
                         .font(.pHeadline03)
                         .font(.system(size: 18))
-                        .foregroundStyle(.main)
+                        .foregroundStyle(Color.main)
                     Text(status.rawValue)
                         .font(.pHeadline02)
                 }
@@ -276,13 +281,13 @@ private struct ProfileView: View {
             .clipShape(Circle())
             .overlay(
                 Circle()
-                    .stroke(.gray500, lineWidth: 1)
+                    .stroke(Color.gray500, lineWidth: 1)
             )
             .overlay {
                 if member.userID == groupViewModel.selectMembers.userID {
                     ZStack{
                         Circle()
-                            .foregroundStyle(.gray400.opacity(0.3))
+                            .foregroundStyle(Color.gray400.opacity(0.3))
                     }
                     Image("chek")
                 }

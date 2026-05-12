@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import Domain
+import Shared
 
 struct JoinGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
@@ -29,7 +31,7 @@ struct JoinGroupView: View {
                 HStack {
                     Text("입력 중에는 이전 문장 흐름까지 함께 고려해 판단해요.")
                         .font(.pSubtitle03)
-                        .foregroundStyle(.gray300)
+                        .foregroundStyle(Color.gray300)
                     Spacer()
                 }
                 .padding(.horizontal,20)
@@ -41,7 +43,7 @@ struct JoinGroupView: View {
                         Text("사용할 별명")
                             .font(.pHeadline01)
                         Text( "최대 6자")
-                            .foregroundStyle(.gray400)
+                            .foregroundStyle(Color.gray400)
                             .font(.pSubtitle03)
                         Spacer()
                     }
@@ -53,7 +55,7 @@ struct JoinGroupView: View {
                         .cornerRadius(47)
                         .overlay {
                             RoundedRectangle(cornerRadius: 47)
-                                .stroke(groupViewModel.userNameMessage.isEmpty  ? .gray300 : .red ,lineWidth: 1)
+                                .stroke(groupViewModel.userNameMessage.isEmpty  ? Color.gray300 : .red ,lineWidth: 1)
                         }
                     ZStack {
                         Spacer()
@@ -83,7 +85,7 @@ struct JoinGroupView: View {
                         HStack {
                             Text( "방장에게 받은 참여 코드를 입력해주세요.")
                                 .padding(.bottom,5)
-                                .foregroundStyle(.gray400)
+                                .foregroundStyle(Color.gray400)
                                 .font(.pSubtitle03)
                             Spacer()
                         }
@@ -100,7 +102,7 @@ struct JoinGroupView: View {
                         .cornerRadius(47)
                         .overlay {
                             RoundedRectangle(cornerRadius: 47)
-                                .stroke(groupViewModel.groupCodeMessage.contains("존재하지 않는 코드입니다") ? .red : .gray300, lineWidth:1)
+                                .stroke(groupViewModel.groupCodeMessage.contains("존재하지 않는 코드입니다") ? .red : Color.gray300, lineWidth:1)
                         }
                     ZStack {
                         Spacer()
@@ -136,14 +138,14 @@ struct JoinGroupView: View {
                     
                     }
                     .disabled(!groupViewModel.isJoinButtonEnabled)
-                    .background(groupViewModel.isJoinButtonEnabled ? .main : .gray400)
+                    .background(groupViewModel.isJoinButtonEnabled ? Color.main : Color.gray400)
                     .cornerRadius(8)
                     Spacer()
                         .frame(height: 10)
                 }
                 .padding(.vertical,48)
                 .padding(.horizontal, 20)
-                .background(.gray100)
+                .background(Color.gray100)
                 .cornerRadius(48)
             }
             

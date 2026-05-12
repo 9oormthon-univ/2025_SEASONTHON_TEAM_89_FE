@@ -8,17 +8,17 @@
 import Foundation
 import Combine
 
-class WebSocketService: NSObject, ObservableObject, URLSessionWebSocketDelegate {
+public class WebSocketService: NSObject, ObservableObject, URLSessionWebSocketDelegate {
    
-        static let shared = WebSocketService()
+        public static let shared = WebSocketService()
 
         private var webSocketTask: URLSessionWebSocketTask?
         private var pingTimer: Timer?
         
         
-        @Published var isConnected: Bool = false
-        @Published var fraudResult: FraudResult?
-        @Published var errorMessage: String?
+        @Published public var isConnected: Bool = false
+        @Published public var fraudResult: FraudResult?
+        @Published public var errorMessage: String?
         
         
         private override init() {
@@ -26,7 +26,7 @@ class WebSocketService: NSObject, ObservableObject, URLSessionWebSocketDelegate 
         }
         
         // MARK: - Connection Management
-        func connect(urlString: String) {
+        public func connect(urlString: String) {
             
             guard !isConnected, webSocketTask == nil else {
                 print("이미 연결되어 있거나 연결 시도 중입니다.")
@@ -42,7 +42,7 @@ class WebSocketService: NSObject, ObservableObject, URLSessionWebSocketDelegate 
             receiveMessage()
         }
 
-        func disconnect() {
+        public func disconnect() {
             stopPing()
             webSocketTask?.cancel(with: .goingAway, reason: nil)
             webSocketTask = nil
@@ -116,7 +116,7 @@ class WebSocketService: NSObject, ObservableObject, URLSessionWebSocketDelegate 
 
     // MARK: - Sending Messages
     
-    func checkFraudMessage(_ message: String) {
+    public func checkFraudMessage(_ message: String) {
         let request = RequestMessage(type: "check_fraud", message: message)
         send(request)
     }
@@ -160,13 +160,13 @@ class WebSocketService: NSObject, ObservableObject, URLSessionWebSocketDelegate 
     }
 
     // MARK: - URLSessionWebSocketDelegate
-    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
+    public func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
         DispatchQueue.main.async { self.isConnected = true }
         startPing()
         print("✅ 웹 소켓 연결 성공")
     }
 
-    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
+    public func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
         DispatchQueue.main.async { self.isConnected = false }
         stopPing()
         print("❌ 웹 소켓 연결 해제")

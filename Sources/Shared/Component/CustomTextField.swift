@@ -7,11 +7,17 @@
 
 import SwiftUI
 
-struct CustomTextField: View {
-    @Binding var text: String
-    let enter: () -> Void
-    var isDisabled: Bool
-    var body: some View {
+public struct CustomTextField: View {
+    @Binding public var text: String
+    public let enter: () -> Void
+    public var isDisabled: Bool
+    
+    public init(text: Binding<String>, enter: @escaping () -> Void, isDisabled: Bool) {
+        self._text = text
+        self.enter = enter
+        self.isDisabled = isDisabled
+    }
+    public var body: some View {
         
         VStack {
            
@@ -46,7 +52,7 @@ struct CustomTextField: View {
                         Circle()
                             .scaledToFit()
                             .frame(width: 36)
-                            .foregroundStyle(.main)
+                            .foregroundStyle(Color.main)
                         Image("uparrow")
                             
                         
@@ -61,11 +67,11 @@ struct CustomTextField: View {
             .padding(.horizontal)
             .padding(.vertical,4)
         }
-        .background(.textfieldbackground.opacity(0.08))
+        .background(Color.textfieldbackground.opacity(0.08))
         .cornerRadius(87)
         .overlay{
             RoundedRectangle(cornerRadius: 87)
-                .stroke(.main,lineWidth: 1)
+                .stroke(Color.main,lineWidth: 1)
         }
         
     }

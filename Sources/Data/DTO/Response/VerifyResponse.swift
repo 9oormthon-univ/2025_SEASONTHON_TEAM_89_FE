@@ -7,10 +7,14 @@
 
 import Foundation
 
-struct VerifyResponse: Codable {
-    let isValid: Bool
+public struct VerifyResponse: Codable {
+    public let isValid: Bool
     
-    enum CodingKeys: String, CodingKey {
+    public init(isValid: Bool) {
+        self.isValid = isValid
+    }
+    
+    public enum CodingKeys: String, CodingKey {
         case isValid = "is_valid"
     }
 }

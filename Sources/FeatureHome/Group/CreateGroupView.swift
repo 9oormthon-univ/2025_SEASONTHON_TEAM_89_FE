@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import Domain
+import Shared
 
 struct CreateGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
@@ -30,7 +32,7 @@ struct CreateGroupView: View {
                 HStack {
                     Text("입력 중에는 이전 문장 흐름까지 함께 고려해 판단해요.")
                         .font(.pSubtitle03)
-                        .foregroundStyle(.gray300)
+                        .foregroundStyle(Color.gray300)
                     Spacer()
                 }
                 .padding(.horizontal,20)
@@ -38,7 +40,7 @@ struct CreateGroupView: View {
                     .frame(height: 40)
                 ZStack {
                     RoundedRectangle(cornerRadius: 48)
-                        .foregroundStyle(.gray100)
+                        .foregroundStyle(Color.gray100)
                         .frame(maxWidth: .infinity,maxHeight: .infinity)
                     VStack{
                         
@@ -46,7 +48,7 @@ struct CreateGroupView: View {
                             Text("그룹 이름")
                                 .font(.pHeadline01)
                             Text( "최대 8자")
-                                .foregroundStyle(.gray400)
+                                .foregroundStyle(Color.gray400)
                                 .font(.pSubtitle03)
                             Spacer()
                         }
@@ -58,7 +60,7 @@ struct CreateGroupView: View {
                             .cornerRadius(47)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 47)
-                                    .stroke(groupViewModel.groupNameMessage.isEmpty ? .gray300 : .red,lineWidth: 1)
+                                    .stroke(groupViewModel.groupNameMessage.isEmpty ? Color.gray300 : .red,lineWidth: 1)
                             }
                         ZStack {
                             Spacer()
@@ -85,7 +87,7 @@ struct CreateGroupView: View {
                             Text("사용할 별명")
                                 .font(.pHeadline01)
                             Text( "최대 6자")
-                                .foregroundStyle(.gray400)
+                                .foregroundStyle(Color.gray400)
                                 .font(.pSubtitle03)
                             Spacer()
                         }
@@ -97,7 +99,7 @@ struct CreateGroupView: View {
                             .cornerRadius(47)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 47)
-                                    .stroke(groupViewModel.userNameMessage.isEmpty ? .gray300 : .red, lineWidth: 1)
+                                    .stroke(groupViewModel.userNameMessage.isEmpty ? Color.gray300 : .red, lineWidth: 1)
                             }
                         
                         ZStack {
@@ -129,7 +131,7 @@ struct CreateGroupView: View {
                                     .foregroundStyle(.white)
                                 Spacer()
                             }
-                            .background(groupViewModel.isCreateButtonEnabled ? .main : .gray400)
+                            .background(groupViewModel.isCreateButtonEnabled ? .main : Color.gray400)
                             .cornerRadius(8)
                         }
                         .disabled(!groupViewModel.isCreateButtonEnabled)

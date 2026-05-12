@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import Domain
+import Shared
+import Data
 
 struct PlanView: View {
     @EnvironmentObject var pathModel: PathModel
@@ -69,7 +72,7 @@ struct PlanView: View {
                         .foregroundStyle(.white)
                     Spacer()
                 }
-                .background(planViewModel.selectedPlan.isEmpty ? .gray300 : .main)
+                .background(planViewModel.selectedPlan.isEmpty ? .gray300 : Color.main)
                 .cornerRadius(8)
             }.disabled(planViewModel.selectedPlan.isEmpty)
             Spacer()
@@ -101,7 +104,7 @@ private struct PlanFamilyRow: View {
                 if viewModel.isCurrentlyUsed == type.rawValue {
                     Text("사용중")
                         .font(.pCaption01)
-                        .foregroundStyle(.main)
+                        .foregroundStyle(Color.main)
                 }
                 Spacer()
                 
@@ -109,19 +112,19 @@ private struct PlanFamilyRow: View {
                    HStack(alignment: .bottom){
                        Text("12,000원")
                            .font(.pHeadline01)
-                           .foregroundStyle(.main)
+                           .foregroundStyle(Color.main)
                        Text("/연")
                            .font(.pCaption01)
-                           .foregroundStyle(.gray400)
+                           .foregroundStyle(Color.gray400)
                    }
                 } else if type == .familyB {
                     HStack(alignment: .bottom){
                         Text("23,000원")
                             .font(.pHeadline01)
-                            .foregroundStyle(.main)
+                            .foregroundStyle(Color.main)
                         Text("/연")
                             .font(.pCaption01)
-                            .foregroundStyle(.gray400)
+                            .foregroundStyle(Color.gray400)
                     }
                     
                 }
@@ -137,16 +140,16 @@ private struct PlanFamilyRow: View {
             ForEach(subTitles, id: \.self) {
                 Text( "- \($0)")
                     .font(.pBody02)
-                    .foregroundStyle(viewModel.selectedPlan == type.rawValue ? .black : .gray400)
+                    .foregroundStyle(viewModel.selectedPlan == type.rawValue ? .black : Color.gray400)
             }
         }
         .padding(20)
-        .background(viewModel.selectedPlan == type.rawValue ?  .main.opacity(0.1): .gray100.opacity(0.5))
+        .background(viewModel.selectedPlan == type.rawValue ?  Color.main.opacity(0.1): Color.gray100.opacity(0.5))
         .cornerRadius(14, corners: .allCorners)
         .overlay {
             if viewModel.selectedPlan == type.rawValue {
                 RoundedRectangle(cornerRadius: 14)
-                    .stroke(.main)
+                    .stroke(Color.main)
             }
             
         }
@@ -172,7 +175,7 @@ private struct PlanIndividualRow: View {
                 if viewModel.isCurrentlyUsed == type.rawValue {
                     Text("사용중")
                         .font(.pCaption01)
-                        .foregroundStyle(.main)
+                        .foregroundStyle(Color.main)
                 }
                 Spacer()
                 
@@ -183,10 +186,10 @@ private struct PlanIndividualRow: View {
                     HStack(alignment: .bottom){
                         Text("7,500원")
                             .font(.pHeadline01)
-                            .foregroundStyle(.main)
+                            .foregroundStyle(Color.main)
                         Text("/연")
                             .font(.pCaption01)
-                            .foregroundStyle(.gray400)
+                            .foregroundStyle(Color.gray400)
                     }
                     
                 }
@@ -196,16 +199,16 @@ private struct PlanIndividualRow: View {
             ForEach(subTitles, id: \.self) {
                 Text( "- \($0)")
                     .font(.pBody02)
-                    .foregroundStyle(viewModel.selectedPlan == type.rawValue ? .black : .gray400)
+                    .foregroundStyle(viewModel.selectedPlan == type.rawValue ? .black : Color.gray400)
             }
         }
         .padding(20)
-        .background(viewModel.selectedPlan == type.rawValue ?  .main.opacity(0.1): .gray100.opacity(0.5))
+        .background(viewModel.selectedPlan == type.rawValue ?  Color.main.opacity(0.1): Color.gray100.opacity(0.5))
         .cornerRadius(14, corners: .allCorners)
         .overlay {
             if viewModel.selectedPlan == type.rawValue {
                 RoundedRectangle(cornerRadius: 14)
-                    .stroke(.main)
+                    .stroke(Color.main)
             } else {
                 if type == .plus {
                     ZStack {
@@ -270,7 +273,7 @@ private struct TitleView :View {
                 .multilineTextAlignment(.center)
             Text("가족들과 함께 위허메 키보드를 사용하고 계시다면,\n패밀리 플랜을 권장드려요.")
                 .font(.pBody02)
-                .foregroundStyle(.gray400)
+                .foregroundStyle(Color.gray400)
                 .multilineTextAlignment(.center)
             
         }

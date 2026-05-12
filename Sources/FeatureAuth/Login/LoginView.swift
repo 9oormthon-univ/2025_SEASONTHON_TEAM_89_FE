@@ -6,11 +6,17 @@
 //
 
 import SwiftUI
+import Domain
+import Shared
+import Data
 
-struct LoginView: View {
+public struct LoginView: View {
     @StateObject private var loginViewModel = LoginViewModel()
     @EnvironmentObject private var appState: AppState
-    var body: some View {
+    
+    public init() { }
+    
+    public var body: some View {
         
         ZStack {
             Image("loginbackgroundImage")
@@ -18,18 +24,18 @@ struct LoginView: View {
                 Spacer()
                     .frame(height: 100)
                 Image("status1")
-                    .foregroundStyle(.riskColor1)
+                    .foregroundStyle(Color.riskColor1)
                 Text("환영합니다.")
                     .font(.gHeadline01)
                 Spacer()
                     .frame(height: 21)
                 Text("편리한 키보드 활용을 위해")
                     .font(.pHeadline02)
-                    .foregroundStyle(.gray500)
+                    .foregroundStyle(Color.gray500)
                     
                 Text("로그인을 해주세요.")
                     .font(.pHeadline02)
-                    .foregroundStyle(.gray500)
+                    .foregroundStyle(Color.gray500)
                 
                 Spacer()
                 Button {
@@ -53,6 +59,7 @@ struct LoginView: View {
         .overlay {
             if loginViewModel.isLoading {
                 LoadingView()
+                    .onAppear(perform: UserManager.shared.loadUserFromUserDefaults)
             }
         }
     }

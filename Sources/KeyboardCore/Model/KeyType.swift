@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum KeyType: Hashable {
+public enum KeyType: Hashable {
     case character(Character)
     case shift
     case backspace
@@ -19,7 +19,7 @@ enum KeyType: Hashable {
     case switchToMoreSymbols
     
     
-    var displayText: String {
+    public var displayText: String {
         switch self {
         case .character(let char):
             return String(char)

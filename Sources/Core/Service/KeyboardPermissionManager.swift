@@ -7,9 +7,9 @@
 
 import UIKit
 
-struct KeyboardPermissionManager {
+public struct KeyboardPermissionManager {
     
-    static func isKeyboardEnabled() -> Bool {
+    public static func isKeyboardEnabled() -> Bool {
         guard Thread.isMainThread else {
             print("Warning: isKeyboardEnabled() was called from a background thread.")
             return false
@@ -31,7 +31,7 @@ struct KeyboardPermissionManager {
         return isEnabled
     }
 
-    static func openAppSettings() async {
+    public static func openAppSettings() async {
         guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
         
         print("Opening app settings: \(url)")

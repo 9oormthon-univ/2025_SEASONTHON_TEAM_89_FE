@@ -8,10 +8,16 @@
 import Foundation
 
 // MARK: - GroupGorupRequest
-struct JoinGorupRequest: Codable {
-    let joinCode, userID, nickname: String
-
-    enum CodingKeys: String, CodingKey {
+public struct JoinGorupRequest: Codable {
+    public let joinCode, userID, nickname: String
+    
+    public init(joinCode: String, userID: String, nickname: String) {
+        self.joinCode = joinCode
+        self.userID = userID
+        self.nickname = nickname
+    }
+    
+    public enum CodingKeys: String, CodingKey {
         case joinCode = "join_code"
         case userID = "user_id"
         case nickname = "nickname"

@@ -8,13 +8,13 @@
 import Foundation
 
 // MARK: - InfoGroupRespose
-struct InfoGroupRespose: Codable {
-    let groupID, groupName, joinCode, creatorID: String
-    let memberCount: Int
-    var members: [Member]
-    let createdAt: String
+public struct InfoGroupRespose: Codable {
+    public let groupID, groupName, joinCode, creatorID: String
+    public let memberCount: Int
+    public var members: [Member]
+    public let createdAt: String
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case groupID = "group_id"
         case groupName = "group_name"
         case joinCode = "join_code"
@@ -26,15 +26,26 @@ struct InfoGroupRespose: Codable {
 }
 
 // MARK: - Member
-struct Member: Codable {
-    let userID, nickname: String
-    let profileImage: String
-    let warningCount, dangerCount: Int
+public struct Member: Codable {
+    public let userID, nickname: String
+    public let profileImage: String
+    public let warningCount, dangerCount: Int
     
-    let isCreator: Bool
-    let joinedAt: String
-    let notificationEnabled: Bool
-    enum CodingKeys: String, CodingKey {
+    public let isCreator: Bool
+    public let joinedAt: String
+    public let notificationEnabled: Bool
+    
+    public init(userID: String, nickname: String, profileImage: String, warningCount: Int, dangerCount: Int, isCreator: Bool, joinedAt: String, notificationEnabled: Bool) {
+        self.userID = userID
+        self.nickname = nickname
+        self.profileImage = profileImage
+        self.warningCount = warningCount
+        self.dangerCount = dangerCount
+        self.isCreator = isCreator
+        self.joinedAt = joinedAt
+        self.notificationEnabled = notificationEnabled
+    }
+    public enum CodingKeys: String, CodingKey {
         case userID = "user_id"
         case nickname
         case profileImage = "profile_image"

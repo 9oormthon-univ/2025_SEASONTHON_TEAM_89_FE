@@ -9,16 +9,16 @@ import SwiftUI
 import Foundation
 
 // 앱과 키보드 확장 프로그램이 함께 사용할 UserDefaults 관리자
-struct SharedUserDefaults {
+public struct SharedUserDefaults {
     
     // Xcode에서 설정한 App Group ID (본인의 ID로 변경 필수!)
     private static let appGroupID = "group.com.eo.watchout.app"
     
     // 공유 UserDefaults 인스턴스
-    static let shared = UserDefaults(suiteName: appGroupID)!
+    public static let shared = UserDefaults(suiteName: appGroupID)!
 
     // 설정 키를 Enum으로 관리
-    enum SettingsKey: String {
+    public enum SettingsKey: String {
 //        case notificationsEnabled = "isNotificationsEnabled"
 //        case hapticFeedbackEnabled = "isHapticFeedbackEnabled"
         case riskLevel2Color = "riskLevel2Color"
@@ -38,7 +38,7 @@ struct SharedUserDefaults {
     }
     
     //MARK: - WarningNotification
-    static var isWarningNotification: Bool {
+    public static var isWarningNotification: Bool {
         get {
             return shared.object(forKey: SettingsKey.WarningNotification.rawValue) as? Bool ?? true
         } set {
@@ -47,7 +47,7 @@ struct SharedUserDefaults {
     }
     
     //MARK: - DangerNotification
-    static var isDangerNotification: Bool {
+    public static var isDangerNotification: Bool {
         get {
             return shared.object(forKey: SettingsKey.DangerNotification.rawValue) as? Bool ?? true
         } set {
@@ -56,7 +56,7 @@ struct SharedUserDefaults {
     }
     
     //MARK: - WarningHaptic
-    static var isWarningHaptic: Bool {
+    public static var isWarningHaptic: Bool {
         get {
             return shared.object(forKey: SettingsKey.WarningHaptic.rawValue) as? Bool ?? true
         } set {
@@ -65,7 +65,7 @@ struct SharedUserDefaults {
     }
     
     //MARK: - DangerHaptic
-    static var isDangerHaptic: Bool {
+    public static var isDangerHaptic: Bool {
         get {
             return shared.object(forKey: SettingsKey.DangerHaptic.rawValue) as? Bool ?? true
         } set {
@@ -75,7 +75,7 @@ struct SharedUserDefaults {
     
     
     //MARK: - CreateCroup
-    static var isCreateGroup: Bool {
+    public static var isCreateGroup: Bool {
         get {
             return shared.object(forKey: SettingsKey.createGroup.rawValue) as? Bool ?? false
         } set {
@@ -85,7 +85,7 @@ struct SharedUserDefaults {
     
     
     //MARK: - ShardID
-    static var joinId: String {
+    public static var joinId: String {
         get {
             return shared.object(forKey: SettingsKey.joinId.rawValue) as? String ?? ""
         } set {
@@ -104,7 +104,7 @@ struct SharedUserDefaults {
     
     
     //MARK: - UserID
-    static var userID: String {
+    public static var userID: String {
         get {
             if let existingUserID = shared.object(forKey: SettingsKey.userID.rawValue) as? String {
                 return existingUserID
@@ -120,7 +120,7 @@ struct SharedUserDefaults {
     }
     
     //MARK: - riskLevel2
-    static var riskLevel2Count: Int {
+    public static var riskLevel2Count: Int {
         get {
             return shared.object(forKey: SettingsKey.riskLevel2Count.rawValue) as? Int ?? 0
         } set {
@@ -128,7 +128,7 @@ struct SharedUserDefaults {
         }
     }
     //MARK: - riskLevel3
-    static var riskLevel3Count: Int {
+    public static var riskLevel3Count: Int {
         get {
             return shared.object(forKey: SettingsKey.riskLevel3Count.rawValue) as? Int ?? 0
         } set {
@@ -136,7 +136,7 @@ struct SharedUserDefaults {
         }
     }
     //MARK: - 온보딩 설정
-    static var isOnboarding: Bool {
+    public static var isOnboarding: Bool {
         get {
             return shared.object(forKey: SettingsKey.onboarding.rawValue) as? Bool ?? false
         } set {
@@ -146,7 +146,7 @@ struct SharedUserDefaults {
     
     // MARK: - 설정 프로퍼티 (Get/Set)
     
-    static var isTutorial: Bool {
+    public static var isTutorial: Bool {
         get {
             return shared.object(forKey: SettingsKey.tutorialEnabled.rawValue) as? Bool ?? false
         } set {
@@ -177,7 +177,7 @@ struct SharedUserDefaults {
 //    }
     
     /// 경고 색상 1단계 (색상 이름을 String으로 저장)
-    static var riskLevel2Color: String {
+    public static var riskLevel2Color: String {
         get {
             // 기본값: "orange"
             return shared.string(forKey: SettingsKey.riskLevel2Color.rawValue) ?? "1"
@@ -188,7 +188,7 @@ struct SharedUserDefaults {
     }
     
     /// 경고 색상 2단계 (색상 이름을 String으로 저장)
-    static var riskLevel3Color: String {
+    public static var riskLevel3Color: String {
         get {
             // 기본값: "red"
             return shared.string(forKey: SettingsKey.riskLevel3Color.rawValue) ?? "1"
@@ -201,7 +201,7 @@ struct SharedUserDefaults {
     // MARK: - Helper (저장된 문자열을 SwiftUI Color로 변환)
     
     /// 저장된 색상 이름 문자열을 실제 SwiftUI Color 객체로 변환해주는 함수
-    static func color(forName name: String) -> Color {
+    public static func color(forName name: String) -> Color {
         switch name.lowercased() {
         case "red": return .red
         case "orange": return .orange

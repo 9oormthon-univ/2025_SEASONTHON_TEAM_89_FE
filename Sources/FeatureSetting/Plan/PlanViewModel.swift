@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Domain
 
 class PlanViewModel: ObservableObject {
     @Published var selectedType: PlanType = .individual

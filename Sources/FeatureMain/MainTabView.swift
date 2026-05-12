@@ -6,15 +6,22 @@
 //
 
 import SwiftUI
+import Domain
+import Data
+import Shared
+import FeatureHome
+import FeatureSetting
+import FeatureReport
 
-struct MainTabView: View {
+public struct MainTabView: View {
     @EnvironmentObject private var pathModel: PathModel
     @StateObject private var mainTabViewModel = MainTabViewModel()
     @EnvironmentObject private var appState: AppState
-    var body: some View {
+    
+    public var body: some View {
         VStack(spacing:0) {
             HStack(spacing: 24) {
-                ForEach(Tab.allCases, id: \.self) { tab in
+                ForEach(WatchOutTab.allCases, id: \.self) { tab in
                     Button(action: {
                         withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                             DispatchQueue.main.async {
@@ -94,8 +101,9 @@ struct MainTabView: View {
             }
         }
     }
+    
     @ViewBuilder
-    private func tabButton(for tab: Tab) -> some View {
+    private func tabButton(for tab: WatchOutTab) -> some View {
         let isSelected = (mainTabViewModel.selectedTab == tab)
         
         VStack(alignment:.center,spacing: 8) {

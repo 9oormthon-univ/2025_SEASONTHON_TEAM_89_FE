@@ -20,10 +20,10 @@ struct ExperienceOneView: View {
                         .frame(height: 12)
                     Text("입력 중에는 이전 문장 흐름까지 함께 고려해 판단해요.")
                         .font(.pSubtitle03)
-                        .foregroundStyle(.gray300)
+                        .foregroundStyle(Color.gray300)
                     Text("추천 문장 : 멘토님,  돈 넣으면 출금 가능해요?")
                         .font(.pSubtitle03)
-                        .foregroundStyle(.main)
+                        .foregroundStyle(Color.main)
                     
                 }
                 Spacer()
@@ -35,7 +35,7 @@ struct ExperienceOneView: View {
                 HStack {
                     Text("여기에 돈 지금 당장 넣어주세요!")
                         .padding()
-                        .background(.gray100)
+                        .background(Color.gray100)
                         .cornerRadius(24)
                     Spacer()
                 }
@@ -49,7 +49,7 @@ struct ExperienceOneView: View {
                         .padding()
                         .overlay{
                             RoundedRectangle(cornerRadius: 24)
-                                .stroke(.gray300,lineWidth: 1)
+                                .stroke(Color.gray300,lineWidth: 1)
                             
                         }
                 }

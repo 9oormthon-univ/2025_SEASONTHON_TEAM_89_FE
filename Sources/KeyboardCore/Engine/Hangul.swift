@@ -32,12 +32,12 @@ private let jamosIntoJamo: [[Character]: Character] = [
 private let jamoIntoJamos: [Character: [Character]] = Dictionary(uniqueKeysWithValues: jamosIntoJamo.map { ($1, $0) })
 
 // MARK: - Hangul 구조체
-struct Hangul {
-    var cho: Character?
-    var jung: Character?
-    var jong: Character?
+public struct Hangul {
+    public var cho: Character?
+    public var jung: Character?
+    public var jong: Character?
 
-    init?(_ character: Character) {
+    public init?(_ character: Character) {
         switch character {
         case "ㄱ"..."ㅎ":
             guard choMap[character] != nil else { return nil }
@@ -59,13 +59,13 @@ struct Hangul {
         }
     }
     
-    init?(cho: Character? = nil, jung: Character? = nil, jong: Character? = nil) {
+    public init?(cho: Character? = nil, jung: Character? = nil, jong: Character? = nil) {
         self.cho = cho
         self.jung = jung
         self.jong = jong
     }
 
-    var character: Character? {
+    public var character: Character? {
         if let cho = self.cho, let jung = self.jung { // 초성+중성 (종성 포함)
             guard let choIdx = choMap[cho], let jungIdx = jungMap[jung] else { return nil }
             
@@ -82,7 +82,7 @@ struct Hangul {
         return nil
     }
 
-    static func combineHanguls(_ hangul1: Hangul, _ hangul2: Hangul) -> (combined: Hangul?, leftover: Hangul?) {
+    public static func combineHanguls(_ hangul1: Hangul, _ hangul2: Hangul) -> (combined: Hangul?, leftover: Hangul?) {
         // CASE 1: 초성 + 중성
         if let cho1 = hangul1.cho, hangul1.jung == nil, hangul1.jong == nil,
            let jung2 = hangul2.jung, hangul2.cho == nil, hangul2.jong == nil {
@@ -126,7 +126,7 @@ struct Hangul {
         return (nil, nil)
     }
 
-    static func deleteBackward(_ char: Character) -> Character? {
+    public static func deleteBackward(_ char: Character) -> Character? {
         guard let hangul = Hangul(char) else { return nil }
 
         if let cho = hangul.cho, let jung = hangul.jung, let jong = hangul.jong {

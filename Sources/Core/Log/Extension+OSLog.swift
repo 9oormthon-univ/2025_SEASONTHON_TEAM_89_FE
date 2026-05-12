@@ -8,11 +8,11 @@
 import Foundation
 import OSLog
 
-extension OSLog {
-    static let subsystem = Bundle.main.bundleIdentifier!
-    static let network = OSLog(subsystem: subsystem, category: "Network")
-    static let debug = OSLog(subsystem: subsystem, category: "Debug")
-    static let info = OSLog(subsystem: subsystem, category: "Info")
-    static let error = OSLog(subsystem: subsystem, category: "Error")
+public extension OSLog {
+    public static let subsystem = Bundle.main.bundleIdentifier!
+    public static let network = OSLog(subsystem: subsystem, category: "Network")
+    public static let debug = OSLog(subsystem: subsystem, category: "Debug")
+    public static let info = OSLog(subsystem: subsystem, category: "Info")
+    public static let error = OSLog(subsystem: subsystem, category: "Error")
 }
 

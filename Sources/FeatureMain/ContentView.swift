@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import Data
+import Shared
+import FeatureAuth
 
 struct ContentView: View {
     @StateObject private var appState = AppState()

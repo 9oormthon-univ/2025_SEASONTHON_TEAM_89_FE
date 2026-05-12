@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import Domain
+import Shared
+import Core
 
 // 1. Enum 개선: CaseIterable, Identifiable 채택 및 데이터 추가
 enum ExperienceType: String, CaseIterable, Identifiable {
@@ -87,7 +90,7 @@ struct ExperienceView: View {
                         .padding(.vertical, 8)
                         .overlay{
                             RoundedRectangle(cornerRadius: 24)
-                                .stroke(.gray300,lineWidth: 1)
+                                .stroke(Color.gray300,lineWidth: 1)
                             
                         }
                         .onTapGesture {
@@ -100,7 +103,7 @@ struct ExperienceView: View {
                         .padding(.vertical, 8)
                         .overlay{
                             RoundedRectangle(cornerRadius: 24)
-                                .stroke(.gray300,lineWidth: 1)
+                                .stroke(Color.gray300,lineWidth: 1)
                             
                         }
                         .onTapGesture {
@@ -115,7 +118,7 @@ struct ExperienceView: View {
                         .padding(.vertical, 8)
                         .overlay{
                             RoundedRectangle(cornerRadius: 24)
-                                .stroke(.gray300,lineWidth: 1)
+                                .stroke(Color.gray300,lineWidth: 1)
                             
                         }
                         .onTapGesture {

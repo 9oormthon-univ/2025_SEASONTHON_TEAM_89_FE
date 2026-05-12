@@ -10,17 +10,16 @@ import Moya
 import CombineMoya
 import Combine
 
-final class AuthService {
+public final class AuthService {
     private let provider = MoyaProvider<AuthAPI>(plugins: [NetworkLoggerPlugin()])
-
-    // ⬇️ 반환 타입을 새로운 LoginResponse로 변경합니다.
-    func kakaoLogin(token: String) -> AnyPublisher<LoginResponse, Error> {
+    public init() { }
+    public func kakaoLogin(token: String) -> AnyPublisher<LoginResponse, Error> {
         return provider.requestPublisher(.kakaoLogin(request: KakaoLoginRequest(accessToken: token, DeviceType: TokenManager.shared.loadDeviceToken() ?? "시뮬레이터")))
             .tryMap { response in
                 guard (200...299).contains(response.statusCode) else {
                     throw MoyaError.statusCode(response)
                 }
-                // ⬇️ 디코딩할 모델을 LoginResponse.self로 변경합니다.
+                
                 let data = try response.map(LoginResponse.self)
                 UserManager.shared.setCurrentUser(data.user)
                 return data
@@ -28,7 +27,7 @@ final class AuthService {
             .eraseToAnyPublisher()
     }
     
-    func kakaoDelte(userId: String) -> AnyPublisher<Void, Error> {
+    public func kakaoDelte(userId: String) -> AnyPublisher<Void, Error> {
         return provider.requestPublisher(.kakaoDelete(request:KakaoDeleteRequest(userId: userId)))
             .tryMap { response in
                 guard (200...299).contains(response.statusCode) else {

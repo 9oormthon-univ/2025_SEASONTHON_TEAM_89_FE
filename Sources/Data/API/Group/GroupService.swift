@@ -7,7 +7,8 @@
 
 import Foundation
 import Moya
-protocol GroupServiceType {
+
+public protocol GroupServiceType {
     func createGroup(groupRequest: CreateGroupRequest, completion: @escaping (Result<CreateGroupResponse, APIError>) -> Void)
     func joinGroup(joinGroup: JoinGorupRequest, completion: @escaping (Result<Void, APIError>) -> Void)
     func leaveGroup(userID: String, completion: @escaping (Result<Void, APIError>) -> Void)
@@ -15,22 +16,20 @@ protocol GroupServiceType {
     func verifyGroupCode(groupCode: VerifyRequest, completion: @escaping(Result<VerifyResponse,APIError>) -> Void)
 }
 
-class GroupService: GroupServiceType {
-   
+public class GroupService: GroupServiceType {
     
-    
-    static let shared = GroupService()
+    public static let shared = GroupService()
     
     private let provider = MoyaProvider<GroupAPI>(
         plugins: [MoyaLoggingPlugin()]
     )
     
-    func verifyGroupCode(groupCode: VerifyRequest, completion: @escaping (Result<VerifyResponse, APIError>) -> Void) {
+    public func verifyGroupCode(groupCode: VerifyRequest, completion: @escaping (Result<VerifyResponse, APIError>) -> Void) {
         provider.requestWithValidation(.verify(verifyRequest: groupCode), completion: completion)
     }
     
     // MARK: - Join Group (Void 응답)
-    func joinGroup(
+    public func joinGroup(
         joinGroup: JoinGorupRequest,
         completion: @escaping (Result<Void, APIError>) -> Void
     ) {
@@ -41,7 +40,7 @@ class GroupService: GroupServiceType {
     }
     
     // MARK: - Create Group (데이터 응답)
-    func createGroup(
+    public func createGroup(
         groupRequest: CreateGroupRequest,
         completion: @escaping (Result<CreateGroupResponse, APIError>) -> Void
     ) {
@@ -52,7 +51,7 @@ class GroupService: GroupServiceType {
     }
     
     // MARK: - Leave Group (Void 응답)
-    func leaveGroup(
+    public func leaveGroup(
         userID: String,
         completion: @escaping (Result<Void, APIError>) -> Void
     ) {
@@ -63,7 +62,7 @@ class GroupService: GroupServiceType {
     }
     
     // MARK: - Info Group (데이터 응답)
-    func infoGroup(
+    public func infoGroup(
         userID: String,
         completion: @escaping (Result<InfoGroupRespose, APIError>) -> Void
     ) {

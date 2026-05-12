@@ -6,11 +6,16 @@
 //
 
 import SwiftUI
+import Domain
+import Data
+import Shared
 
-struct SettingView: View {
+public struct SettingView: View {
     @EnvironmentObject var pathModel: PathModel
     @StateObject private var settingViewModel = SettingViewModel()
-    var body: some View {
+    public init() { }
+    
+    public var body: some View {
         VStack {
             PlanbarView()
                 .onTapGesture {
@@ -65,13 +70,13 @@ private struct PlanbarView: View {
             HStack {
                 Text("Family 플랜")
                     .font(.pHeadline02)
-                    .foregroundStyle(.main)
+                    .foregroundStyle(Color.main)
                 Text("사용 중이에요")
                     .font(.pBody02)
                 Spacer()
                 Text("더 알아보기 >")
                     .font(.pCaption01)
-                    .foregroundStyle(.gray400)
+                    .foregroundStyle(Color.gray400)
             }
         }
         .padding(20)
@@ -99,6 +104,7 @@ private struct PlanbarView: View {
 private struct SheetView: View {
     @ObservedObject var settingViewModel: SettingViewModel
     let status: Status
+    
     fileprivate var body: some View {
         VStack {
             Spacer()
@@ -108,7 +114,7 @@ private struct SheetView: View {
                 .frame(height: 8)
             Text("\(status.rawValue) 경고 시 나타낼 색상을 선정해 주세요")
                 .font(.pSubtitle03)
-                .foregroundStyle(.gray400)
+                .foregroundStyle(Color.gray400)
             Spacer()
                 .frame(height: 24)
             VStack {
@@ -124,7 +130,7 @@ private struct SheetView: View {
                             .overlay{
                                 if settingViewModel.getRiskLevelColor(level: status) == "\(index)" {
                                     Circle()
-                                        .stroke(.gray200, lineWidth: 1)
+                                        .stroke(Color.gray200, lineWidth: 1)
                                 }
                                 
                             }
@@ -149,7 +155,7 @@ private struct CustomDivider: View {
     fileprivate var body: some View {
         Rectangle()
             .frame(height: 8)
-            .foregroundStyle(.gray100)
+            .foregroundStyle(Color.gray100)
     }
 }
 
@@ -161,7 +167,7 @@ private struct SubTitle: View {
         HStack {
             Text(text)
                 .font(.pHeadline03)
-                .foregroundStyle(.main)
+                .foregroundStyle(Color.main)
             Spacer()
         }
     }
@@ -187,7 +193,7 @@ private struct ColorPickerView: View {
             
                 .foregroundStyle(Color( status == .danger ? "Risk1Color\(settingViewModel.getRiskLevelColor(level: status))" : "RiskColor\(settingViewModel.getRiskLevelColor(level: status))"))
             Image(systemName: "chevron.down")
-                .foregroundStyle(.gray500)
+                .foregroundStyle(Color.gray500)
             
         }
     }

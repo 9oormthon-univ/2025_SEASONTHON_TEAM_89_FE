@@ -7,16 +7,23 @@
 
 import Foundation
 
-struct User: Codable {
-    let userId: String
-    let kakaoId: Int
-    let nickname: String
-    let profileImage: String
+public struct User: Codable {
+    public let userId: String
+    public let kakaoId: Int
+    public let nickname: String
+    public let profileImage: String
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case userId = "user_id"
         case kakaoId = "kakao_id"
         case nickname
         case profileImage = "profile_image"
+    }
+    
+    public init(userId: String, kakaoId: Int, nickname: String, profileImage: String) {
+        self.userId = userId
+        self.kakaoId = kakaoId
+        self.nickname = nickname
+        self.profileImage = profileImage
     }
 }

@@ -7,11 +7,13 @@
 
 import Foundation
 import Combine
+import Domain
 
-final class UserManager: ObservableObject {
-    @Published var currentUser: User?
 
-    static let shared = UserManager()
+public final class UserManager: ObservableObject {
+    @Published public var currentUser: User?
+
+    public static let shared = UserManager()
     
     // UserDefaults에 데이터를 저장하기 위한 고유 키
     private let userDefaultsKey = "currentUser"
@@ -20,14 +22,14 @@ final class UserManager: ObservableObject {
         loadUserFromUserDefaults()
     }
 
-    func setCurrentUser(_ user: User) {
+    public func setCurrentUser(_ user: User) {
         DispatchQueue.main.async {
             self.currentUser = user
             self.saveUserToUserDefaults(user)
         }
     }
 
-    func clearUser() {
+    public func clearUser() {
         DispatchQueue.main.async {
             self.currentUser = nil
             self.removeUserFromUserDefaults()
@@ -47,7 +49,7 @@ final class UserManager: ObservableObject {
         }
     }
     
-    func loadUserFromUserDefaults() {
+    public func loadUserFromUserDefaults() {
         guard let userData = UserDefaults.standard.data(forKey: userDefaultsKey) else { return }
         
         let decoder = JSONDecoder()

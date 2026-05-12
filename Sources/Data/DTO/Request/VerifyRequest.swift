@@ -7,10 +7,13 @@
 
 import Foundation
 
-struct VerifyRequest: Codable{
-    let joinCode: String
-    
-    enum CodingKeys: String, CodingKey{
+public struct VerifyRequest: Codable{
+    public let joinCode: String
+    public init(joinCode: String) {
+        self.joinCode = joinCode
+    }
+        
+    public enum CodingKeys: String, CodingKey{
         case joinCode = "join_code"
     }
 }

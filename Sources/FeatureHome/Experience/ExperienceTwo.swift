@@ -20,10 +20,10 @@ struct ExperienceTwo: View {
                         .frame(height: 12)
                     Text("문장 위험도를 판단하고 그에 맞는 신호를 보여줄 거예요.")
                         .font(.pSubtitle03)
-                        .foregroundStyle(.gray300)
+                        .foregroundStyle(Color.gray300)
                     Text("주황색은 경고, 빨간색은 위험 신호에요!")
                         .font(.pSubtitle03)
-                        .foregroundStyle(.gray300)
+                        .foregroundStyle(Color.gray300)
                     
                 }
                 Spacer()
@@ -35,7 +35,7 @@ struct ExperienceTwo: View {
                 HStack {
                     Text("여기에 돈 지금 당장 넣어주세요!")
                         .padding()
-                        .background(.gray100)
+                        .background(Color.gray100)
                         .cornerRadius(24)
                     Spacer()
                 }
@@ -52,7 +52,7 @@ struct ExperienceTwo: View {
                         .padding()
                         .overlay{
                             RoundedRectangle(cornerRadius: 24)
-                                .stroke(.gray300,lineWidth: 1)
+                                .stroke(Color.gray300,lineWidth: 1)
                         }
                 } else {
                     Text("  . . .  ")
@@ -60,7 +60,7 @@ struct ExperienceTwo: View {
                         .padding()
                         .overlay{
                             RoundedRectangle(cornerRadius: 24)
-                                .stroke(.gray300,lineWidth: 1)
+                                .stroke(Color.gray300,lineWidth: 1)
                         }
                 }
             }

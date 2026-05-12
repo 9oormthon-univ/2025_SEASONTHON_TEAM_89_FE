@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Status: String {
+public enum Status: String {
     case normal
     case warning = "주의"
     case danger = "위험"

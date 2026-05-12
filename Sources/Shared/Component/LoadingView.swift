@@ -8,8 +8,10 @@
 import SwiftUI
 import DotLottie
 
-struct LoadingView: View {
-    var body: some View {
+public struct LoadingView: View {
+    public init() { }
+    
+    public var body: some View {
         VStack {
             Spacer()
                 .frame(height: 200)
@@ -23,7 +25,6 @@ struct LoadingView: View {
             }
             Spacer()
         }
-        .onAppear(perform: UserManager.shared.loadUserFromUserDefaults)
         .background(Color(.systemBackground))
 
     }

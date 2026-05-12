@@ -9,20 +9,20 @@ import Foundation
 import Moya
 
 // MARK: - Validation Error Models
-struct ValidationErrorResponse: Decodable {
+public struct ValidationErrorResponse: Decodable {
     let detail: [ValidationErrorDetail]
 }
 
-struct ValidationErrorDetail: Decodable {
-    let loc: [LocationType]
-    let msg: String
-    let type: String
+public struct ValidationErrorDetail: Decodable {
+    public let loc: [LocationType]
+    public let msg: String
+    public let type: String
     
-    enum LocationType: Decodable {
+    public enum LocationType: Decodable {
         case string(String)
         case int(Int)
         
-        init(from decoder: Decoder) throws {
+        public init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             if let stringValue = try? container.decode(String.self) {
                 self = .string(stringValue)
@@ -39,7 +39,7 @@ struct ValidationErrorDetail: Decodable {
             }
         }
         
-        var value: String {
+        public var value: String {
             switch self {
             case .string(let str):
                 return str
@@ -51,7 +51,7 @@ struct ValidationErrorDetail: Decodable {
 }
 
 // MARK: - API Error Enum
-enum APIError: Error {
+public enum APIError: Error {
     case unauthorized           // 401
     case forbidden              // 403
     case notFound               // 404
@@ -62,7 +62,7 @@ enum APIError: Error {
     case unknown(statusCode: Int, message: String?)
     
     
-    init(moyaError: MoyaError) {
+    public init(moyaError: MoyaError) {
         switch moyaError {
         case .statusCode(let response):
     
@@ -98,7 +98,7 @@ enum APIError: Error {
     }
     
 
-    var message: String {
+    public var message: String {
         switch self {
         case .unauthorized:
             return "로그인이 필요합니다."
@@ -124,7 +124,7 @@ enum APIError: Error {
     }
     
     
-    var validationMessages: [String] {
+    public var validationMessages: [String] {
         switch self {
         case .validationError(let errors):
             return errors.map { error in
@@ -137,7 +137,7 @@ enum APIError: Error {
     }
     
     
-    var shouldRetry: Bool {
+    public var shouldRetry: Bool {
         switch self {
         case .networkError, .serverError:
             return true
@@ -147,7 +147,7 @@ enum APIError: Error {
     }
     
     
-    var requiresLogin: Bool {
+    public var requiresLogin: Bool {
         switch self {
         case .unauthorized:
             return true
