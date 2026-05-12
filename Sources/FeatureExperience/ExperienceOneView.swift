@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Shared
 
 struct ExperienceOneView: View {
     @State var text: String = ""

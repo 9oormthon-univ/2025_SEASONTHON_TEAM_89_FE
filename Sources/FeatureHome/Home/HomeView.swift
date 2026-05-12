@@ -9,6 +9,7 @@ import SwiftUI
 import Domain
 import Core
 import Data
+import Shared
 
 public struct HomeView: View {
     @EnvironmentObject private var pathModel: PathModel

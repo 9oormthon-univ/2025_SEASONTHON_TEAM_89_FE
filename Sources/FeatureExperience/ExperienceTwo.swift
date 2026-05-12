@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Shared
 
 struct ExperienceTwo: View {
     let text: String
