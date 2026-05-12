@@ -9,11 +9,13 @@ import SwiftUI
 import Domain
 import Shared
 
-struct CreateGroupView: View {
+public struct CreateGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
     @StateObject private var groupViewModel = GroupViewModel()
-    
-    var body: some View {
+
+    public init() { }
+
+    public var body: some View {
         VStack {
             CustomNavigationBar(leftBtnAction: {
                 _ = pathModel.paths.popLast()

@@ -21,7 +21,7 @@ struct WatchOutApp: App {
     }
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
                 .onOpenURL { url in
                     if (AuthApi.isKakaoTalkLoginUrl(url)) {
                         _ = AuthController.handleOpenUrl(url: url)

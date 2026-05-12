@@ -13,8 +13,9 @@ let package = Package(
         .library(name: "FeatureAuth", targets: ["FeatureAuth"]),
         .library(name: "FeatureMain", targets: ["FeatureMain"]),
         .library(name: "FeatureHome", targets: ["FeatureHome"]),
+        .library(name: "FeatureGroup", targets: ["FeatureGroup"]),
+        .library(name: "FeatureExperience", targets: ["FeatureExperience"]),
         .library(name: "FeatureSetting", targets: ["FeatureSetting"]),
-        .library(name: "FeatureReport", targets: ["FeatureReport"]),
     ],
     dependencies: [
         .package(url: "https://github.com/Moya/Moya.git", from: "15.0.0"),
@@ -24,8 +25,8 @@ let package = Package(
         .target(
             name: "Shared",
             dependencies: [
-                    .product(name: "DotLottie", package: "dotlottie-ios"),
-                ],
+                .product(name: "DotLottie", package: "dotlottie-ios"),
+            ],
             path: "Sources/Shared",
             resources: [
                 .process("Resource/Assets.xcassets"),
@@ -54,29 +55,39 @@ let package = Package(
                 "Domain",
                 "Core",
                 .product(name: "Moya", package: "Moya"),
-                
             ],
             path: "Sources/Data"
         ),
         .target(
             name: "FeatureAuth",
-            dependencies: ["Domain", "Data", "Shared", "Core"],
+            dependencies: [
+                "Domain",
+                "Data",
+                "Shared",
+                "Core",
+                .product(name: "DotLottie", package: "dotlottie-ios"),
+            ],
             path: "Sources/FeatureAuth"
         ),
         .target(
             name: "FeatureHome",
-            dependencies: ["Domain", "Data", "Shared", "Core", "KeyboardCore"],
+            dependencies: ["Domain", "Data", "Shared", "Core"],
             path: "Sources/FeatureHome"
+        ),
+        .target(
+            name: "FeatureGroup",
+            dependencies: ["Domain", "Data", "Shared", "Core"],
+            path: "Sources/FeatureGroup"
+        ),
+        .target(
+            name: "FeatureExperience",
+            dependencies: ["Domain", "Data", "Shared", "Core", "KeyboardCore"],
+            path: "Sources/FeatureExperience"
         ),
         .target(
             name: "FeatureSetting",
             dependencies: ["Domain", "Data", "Shared", "Core"],
             path: "Sources/FeatureSetting"
-        ),
-        .target(
-            name: "FeatureReport",
-            dependencies: ["Domain", "Shared", "Core"],
-            path: "Sources/FeatureReport"
         ),
         .target(
             name: "FeatureMain",
@@ -85,10 +96,9 @@ let package = Package(
                 "Data",
                 "Shared",
                 "Core",
-                "FeatureAuth",
                 "FeatureHome",
                 "FeatureSetting",
-                "FeatureReport",
+                .product(name: "DotLottie", package: "dotlottie-ios"),
             ],
             path: "Sources/FeatureMain"
         ),

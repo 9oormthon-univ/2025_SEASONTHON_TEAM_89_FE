@@ -10,10 +10,13 @@ import Domain
 import Shared
 import Data
 
-struct PlanView: View {
+public struct PlanView: View {
     @EnvironmentObject var pathModel: PathModel
     @StateObject var planViewModel = PlanViewModel()
-    var body: some View {
+
+    public init() { }
+
+    public var body: some View {
         VStack(alignment: .center) {
             NavigationBar()
             Spacer()

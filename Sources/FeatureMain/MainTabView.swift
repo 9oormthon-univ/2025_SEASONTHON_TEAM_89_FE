@@ -11,13 +11,14 @@ import Data
 import Shared
 import FeatureHome
 import FeatureSetting
-import FeatureReport
 
 public struct MainTabView: View {
     @EnvironmentObject private var pathModel: PathModel
     @StateObject private var mainTabViewModel = MainTabViewModel()
     @EnvironmentObject private var appState: AppState
-    
+
+    public init() { }
+
     public var body: some View {
         VStack(spacing:0) {
             HStack(spacing: 24) {

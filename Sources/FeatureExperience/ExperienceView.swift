@@ -27,14 +27,17 @@ enum ExperienceType: String, CaseIterable, Identifiable {
     }
 }
 
-struct ExperienceView: View {
+public struct ExperienceView: View {
     @State var experienceType: ExperienceType = .one
     @State var text: String = ""
     @FocusState var focused: Bool
     @State var isEnter = false
     @State var sendtext: String = ""
     @EnvironmentObject private var pathModel: PathModel
-    var body: some View {
+
+    public init() { }
+
+    public var body: some View {
         VStack {
             CustomNavigationBar(leftBtnAction: {
                _ = pathModel.paths.popLast()

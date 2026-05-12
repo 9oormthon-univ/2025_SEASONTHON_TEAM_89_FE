@@ -12,12 +12,15 @@ import Data
 import Shared
 
 
-struct ManagementGroupView: View {
+public struct ManagementGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
     @StateObject private var groupViewModel = GroupViewModel()
     @EnvironmentObject private var userManager: UserManager
     @State private var isToastShown: Bool = false
-    var body: some View {
+
+    public init() { }
+
+    public var body: some View {
         
         VStack {
             CustomNavigationBar(leftBtnAction: {

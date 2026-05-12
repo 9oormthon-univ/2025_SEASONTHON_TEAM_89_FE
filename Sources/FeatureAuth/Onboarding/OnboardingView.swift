@@ -10,64 +10,23 @@ import DotLottie
 import Domain
 import Core
 import Data
+import Shared
 
 public struct OnboardingView: View {
-    
-    @StateObject private var pathModel = PathModel()
     @StateObject private var onboardingContentViewModel = OnboardingContentViewModel()
-    
-    public let isOnBoarding = SharedUserDefaults.isOnboarding
+
     public init() { }
+
     public var body: some View {
-        NavigationStack(path: $pathModel.paths) {
-            Group {
-                if isOnBoarding {
-                    MainTabView()
-                } else {
-                    OnboardingContentView(onboardingViewModel: onboardingContentViewModel)
-                }
-            }
-            .navigationDestination(for: PathType.self, destination: { pathType in
-                switch pathType {
-                case .mainTabView:
-                    MainTabView()
-                        .navigationBarBackButtonHidden()
-                    
-                case .exprienceView:
-                    ExperienceView()
-                        .navigationBarBackButtonHidden()
-                case .createGroupView:
-                    CreateGroupView()
-                        .navigationBarBackButtonHidden()
-                    
-                case .joinGroupView:
-                    JoinGroupView()
-                        .navigationBarBackButtonHidden()
-                    
-                    
-                case .managementGroupView:
-                    ManagementGroupView()
-                        .navigationBarBackButtonHidden()
-                case .planView:
-                    PlanView()
-                        .navigationBarBackButtonHidden()
-                case .waitingView:
-                    WaitingView()
-                        .navigationBarBackButtonHidden()
-                }
-                
-            })
-        }
-        .onAppear(perform: UserManager.shared.loadUserFromUserDefaults)
-        .environmentObject(pathModel)
-        
+        OnboardingContentView(onboardingViewModel: onboardingContentViewModel)
+            .onAppear(perform: UserManager.shared.loadUserFromUserDefaults)
     }
 }
 
 //MARK: - OnboardingContentView
 private struct OnboardingContentView: View {
     @ObservedObject private var onboardingViewModel: OnboardingContentViewModel
-    
+
     fileprivate init(onboardingViewModel: OnboardingContentViewModel) {
         self.onboardingViewModel = onboardingViewModel
     }
@@ -79,7 +38,7 @@ private struct OnboardingContentView: View {
                         fileName: "guidevideo",
                         config: AnimationConfig(autoplay: true, loop: true)
                     ).view()
-                    
+
                     VStack {
                         Spacer()
                         OnboardingFirstView()
@@ -96,10 +55,7 @@ private struct OnboardingContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
             onboardingViewModel.checkKeyboardStatus()
         }
-        
     }
-    
-    
 }
 
 //MARK: - OnboardingFirstView
@@ -108,14 +64,14 @@ private struct OnboardingFirstView: View {
         VStack(spacing: 10) {
             Spacer()
                 .frame(height: 50)
-            
+
             Image("OnboardingText")
-            
+
             Text("어떤 개인 정보도 수집하지 않습니다 :)")
                 .font(.pretendard(size: 18, weight: .medium))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
-            
+
             Button {
                 Task {
                     await KeyboardPermissionManager.openAppSettings()
@@ -140,46 +96,40 @@ private struct OnboardingSecondView: View {
     @EnvironmentObject private var pathModel: PathModel
     @FocusState private var focusedField: Field?
     @State private var hiddenText: String = ""
-    
+
     private enum Field: Hashable {
         case hiddenTextField
     }
-    
+
     var body: some View {
         ZStack {
             VStack {
                 Image("onbodingImage")
                 Spacer()
             }
-            
+
             VStack {
-                
                 Spacer()
-                
+
                 Button {
-                    pathModel.paths.append(.mainTabView)
                     SharedUserDefaults.isOnboarding = true
+                    pathModel.paths.append(.mainTabView)
                 } label: {
                     VStack {
                         Text("선택완료")
                             .font(.pHeadline02)
                             .foregroundColor(.white)
-                        
                             .frame(maxWidth: .infinity)
-                        
                     }
-                    
                 }
                 .frame(height: 58)
                 .background(Color.main)
-                
+
                 TextField("", text: $hiddenText)
                     .focused($focusedField, equals: .hiddenTextField)
-                
                     .opacity(0)
                     .allowsHitTesting(false)
                     .frame(height: 39)
-                
             }
         }
         .ignoresSafeArea(.container)

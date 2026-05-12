@@ -8,10 +8,14 @@
 import Foundation
 import SwiftUI
 import DotLottie
+import Domain
 
-struct WaitingView: View {
+public struct WaitingView: View {
     @EnvironmentObject var pathModel: PathModel
-    var body: some View {
+
+    public init() { }
+
+    public var body: some View {
         VStack {
             HStack {
                 Spacer()
