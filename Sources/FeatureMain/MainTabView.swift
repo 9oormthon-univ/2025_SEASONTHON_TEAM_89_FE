@@ -8,6 +8,7 @@
 import SwiftUI
 import Domain
 import Data
+import Core
 import Shared
 import FeatureHome
 import FeatureSetting

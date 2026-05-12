@@ -8,6 +8,7 @@
 import SwiftUI
 import Domain
 import Data
+import Core
 import FeatureMain
 import FeatureGroup
 import FeatureExperience
@@ -15,7 +16,10 @@ import FeatureSetting
 
 struct RootView: View {
     @StateObject private var pathModel = PathModel()
-    @StateObject private var appState = AppState()
+    @StateObject private var appState = AppState(
+        isLoggedIn: TokenManager.shared.loadAccessToken().map { !$0.isEmpty } ?? false,
+        isOnboardingCompleted: SharedUserDefaults.isOnboarding
+    )
     @StateObject private var userManager = UserManager.shared
 
     var body: some View {

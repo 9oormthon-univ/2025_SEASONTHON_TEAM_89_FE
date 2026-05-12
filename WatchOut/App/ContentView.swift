@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Core
+import Domain
 import FeatureAuth
 import FeatureMain
 
