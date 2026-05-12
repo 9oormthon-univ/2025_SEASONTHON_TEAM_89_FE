@@ -30,8 +30,6 @@ let package = Package(
             path: "Sources/Shared",
             resources: [
                 .process("Resource/Assets.xcassets"),
-                .process("Resource/Font"),
-                .process("Resource/Animation"),
             ]
         ),
         .target(
