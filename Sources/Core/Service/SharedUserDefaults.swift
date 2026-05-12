@@ -94,7 +94,7 @@ public struct SharedUserDefaults {
     }
     
     //MARK: - GroupCode
-    static var groupCode: String {
+    public static var groupCode: String {
         get {
             return shared.object(forKey: SettingsKey.groupCode.rawValue) as? String ?? ""
         } set {

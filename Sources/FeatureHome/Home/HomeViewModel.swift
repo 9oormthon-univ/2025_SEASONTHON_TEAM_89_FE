@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Data
+import Core
 
 class HomeViewModel: ObservableObject {
     @Published var risk2Count: Int = 0
