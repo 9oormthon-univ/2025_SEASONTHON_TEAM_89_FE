@@ -32,7 +32,7 @@ public struct ManagementGroupView: View {
                 HStack(alignment: .bottom) {
                     VStack {
                         HStack {
-                            Text(groupViewModel.infoGroupRespose?.groupName ?? "")
+                            Text(groupViewModel.infoGroupResponse?.groupName ?? "")
                                 .font(.gHeadline01)
                             Text("총 \( groupViewModel.countMembers())명")
                         }
@@ -47,12 +47,12 @@ public struct ManagementGroupView: View {
                         .font(.pSubtitle03)
                         .foregroundStyle(Color.gray300)
                     Spacer()
-                    Text(groupViewModel.infoGroupRespose?.joinCode ?? "")
+                    Text(groupViewModel.infoGroupResponse?.joinCode ?? "")
                         .font(.pBody01)
                         .underline()
                     Button {
                         
-                        UIPasteboard.general.strings = [groupViewModel.infoGroupRespose?.joinCode ?? ""]
+                        UIPasteboard.general.strings = [groupViewModel.infoGroupResponse?.joinCode ?? ""]
                         isToastShown.toggle()
                     } label: {
                         Image("CopyIcon")
@@ -70,7 +70,7 @@ public struct ManagementGroupView: View {
                     HStack {
                         Spacer()
                             .frame(width: 20)
-                        ForEach(groupViewModel.infoGroupRespose?.members ?? [], id: \.userID) { member in
+                        ForEach(groupViewModel.infoGroupResponse?.members ?? [], id: \.userID) { member in
                             ProfileView(groupViewModel: groupViewModel, member: member)
                                 .onTapGesture {
                                     groupViewModel.selectMembers = member
@@ -149,8 +149,8 @@ private struct UserInfoView: View {
                 
                 Spacer()
                     .frame(height: 50)
-                if(groupViewModel.infoGroupRespose?.creatorID == groupViewModel.user.userId){
-                    if (groupViewModel.infoGroupRespose?.creatorID != groupViewModel.selectMembers.userID) {
+                if(groupViewModel.infoGroupResponse?.creatorID == groupViewModel.user.userId){
+                    if (groupViewModel.infoGroupResponse?.creatorID != groupViewModel.selectMembers.userID) {
                         Text("강퇴하기")
                             .underline()
                             .font(.pBody02)
@@ -176,7 +176,7 @@ private struct UserInfoView: View {
                     .alert(isPresented: $groupViewModel.isLeave) {
                         Alert(title: Text("그룹을 해체하시겠습니까?"), message: Text("그룹을 해체하면 모든 그룹원이 강퇴됩니다."), primaryButton: .destructive(Text("나가기"), action: {
                             DispatchQueue.main.async {
-                                groupViewModel.LeaveGorupAction()
+                                groupViewModel.LeaveGroupAction()
                                 _ = pathModel.paths.popLast()
                                 groupViewModel.isCreate = false
                             }
@@ -194,7 +194,7 @@ private struct UserInfoView: View {
                         .alert(isPresented: $groupViewModel.isLeave) {
                             Alert(title: Text("그룹을 나가시겠습니까?"), primaryButton: .destructive(Text("나가기"), action: {
                                 DispatchQueue.main.async {
-                                    groupViewModel.LeaveGorupAction()
+                                    groupViewModel.LeaveGroupAction()
                                     _ = pathModel.paths.popLast()
                                     groupViewModel.isCreate = false
                                 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: - CreateGorupRequest
+// MARK: - CreateGroupRequest
 public struct CreateGroupRequest: Codable {
     public let userID, groupName,nickname: String
 

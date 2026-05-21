@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: - CreateGorupResponse
+// MARK: - CreateGroupResponse
 public struct CreateGroupResponse: Codable {
     public let groupID, joinCode, creatorID: String
     public let createdAt: String

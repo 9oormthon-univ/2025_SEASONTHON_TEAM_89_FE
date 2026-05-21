@@ -1,5 +1,5 @@
 //
-//  InfoGroupRespose.swift
+//  InfoGroupResponse.swift
 //  WatchOut
 //
 //  Created by 어재선 on 9/18/25.
@@ -7,8 +7,8 @@
 
 import Foundation
 
-// MARK: - InfoGroupRespose
-public struct InfoGroupRespose: Codable {
+// MARK: - InfoGroupResponse
+public struct InfoGroupResponse: Codable {
     public let groupID, groupName, joinCode, creatorID: String
     public let memberCount: Int
     public var members: [Member]

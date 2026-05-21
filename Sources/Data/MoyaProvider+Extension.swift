@@ -1,5 +1,5 @@
 //
-//  MoyaProvider+Extention.swift
+//  MoyaProvider+Extension.swift
 //  WatchOut
 //
 //  Created by 어재선 on 10/27/25.

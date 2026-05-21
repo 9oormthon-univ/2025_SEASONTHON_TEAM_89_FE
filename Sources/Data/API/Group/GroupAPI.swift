@@ -10,8 +10,8 @@ import Moya
 
 enum GroupAPI{
     case createGroup(createRequest: CreateGroupRequest)
-    case joinGroup(joinRequest: JoinGorupRequest)
-    case leveGroup(userID: String)
+    case joinGroup(joinRequest: JoinGroupRequest)
+    case leaveGroup(userID: String)
     case infoGroup(userID: String)
     case verify(verifyRequest: VerifyRequest)
 }
@@ -28,7 +28,7 @@ extension GroupAPI: TargetType{
             return "/create"
         case .joinGroup:
             return "/join"
-        case .leveGroup(let userID):
+        case .leaveGroup(let userID):
             return "/leave/\(userID)"
         case .infoGroup(userID: let userID):
             return "info/\(userID)"
@@ -44,7 +44,7 @@ extension GroupAPI: TargetType{
             return .post
         case .joinGroup:
             return .post
-        case .leveGroup(_):
+        case .leaveGroup(_):
             return .delete
         case .infoGroup(_):
             return .get
@@ -59,7 +59,7 @@ extension GroupAPI: TargetType{
             return .requestJSONEncodable(request)
         case .joinGroup(let request):
             return .requestJSONEncodable(request)
-        case .leveGroup(_):
+        case .leaveGroup(_):
             return .requestPlain
         case .infoGroup(_):
             return .requestPlain
