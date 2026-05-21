@@ -7,8 +7,8 @@
 
 import Foundation
 
-// MARK: - GroupGorupResponse
-struct JoinGorupResponse: Codable {
+// MARK: - GroupGroupResponse
+struct JoinGroupResponse: Codable {
     let groupID, creatorName, joinedAt: String
 
     enum CodingKeys: String, CodingKey {

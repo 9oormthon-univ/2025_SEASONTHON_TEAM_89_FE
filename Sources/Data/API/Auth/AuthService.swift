@@ -14,7 +14,7 @@ public final class AuthService {
     private let provider = MoyaProvider<AuthAPI>(plugins: [NetworkLoggerPlugin()])
     public init() { }
     public func kakaoLogin(token: String) -> AnyPublisher<LoginResponse, Error> {
-        return provider.requestPublisher(.kakaoLogin(request: KakaoLoginRequest(accessToken: token, DeviceType: TokenManager.shared.loadDeviceToken() ?? "시뮬레이터")))
+        return provider.requestPublisher(.kakaoLogin(request: KakaoLoginRequest(accessToken: token, deviceToken: TokenManager.shared.loadDeviceToken() ?? "시뮬레이터")))
             .tryMap { response in
                 guard (200...299).contains(response.statusCode) else {
                     throw MoyaError.statusCode(response)
@@ -27,7 +27,7 @@ public final class AuthService {
             .eraseToAnyPublisher()
     }
     
-    public func kakaoDelte(userId: String) -> AnyPublisher<Void, Error> {
+    public func kakaoDelete(userId: String) -> AnyPublisher<Void, Error> {
         return provider.requestPublisher(.kakaoDelete(request:KakaoDeleteRequest(userId: userId)))
             .tryMap { response in
                 guard (200...299).contains(response.statusCode) else {

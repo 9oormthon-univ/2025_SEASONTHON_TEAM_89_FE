@@ -38,7 +38,7 @@ class MainTabViewModel: ObservableObject {
     
     private func requestDeleteServer(with userId: String, completion: @escaping (_ success: Bool) -> Void) {
         isLoading = true
-        authService.kakaoDelte(userId: userId)
+        authService.kakaoDelete(userId: userId)
             .sink { [weak self]
                 result in
                 guard let self = self else { return }

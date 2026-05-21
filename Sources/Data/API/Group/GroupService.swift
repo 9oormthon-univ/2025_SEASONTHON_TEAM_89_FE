@@ -10,9 +10,9 @@ import Moya
 
 public protocol GroupServiceType {
     func createGroup(groupRequest: CreateGroupRequest, completion: @escaping (Result<CreateGroupResponse, APIError>) -> Void)
-    func joinGroup(joinGroup: JoinGorupRequest, completion: @escaping (Result<Void, APIError>) -> Void)
+    func joinGroup(joinGroup: JoinGroupRequest, completion: @escaping (Result<Void, APIError>) -> Void)
     func leaveGroup(userID: String, completion: @escaping (Result<Void, APIError>) -> Void)
-    func infoGroup(userID: String, completion: @escaping (Result<InfoGroupRespose, APIError>) -> Void)
+    func infoGroup(userID: String, completion: @escaping (Result<InfoGroupResponse, APIError>) -> Void)
     func verifyGroupCode(groupCode: VerifyRequest, completion: @escaping(Result<VerifyResponse,APIError>) -> Void)
 }
 
@@ -30,7 +30,7 @@ public class GroupService: GroupServiceType {
     
     // MARK: - Join Group (Void 응답)
     public func joinGroup(
-        joinGroup: JoinGorupRequest,
+        joinGroup: JoinGroupRequest,
         completion: @escaping (Result<Void, APIError>) -> Void
     ) {
         provider.requestWithValidation(
@@ -56,7 +56,7 @@ public class GroupService: GroupServiceType {
         completion: @escaping (Result<Void, APIError>) -> Void
     ) {
         provider.requestWithValidation(
-            .leveGroup(userID: userID),
+            .leaveGroup(userID: userID),
             completion: completion
         )
     }
@@ -64,7 +64,7 @@ public class GroupService: GroupServiceType {
     // MARK: - Info Group (데이터 응답)
     public func infoGroup(
         userID: String,
-        completion: @escaping (Result<InfoGroupRespose, APIError>) -> Void
+        completion: @escaping (Result<InfoGroupResponse, APIError>) -> Void
     ) {
         provider.requestWithValidation(
             .infoGroup(userID: userID),

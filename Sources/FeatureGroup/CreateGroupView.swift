@@ -123,7 +123,7 @@ public struct CreateGroupView: View {
 
                         
                         Button {
-                            groupViewModel.CreateGorupAction()
+                            groupViewModel.CreateGroupAction()
                         } label: {
                             HStack {
                                 Spacer()

@@ -40,14 +40,14 @@ class GroupViewModel: ObservableObject {
         joinedAt: "",
         notificationEnabled: true
     )
-    @Published var infoGroupRespose: InfoGroupRespose?
+    @Published var infoGroupResponse: InfoGroupResponse?
     @Published var isCreate: Bool {
         didSet {
             SharedUserDefaults.isCreateGroup = isCreate
         }
     }
     @Published var isLeave: Bool = false
-    @Published private var createGroupRespose: CreateGroupResponse?
+    @Published private var createGroupResponse: CreateGroupResponse?
     @Published var isJoinGroup: Bool = false
     
     @Published var showError = false
@@ -162,16 +162,16 @@ extension GroupViewModel {
     
     
     func countMembers() -> Int {
-        guard let infoGroup = self.infoGroupRespose else { return 0}
+        guard let infoGroup = self.infoGroupResponse else { return 0}
         
         return infoGroup.memberCount
     }
     
-    func CreateGorupAction() {
-        CreateGorup()
+    func CreateGroupAction() {
+        CreateGroup()
     }
     
-    func LeaveGorupAction() {
+    func LeaveGroupAction() {
         leaveGroup()
     }
     
@@ -187,7 +187,7 @@ extension GroupViewModel {
         infoGroup { [weak self] in
             guard let self = self else { return }
             
-            if let member = self.infoGroupRespose?.members.first {
+            if let member = self.infoGroupResponse?.members.first {
                 self.selectMembers = member
             }
             
@@ -204,7 +204,7 @@ extension GroupViewModel {
     }
     private func joinGroup() {
         self.service.joinGroup(
-            joinGroup: JoinGorupRequest(
+            joinGroup: JoinGroupRequest(
                 joinCode: groupCode,
                 userID: user.userId,
                 nickname: userName.isEmpty ? user.nickname : userName
@@ -246,7 +246,7 @@ extension GroupViewModel {
     }
     
     private func infoGroup(completion: (() -> Void)? = nil) {
-        if infoGroupRespose == nil {
+        if infoGroupResponse == nil {
             self.isLoading = true
         }
         self.service.infoGroup(userID: user.userId) { [weak self] result in
@@ -257,13 +257,13 @@ extension GroupViewModel {
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    self.infoGroupRespose = response
+                    self.infoGroupResponse = response
                     
-                    self.infoGroupRespose?.members = self.infoGroupRespose?.members.sorted {
+                    self.infoGroupResponse?.members = self.infoGroupResponse?.members.sorted {
                         ($0.userID == self.user.userId) && ($1.userID != self.user.userId)
                     } ?? []
                     completion?()
-                    print("✅ infoGroup 성공: \(String(describing: self.infoGroupRespose?.members))")
+                    print("✅ infoGroup 성공: \(String(describing: self.infoGroupResponse?.members))")
                     
                 case .failure(let error):
                     SharedUserDefaults.isCreateGroup = false
@@ -296,7 +296,7 @@ extension GroupViewModel {
         }
     }
     
-    private func CreateGorup() {
+    private func CreateGroup() {
         guard !groupName.isEmpty else {
             
             return
@@ -316,7 +316,7 @@ extension GroupViewModel {
                 case .success(let response):
                     print("✅ CreateGroup 성공")
                     self.isCreate = true
-                    self.createGroupRespose = response
+                    self.createGroupResponse = response
                     self.groupName = ""
                     
                 case .failure(let error):

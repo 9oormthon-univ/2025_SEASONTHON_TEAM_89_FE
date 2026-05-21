@@ -7,8 +7,8 @@
 
 import Foundation
 
-// MARK: - GroupGorupRequest
-public struct JoinGorupRequest: Codable {
+// MARK: - GroupGroupRequest
+public struct JoinGroupRequest: Codable {
     public let joinCode, userID, nickname: String
     
     public init(joinCode: String, userID: String, nickname: String) {
