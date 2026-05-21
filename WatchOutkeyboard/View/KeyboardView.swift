@@ -5,6 +5,8 @@
 //  Created by 어재선 on 9/3/25.
 //
 import SwiftUI
+import Core
+import Shared
 
 struct KeyboardView: View {
     @ObservedObject var controller: KeyboardViewController
