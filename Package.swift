@@ -22,9 +22,40 @@ let package = Package(
         .package(url: "https://github.com/LottieFiles/dotlottie-ios.git", from: "1.0.0"),
     ],
     targets: [
+        // MARK: - Foundation Layers (의존성 없음)
+        .target(
+            name: "Domain",
+            dependencies: [],
+            path: "Sources/Domain"
+        ),
+        .target(
+            name: "Core",
+            dependencies: [],
+            path: "Sources/Core"
+        ),
+        .target(
+            name: "KeyboardCore",
+            dependencies: [],
+            path: "Sources/KeyboardCore"
+        ),
+
+        // MARK: - Infrastructure Layer
+        .target(
+            name: "Data",
+            dependencies: [
+                "Domain",
+                "Core",
+                .product(name: "Moya", package: "Moya"),
+                .product(name: "CombineMoya", package: "Moya"),
+            ],
+            path: "Sources/Data"
+        ),
+
+        // MARK: - UI Foundation Layer
         .target(
             name: "Shared",
             dependencies: [
+                "Core",
                 .product(name: "DotLottie", package: "dotlottie-ios"),
             ],
             path: "Sources/Shared",
@@ -32,30 +63,8 @@ let package = Package(
                 .process("Resource/Assets.xcassets"),
             ]
         ),
-        .target(
-            name: "Core",
-            dependencies: ["Shared"],
-            path: "Sources/Core"
-        ),
-        .target(
-            name: "Domain",
-            dependencies: ["Core"],
-            path: "Sources/Domain"
-        ),
-        .target(
-            name: "KeyboardCore",
-            dependencies: ["Core"],
-            path: "Sources/KeyboardCore"
-        ),
-        .target(
-            name: "Data",
-            dependencies: [
-                "Domain",
-                "Core",
-                .product(name: "Moya", package: "Moya"),
-            ],
-            path: "Sources/Data"
-        ),
+
+        // MARK: - Feature Layers
         .target(
             name: "FeatureAuth",
             dependencies: [
@@ -79,7 +88,7 @@ let package = Package(
         ),
         .target(
             name: "FeatureExperience",
-            dependencies: ["Domain", "Data", "Shared", "Core", "KeyboardCore"],
+            dependencies: ["Domain", "Shared", "Core"],
             path: "Sources/FeatureExperience"
         ),
         .target(

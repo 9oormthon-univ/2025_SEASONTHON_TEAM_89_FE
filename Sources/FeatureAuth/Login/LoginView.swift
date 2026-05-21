@@ -9,6 +9,7 @@ import SwiftUI
 import Domain
 import Shared
 import Data
+import Core
 
 public struct LoginView: View {
     @StateObject private var loginViewModel = LoginViewModel()

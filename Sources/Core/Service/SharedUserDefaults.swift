@@ -5,7 +5,6 @@
 //  Created by 어재선 on 9/5/25.
 //
 
-import SwiftUI
 import Foundation
 
 // 앱과 키보드 확장 프로그램이 함께 사용할 UserDefaults 관리자
@@ -198,17 +197,4 @@ public struct SharedUserDefaults {
         }
     }
     
-    // MARK: - Helper (저장된 문자열을 SwiftUI Color로 변환)
-    
-    /// 저장된 색상 이름 문자열을 실제 SwiftUI Color 객체로 변환해주는 함수
-    public static func color(forName name: String) -> Color {
-        switch name.lowercased() {
-        case "red": return .red
-        case "orange": return .orange
-        case "yellow": return .yellow
-        case "blue": return .blue
-        case "purple": return .purple
-        default: return .orange // 알 수 없는 값이면 기본색 반환
-        }
-    }
 }

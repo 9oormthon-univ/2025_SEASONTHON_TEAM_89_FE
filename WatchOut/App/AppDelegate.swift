@@ -7,6 +7,7 @@
 
 import KakaoSDKAuth
 import UIKit
+import Data
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     
