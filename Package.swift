@@ -34,7 +34,7 @@ let package = Package(
         ),
         .target(
             name: "KeyboardCore",
-            dependencies: [],
+            dependencies: ["Core"],
             path: "Sources/KeyboardCore"
         ),
 

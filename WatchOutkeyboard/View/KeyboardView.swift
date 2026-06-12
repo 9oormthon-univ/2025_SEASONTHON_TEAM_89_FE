@@ -13,12 +13,9 @@ struct KeyboardView: View {
     @ObservedObject var controller: KeyboardViewController
     
     
-    @ObservedObject private var webSocketService = WebSocketService.shared
-    
+    @StateObject private var fraudSession = FraudDetectionSession()
+
     @State private var webSocketURL = "wss://wiheome.ajb.kr/api/ws/fraud/"
-    @State var status = "정상"
-    @State var count = 0
-    @State var oldText : String = ""
 
     // 롱프레스 상태 (쌍자음/대문자 팝업, 백스페이스 반복, 스페이스 커서 모드)
     @State private var keyFrames: [KeyType: CGRect] = [:]
@@ -69,47 +66,10 @@ struct KeyboardView: View {
         .onChange(of: controller.keyboardMode) { dismissPopup() }
         .onChange(of: controller.isShifted) { dismissPopup() }
         .onAppear {
-            
-            webSocketService.connect(urlString: webSocketURL)
-            status = "정상"
+            fraudSession.start(urlString: webSocketURL)
         }
         .onDisappear {
-            
-            webSocketService.disconnect()
-            status = "정상"
-        }
-        
-        .onChange(of: webSocketService.fraudResult?.riskLevel) {
-            if let newRiskLevel = webSocketService.fraudResult?.riskLevel {
-                print("\(SharedUserDefaults.isTutorial)")
-                status = newRiskLevel
-                
-                if status == "주의" {
-                    if SharedUserDefaults.isWarningHaptic {
-                        Haptic.notification(type: .warning)
-                        
-                    }
-                    if SharedUserDefaults.isTutorial == false {
-                        SharedUserDefaults.riskLevel2Count += 1
-                    }
-                    
-                } else if status == "위험" {
-                    count += 1
-                    if SharedUserDefaults.isTutorial  == false {
-                        SharedUserDefaults.riskLevel3Count += 1
-                    }
-                    if count % 3 == 0 {
-                        if SharedUserDefaults.isDangerNotification {
-                            NotificationManager.instance.scheduleNotification(title: "위험한 문장이 반복 감지되었어요", subtitle: "필요하다면 즉시 신고를 도와드릴 수 있어요.", secondsLater: 1)
-                        }
-                    }
-                    
-                    if SharedUserDefaults.isDangerHaptic {
-                        Haptic.notification(type: .error)
-                    }
-                }
-            }
-            
+            fraudSession.stop()
         }
         .background(Color(.keyBoardNewBackground).ignoresSafeArea(.keyboard))
     }
@@ -119,7 +79,7 @@ struct KeyboardView: View {
     private func bannerView() -> some View {
         HStack(spacing: 12) {
             
-            if webSocketService.isConnected {
+            if fraudSession.isConnected {
                 Image("keyboardicon")
                     .foregroundStyle(.main)
             } else {
@@ -130,17 +90,18 @@ struct KeyboardView: View {
             
             Spacer()
             
-            if status == "주의" {
-                
+            switch fraudSession.riskLevel {
+            case .safe:
+                EmptyView()
+
+            case .caution:
                 Image("status1")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 25)
                     .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel2Color)"))
-                
-                
-            } else if status == "위험" {
-                
+
+            case .danger:
                 Text("민감한 정보가 포함된 문장입니다")
                     .font(.pHeadline03)
                     .foregroundStyle(Color("Risk1Color\(SharedUserDefaults.riskLevel3Color)"))
@@ -149,8 +110,6 @@ struct KeyboardView: View {
                     .scaledToFit()
                     .frame(width: 25)
                     .foregroundStyle(Color("Risk1Color\(SharedUserDefaults.riskLevel3Color)"))
-                
-                
             }
         }
         .padding(.horizontal, 15)
@@ -198,7 +157,7 @@ struct KeyboardView: View {
                 }
 
                 let currentText = controller.textDocumentProxy.documentContextBeforeInput ?? ""
-                webSocketService.checkFraudMessage(currentText)
+                fraudSession.check(currentText)
             }
     }
 
