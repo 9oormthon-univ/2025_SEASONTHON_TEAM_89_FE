@@ -32,7 +32,7 @@ public struct ManagementGroupView: View {
                 HStack(alignment: .bottom) {
                     VStack {
                         HStack {
-                            Text(groupViewModel.infoGroupResponse?.groupName ?? "")
+                            Text(groupViewModel.groupInfo?.name ?? "")
                                 .font(.gHeadline01)
                             Text("총 \( groupViewModel.countMembers())명")
                         }
@@ -47,12 +47,12 @@ public struct ManagementGroupView: View {
                         .font(.pSubtitle03)
                         .foregroundStyle(Color.gray300)
                     Spacer()
-                    Text(groupViewModel.infoGroupResponse?.joinCode ?? "")
+                    Text(groupViewModel.groupInfo?.joinCode ?? "")
                         .font(.pBody01)
                         .underline()
                     Button {
                         
-                        UIPasteboard.general.strings = [groupViewModel.infoGroupResponse?.joinCode ?? ""]
+                        UIPasteboard.general.strings = [groupViewModel.groupInfo?.joinCode ?? ""]
                         isToastShown.toggle()
                     } label: {
                         Image("CopyIcon")
@@ -70,7 +70,7 @@ public struct ManagementGroupView: View {
                     HStack {
                         Spacer()
                             .frame(width: 20)
-                        ForEach(groupViewModel.infoGroupResponse?.members ?? [], id: \.userID) { member in
+                        ForEach(groupViewModel.groupInfo?.members ?? [], id: \.id) { member in
                             ProfileView(groupViewModel: groupViewModel, member: member)
                                 .onTapGesture {
                                     groupViewModel.selectMembers = member
@@ -149,8 +149,8 @@ private struct UserInfoView: View {
                 
                 Spacer()
                     .frame(height: 50)
-                if(groupViewModel.infoGroupResponse?.creatorID == groupViewModel.user.userId){
-                    if (groupViewModel.infoGroupResponse?.creatorID != groupViewModel.selectMembers.userID) {
+                if(groupViewModel.groupInfo?.creatorId == groupViewModel.user.userId){
+                    if (groupViewModel.groupInfo?.creatorId != groupViewModel.selectMembers.id) {
                         Text("강퇴하기")
                             .underline()
                             .font(.pBody02)
@@ -267,7 +267,7 @@ private struct StatusRoundRectangle: View {
 // MARK: - profileView
 private struct ProfileView: View {
     @ObservedObject var groupViewModel: GroupViewModel
-    let member: Member
+    let member: GroupMember
     
     fileprivate var body: some View {
         VStack {
@@ -287,7 +287,7 @@ private struct ProfileView: View {
                     .stroke(Color.gray500, lineWidth: 1)
             )
             .overlay {
-                if member.userID == groupViewModel.selectMembers.userID {
+                if member.id == groupViewModel.selectMembers.id {
                     ZStack{
                         Circle()
                             .foregroundStyle(Color.gray400.opacity(0.3))

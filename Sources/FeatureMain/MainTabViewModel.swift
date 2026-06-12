@@ -10,51 +10,37 @@ import Combine
 import Shared
 import Domain
 import Data
+import Core
 
 class MainTabViewModel: ObservableObject {
     @Published var selectedTab: WatchOutTab
     @Published var showLogoutAlert: Bool = false
     @Published var showDeleteAccountAlert: Bool = false
-    
-    private let authService = AuthService()
-    private var cancellables = Set<AnyCancellable>()
     @Published var isLoading: Bool = false
 
-    
-    
-    init(selectedTab: WatchOutTab = .homeView) {
+    private let repository: AuthRepository
+
+    init(
+        selectedTab: WatchOutTab = .homeView,
+        repository: AuthRepository = AuthRepositoryImpl()
+    ) {
         self.selectedTab = selectedTab
+        self.repository = repository
     }
-    
+
     func loginDelete(completion: @escaping () -> Void) {
         guard let userId = UserManager.shared.currentUser?.userId else { return }
-        
-        requestDeleteServer(with: userId ) { [weak self] isDelete in
-            guard let self = self else { return }
-            if isDelete {
+
+        isLoading = true
+        Task { @MainActor in
+            do {
+                try await repository.deleteAccount(userId: userId)
+                isLoading = false
                 completion()
+            } catch {
+                Log.error("회원 탈퇴 실패: \(error)")
+                isLoading = false
             }
         }
     }
-    
-    private func requestDeleteServer(with userId: String, completion: @escaping (_ success: Bool) -> Void) {
-        isLoading = true
-        authService.kakaoDelete(userId: userId)
-            .sink { [weak self]
-                result in
-                guard let self = self else { return }
-                self.isLoading = false
-                switch result {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print("서버 로그인 실패: \(error.localizedDescription)")
-                    completion(false)
-                }
-            } receiveValue: { _ in
-                completion(true)
-            }
-            .store(in: &cancellables)
-    }
-    
 }

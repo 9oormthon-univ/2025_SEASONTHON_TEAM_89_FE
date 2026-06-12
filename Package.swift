@@ -18,7 +18,6 @@ let package = Package(
         .library(name: "FeatureSetting", targets: ["FeatureSetting"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/Moya/Moya.git", from: "15.0.0"),
         .package(url: "https://github.com/LottieFiles/dotlottie-ios.git", exact: "0.9.2"),
     ],
     targets: [
@@ -45,8 +44,6 @@ let package = Package(
             dependencies: [
                 "Domain",
                 "Core",
-                .product(name: "Moya", package: "Moya"),
-                .product(name: "CombineMoya", package: "Moya"),
             ],
             path: "Sources/Data"
         ),
