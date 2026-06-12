@@ -10,7 +10,7 @@ import DesignSystem
 import Domain
 import Data
 import Platform
-import Features
+import Presentation
 
 struct RootView: View {
     // Composition Root — 구현체 선택은 이 한 곳에서만

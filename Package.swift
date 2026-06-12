@@ -10,7 +10,7 @@ let package = Package(
         .library(name: "DesignSystem", targets: ["DesignSystem"]),
         .library(name: "Platform", targets: ["Platform"]),
         .library(name: "KeyboardKit", targets: ["KeyboardKit"]),
-        .library(name: "Features", targets: ["Features"]),
+        .library(name: "Presentation", targets: ["Presentation"]),
     ],
     dependencies: [
         .package(url: "https://github.com/LottieFiles/dotlottie-ios.git", exact: "0.9.2"),
@@ -63,14 +63,14 @@ let package = Package(
         // MARK: - 화면 (Auth/Home/Group/Main/Setting/Experience 폴더로 구분)
         // Data 의존 없음 — 구현체 조립은 앱 타깃(composition root)에서
         .target(
-            name: "Features",
+            name: "Presentation",
             dependencies: [
                 "Domain",
                 "DesignSystem",
                 "Platform",
                 .product(name: "DotLottie", package: "dotlottie-ios"),
             ],
-            path: "Sources/Features"
+            path: "Sources/Presentation"
         ),
     ]
 )
