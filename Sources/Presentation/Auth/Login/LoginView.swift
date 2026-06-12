@@ -18,7 +18,8 @@ public struct LoginView: View {
         _loginViewModel = StateObject(wrappedValue: LoginViewModel(
             repository: dependencies.authRepository,
             userManager: dependencies.userManager,
-            tokenStore: dependencies.tokenStore
+            tokenStore: dependencies.tokenStore,
+            kakaoAuthGateway: dependencies.kakaoAuthGateway
         ))
     }
     

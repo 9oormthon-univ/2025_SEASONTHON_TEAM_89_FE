@@ -18,7 +18,8 @@ struct RootView: View {
         authRepository: AuthRepositoryImpl(),
         groupRepository: GroupRepositoryImpl(),
         tokenStore: TokenManager.shared,
-        userManager: UserManager.shared
+        userManager: UserManager.shared,
+        kakaoAuthGateway: KakaoAuthGatewayImpl()
     )
 
     @StateObject private var pathModel = PathModel()

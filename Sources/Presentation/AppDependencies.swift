@@ -15,16 +15,19 @@ public struct AppDependencies {
     public let groupRepository: GroupRepository
     public let tokenStore: TokenStore
     public let userManager: UserManager
+    public let kakaoAuthGateway: KakaoAuthGateway
 
     public init(
         authRepository: AuthRepository,
         groupRepository: GroupRepository,
         tokenStore: TokenStore,
-        userManager: UserManager
+        userManager: UserManager,
+        kakaoAuthGateway: KakaoAuthGateway
     ) {
         self.authRepository = authRepository
         self.groupRepository = groupRepository
         self.tokenStore = tokenStore
         self.userManager = userManager
+        self.kakaoAuthGateway = kakaoAuthGateway
     }
 }

@@ -14,6 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/LottieFiles/dotlottie-ios.git", exact: "0.9.2"),
+        .package(url: "https://github.com/kakao/kakao-ios-sdk", from: "2.24.6"),
     ],
     targets: [
         // MARK: - 순수 도메인 (의존성 없음)
@@ -36,6 +37,7 @@ let package = Package(
             dependencies: [
                 "Domain",
                 "Platform",
+                .product(name: "KakaoSDKUser", package: "kakao-ios-sdk"),
             ],
             path: "Sources/Data"
         ),
