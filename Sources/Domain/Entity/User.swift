@@ -1,5 +1,5 @@
 //
-//  UserModel.swift
+//  User.swift
 //  WatchOut
 //
 //  Created by 어재선 on 9/18/25.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct User: Codable {
+public struct User: Codable, Equatable {
     public let userId: String
     public let kakaoId: Int
     public let nickname: String

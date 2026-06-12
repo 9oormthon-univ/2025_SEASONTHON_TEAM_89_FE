@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Shared
 import DotLottie
 import Domain
 
