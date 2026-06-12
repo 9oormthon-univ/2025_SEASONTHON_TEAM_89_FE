@@ -8,7 +8,7 @@
 import SwiftUI
 import Domain
 import Platform
-import Features
+import Presentation
 
 struct ContentView: View {
     let dependencies: AppDependencies
