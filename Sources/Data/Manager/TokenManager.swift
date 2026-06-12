@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Core
+import Platform
 
 public final class TokenManager {
     public static let shared = TokenManager()
