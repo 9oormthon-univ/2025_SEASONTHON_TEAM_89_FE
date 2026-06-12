@@ -14,14 +14,17 @@ class HomeViewModel: ObservableObject {
     @Published var risk3Count: Int = 0
     @Published var username:String = "위허메"
     
-    init() {
-        UserManager.shared.loadUserFromUserDefaults()
+    private let userManager: UserManager
+
+    init(userManager: UserManager = .shared) {
+        self.userManager = userManager
+        userManager.loadUserFromUserDefaults()
     }
     
     func loadData() {
-        UserManager.shared.loadUserFromUserDefaults()
-        
-        if let username = UserManager.shared.currentUser?.nickname {
+        userManager.loadUserFromUserDefaults()
+
+        if let username = userManager.currentUser?.nickname {
             self.username = username
         }
         

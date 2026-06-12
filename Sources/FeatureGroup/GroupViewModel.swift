@@ -53,7 +53,7 @@ class GroupViewModel: ObservableObject {
     @Published var isLoading: Bool = false
 
     private let repository: GroupRepository
-    private var userManager = UserManager.shared
+    private let userManager: UserManager
     private var timer: Timer?
 
     private var cancellables = Set<AnyCancellable>()
@@ -70,7 +70,8 @@ class GroupViewModel: ObservableObject {
             nickname: "",
             profileImage: ""
         ),
-        repository: GroupRepository = GroupRepositoryImpl()
+        repository: GroupRepository = GroupRepositoryImpl(),
+        userManager: UserManager = .shared
     ) {
         self.groupName = groupName
         self.userName = userName
@@ -78,6 +79,7 @@ class GroupViewModel: ObservableObject {
         self.groupCode = groupCode
         self.isCreate = SharedUserDefaults.isCreateGroup
         self.repository = repository
+        self.userManager = userManager
         if let savedUser = userManager.currentUser {
             self.user = savedUser
             Log.debug("저장된 유저 소환: \(savedUser.nickname)")

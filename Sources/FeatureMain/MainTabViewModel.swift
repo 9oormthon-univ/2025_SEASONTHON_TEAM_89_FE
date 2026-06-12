@@ -19,17 +19,20 @@ class MainTabViewModel: ObservableObject {
     @Published var isLoading: Bool = false
 
     private let repository: AuthRepository
+    private let userManager: UserManager
 
     init(
         selectedTab: WatchOutTab = .homeView,
-        repository: AuthRepository = AuthRepositoryImpl()
+        repository: AuthRepository = AuthRepositoryImpl(),
+        userManager: UserManager = .shared
     ) {
         self.selectedTab = selectedTab
         self.repository = repository
+        self.userManager = userManager
     }
 
     func loginDelete(completion: @escaping () -> Void) {
-        guard let userId = UserManager.shared.currentUser?.userId else { return }
+        guard let userId = userManager.currentUser?.userId else { return }
 
         isLoading = true
         Task { @MainActor in
