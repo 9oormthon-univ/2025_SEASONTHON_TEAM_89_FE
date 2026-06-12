@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Core
+import Platform
 
 public struct APIClient {
     public static let `default` = APIClient(baseURL: URL(string: "https://wiheome.ajb.kr/api")!)

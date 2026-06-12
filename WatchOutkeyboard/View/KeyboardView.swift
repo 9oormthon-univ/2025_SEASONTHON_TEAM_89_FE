@@ -5,9 +5,9 @@
 //  Created by 어재선 on 9/3/25.
 //
 import SwiftUI
-import Core
-import Shared
-import KeyboardCore
+import Platform
+import DesignSystem
+import KeyboardKit
 
 struct KeyboardView: View {
     @ObservedObject var controller: KeyboardViewController
@@ -71,7 +71,7 @@ struct KeyboardView: View {
         .onDisappear {
             fraudSession.stop()
         }
-        .background(Color(.keyBoardNewBackground).ignoresSafeArea(.keyboard))
+        .background(Color.keyboardNewBackground.ignoresSafeArea(.keyboard))
     }
     
     // MARK: - BannerView
@@ -81,10 +81,10 @@ struct KeyboardView: View {
             
             if fraudSession.isConnected {
                 Image("keyboardicon")
-                    .foregroundStyle(.main)
+                    .foregroundStyle(Color.main)
             } else {
                 Image("keyboardicon")
-                    .foregroundStyle(.gray400)
+                    .foregroundStyle(Color.gray400)
             }
             
             
@@ -99,17 +99,17 @@ struct KeyboardView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 25)
-                    .foregroundStyle(Color("RiskColor\(SharedUserDefaults.riskLevel2Color)"))
+                    .foregroundStyle(Color.riskColor(SharedUserDefaults.riskLevel2Color))
 
             case .danger:
                 Text("민감한 정보가 포함된 문장입니다")
                     .font(.pHeadline03)
-                    .foregroundStyle(Color("Risk1Color\(SharedUserDefaults.riskLevel3Color)"))
+                    .foregroundStyle(Color.risk1Color(SharedUserDefaults.riskLevel3Color))
                 Image("status2")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 25)
-                    .foregroundStyle(Color("Risk1Color\(SharedUserDefaults.riskLevel3Color)"))
+                    .foregroundStyle(Color.risk1Color(SharedUserDefaults.riskLevel3Color))
             }
         }
         .padding(.horizontal, 15)
@@ -286,10 +286,10 @@ struct KeyboardView: View {
         case .space:
             return Color(.systemBackground)
         case .enter:
-            return Color("MainColor")
+            return Color.main
         case .shift:
             if controller.isShifted {
-                return Color("MainColor")
+                return Color.main
             } else {
                 return Color(.systemBackground)
             }
