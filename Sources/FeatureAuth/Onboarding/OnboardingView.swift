@@ -34,10 +34,10 @@ private struct OnboardingContentView: View {
         ZStack {
             if !onboardingViewModel.getIsKeyboardEnabled() {
                 ZStack {
-                    DotLottieAnimation(
+                    (DotLottieAnimation(
                         fileName: "guidevideo",
                         config: AnimationConfig(autoplay: true, loop: true)
-                    ).view()
+                    ).view() as DotLottieView)
 
                     VStack {
                         Spacer()

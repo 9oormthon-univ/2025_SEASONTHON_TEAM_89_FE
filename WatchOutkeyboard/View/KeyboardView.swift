@@ -20,11 +20,15 @@ struct KeyboardView: View {
     @State var count = 0
     @State var oldText : String = ""
 
-    // 롱프레스 쌍자음 팝업 상태
+    // 롱프레스 상태 (쌍자음/대문자 팝업, 백스페이스 반복, 스페이스 커서 모드)
     @State private var keyFrames: [KeyType: CGRect] = [:]
     @State private var popupKey: KeyType?
     @State private var pressedKeys: Set<KeyType> = []
     @State private var longPressTasks: [KeyType: Task<Void, Never>] = [:]
+    @State private var didRepeatDelete = false
+    @State private var spaceCursorMode = false
+    @State private var spaceCursorSteps = 0
+    @State private var spaceTranslation: CGFloat = 0
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -154,20 +158,25 @@ struct KeyboardView: View {
         .cornerRadius(8)
     }
     
-    // MARK: - Long Press (쌍자음)
+    // MARK: - Long Press (쌍자음/대문자 팝업, 백스페이스 반복, 스페이스 커서)
     private func keyGesture(for key: KeyType) -> some Gesture {
         DragGesture(minimumDistance: 0)
-            .onChanged { _ in
-                guard !pressedKeys.contains(key) else { return }
-                pressedKeys.insert(key)
+            .onChanged { value in
+                if !pressedKeys.contains(key) {
+                    pressedKeys.insert(key)
+                    startLongPress(for: key)
+                }
 
-                guard controller.variant(for: key) != nil else { return }
-                longPressTasks[key]?.cancel()
-                longPressTasks[key] = Task { @MainActor in
-                    try? await Task.sleep(for: .milliseconds(400))
-                    guard !Task.isCancelled, pressedKeys.contains(key) else { return }
-                    popupKey = key
-                    Haptic.impact(style: .medium)
+                if key == .space {
+                    spaceTranslation = value.translation.width
+                    if spaceCursorMode {
+                        let steps = Int(spaceTranslation / 8)
+                        let delta = steps - spaceCursorSteps
+                        if delta != 0 {
+                            spaceCursorSteps = steps
+                            controller.moveCursor(by: delta)
+                        }
+                    }
                 }
             }
             .onEnded { _ in
@@ -175,16 +184,60 @@ struct KeyboardView: View {
                 longPressTasks[key]?.cancel()
                 longPressTasks[key] = nil
 
-                if popupKey == key {
+                switch key {
+                case .space where spaceCursorMode:
+                    spaceCursorMode = false
+                    spaceCursorSteps = 0
+                case .backspace where didRepeatDelete:
+                    didRepeatDelete = false
+                case _ where popupKey == key:
                     popupKey = nil
                     controller.handleLongPress(key)
-                } else {
+                default:
                     controller.handleKeyPress(key)
                 }
 
                 let currentText = controller.textDocumentProxy.documentContextBeforeInput ?? ""
                 webSocketService.checkFraudMessage(currentText)
             }
+    }
+
+    private func startLongPress(for key: KeyType) {
+        longPressTasks[key]?.cancel()
+
+        switch key {
+        case .character where controller.variant(for: key) != nil:
+            longPressTasks[key] = Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(400))
+                guard !Task.isCancelled, pressedKeys.contains(key) else { return }
+                popupKey = key
+                Haptic.impact(style: .medium)
+            }
+
+        case .backspace:
+            longPressTasks[key] = Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(400))
+                guard !Task.isCancelled, pressedKeys.contains(key) else { return }
+                didRepeatDelete = true
+                while !Task.isCancelled, pressedKeys.contains(key) {
+                    controller.handleKeyPress(.backspace)
+                    try? await Task.sleep(for: .milliseconds(100))
+                }
+            }
+
+        case .space:
+            longPressTasks[key] = Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(400))
+                guard !Task.isCancelled, pressedKeys.contains(key) else { return }
+                controller.beginCursorMode()
+                spaceCursorSteps = Int(spaceTranslation / 8)
+                spaceCursorMode = true
+                Haptic.impact(style: .medium)
+            }
+
+        default:
+            break
+        }
     }
 
     @ViewBuilder
@@ -214,6 +267,9 @@ struct KeyboardView: View {
         pressedKeys.removeAll()
         longPressTasks.values.forEach { $0.cancel() }
         longPressTasks.removeAll()
+        didRepeatDelete = false
+        spaceCursorMode = false
+        spaceCursorSteps = 0
     }
 
     // MARK: - keyView
