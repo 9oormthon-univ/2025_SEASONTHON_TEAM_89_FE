@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Moya
 
 // MARK: - Validation Error Models
 public struct ValidationErrorResponse: Decodable {
@@ -62,40 +61,6 @@ public enum APIError: Error {
     case unknown(statusCode: Int, message: String?)
     
     
-    public init(moyaError: MoyaError) {
-        switch moyaError {
-        case .statusCode(let response):
-    
-            if response.statusCode == 422,
-               let validationError = try? response.map(ValidationErrorResponse.self) {
-                self = .validationError(errors: validationError.detail)
-                return
-            }
-            
-            
-            switch response.statusCode {
-            case 401:
-                self = .unauthorized
-            case 403:
-                self = .forbidden
-            case 404:
-                self = .notFound
-            case 500...599:
-                self = .serverError
-            default:
-                self = .unknown(statusCode: response.statusCode, message: nil)
-            }
-            
-        case .underlying(_, _):
-            self = .networkError
-            
-        case .objectMapping, .encodableMapping, .parameterEncoding:
-            self = .decodingError
-            
-        default:
-            self = .unknown(statusCode: -1, message: moyaError.localizedDescription)
-        }
-    }
     
 
     public var message: String {

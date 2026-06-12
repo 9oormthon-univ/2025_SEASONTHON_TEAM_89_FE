@@ -12,7 +12,7 @@ public struct FamilyGroup: Equatable {
     public let name: String
     public let joinCode: String
     public let creatorId: String
-    public let members: [GroupMember]
+    public var members: [GroupMember]
     public let createdAt: String
 
     public init(
