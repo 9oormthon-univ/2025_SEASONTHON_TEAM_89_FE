@@ -1,5 +1,5 @@
 //
-//  Extension+Log.swift
+//  Log+Extension.swift
 //  WatchOut
 //
 //  Created by 어재선 on 9/16/25.
@@ -9,7 +9,7 @@ import Foundation
 
 public extension Log {
     //MARK: -  디버그
-    public static func debug(_ message: Any, _ arguments: Any...) {
+    static func debug(_ message: Any, _ arguments: Any...) {
         log(message, arguments, level: .debug)
     }
 
@@ -19,23 +19,23 @@ public extension Log {
      - Authors : suni
      - Note : 문제 해결시 활용할 수 있는, 도움이 되지만 필수적이지 않은 정보
      */
-    public static func info(_ message: Any, _ arguments: Any...) {
+    static func info(_ message: Any, _ arguments: Any...) {
         log(message, arguments, level: .info)
     }
    
     
     //MARK: -  네트워크 로거
-    public static func network(_ message: Any, _ arguments: Any...) {
+    static func network(_ message: Any, _ arguments: Any...) {
         log(message, arguments, level: .network)
     }
     
     //MARK: -  에러 로거
-    public static func error(_ message: Any, _ arguments: Any...) {
+    static func error(_ message: Any, _ arguments: Any...) {
         log(message, arguments, level: .error)
     }
 
     //MARK: -  커스텀 로거
-    public static func custom(category: String, _ message: Any, _ arguments: Any...) {
+    static func custom(category: String, _ message: Any, _ arguments: Any...) {
         log(message, arguments, level: .custom(category: category))
     }
     

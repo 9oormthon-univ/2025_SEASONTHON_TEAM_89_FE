@@ -1,5 +1,5 @@
 //
-//  ChatWebSocketService.swift
+//  WebSocketService.swift
 //  WatchOutkeyboard
 //
 //  Created by 어재선 on 9/14/25.

@@ -22,39 +22,39 @@ public enum PretendardWeight: String {
 public extension Font {
     
     
-    public static let gHeadline01: Font = .custom("GangwonEduPower", size: 32)
+    static let gHeadline01: Font = .custom("GangwonEduPower", size: 32)
     
-    public static let pHeadline01: Font = .custom("Pretendard-SemiBold", size: 22)
-    public static let pvHeadline01: Font = .custom("PretendardVariable", size: 22)
+    static let pHeadline01: Font = .custom("Pretendard-SemiBold", size: 22)
+    static let pvHeadline01: Font = .custom("PretendardVariable", size: 22)
         .weight(.bold)
     
-    public static let pHeadline02: Font = .custom("Pretendard-Medium", size: 18)
-    public static let pvHeadline02: Font = .custom("PretendardVariable", size: 18)
+    static let pHeadline02: Font = .custom("Pretendard-Medium", size: 18)
+    static let pvHeadline02: Font = .custom("PretendardVariable", size: 18)
         .weight(.medium)
     
-    public static let pHeadline03: Font = .custom("Pretendard-SemiBold", size: 16)
-    public static let pvHeadline03: Font = .custom("PretendardVariable", size: 16)
+    static let pHeadline03: Font = .custom("Pretendard-SemiBold", size: 16)
+    static let pvHeadline03: Font = .custom("PretendardVariable", size: 16)
         .weight(.semibold)
-    public static let pSubtitle03: Font = .custom("Pretendard-Regular", size: 16)
-    public static let pvSubtitle03: Font = .custom("PretendardVariable", size: 16)
+    static let pSubtitle03: Font = .custom("Pretendard-Regular", size: 16)
+    static let pvSubtitle03: Font = .custom("PretendardVariable", size: 16)
         .weight(.regular)
-    public static let pBody01: Font = .custom("Pretendard-Regular", size: 18)
-    public static let pvBody01: Font = .custom("PretendardVariable", size: 18)
-        .weight(.regular)
-    
-    public static let pBody02: Font = .custom("Pretendard-Medium", size: 16)
-    public static let pvBody02: Font = .custom("PretendardVariable", size: 16)
+    static let pBody01: Font = .custom("Pretendard-Regular", size: 18)
+    static let pvBody01: Font = .custom("PretendardVariable", size: 18)
         .weight(.regular)
     
-    public static let pCaption01: Font = .custom("Pretendard-Medium", size: 14)
-    public static let pvCaption01: Font = .custom("PretendardVariable", size: 14)
+    static let pBody02: Font = .custom("Pretendard-Medium", size: 16)
+    static let pvBody02: Font = .custom("PretendardVariable", size: 16)
+        .weight(.regular)
+    
+    static let pCaption01: Font = .custom("Pretendard-Medium", size: 14)
+    static let pvCaption01: Font = .custom("PretendardVariable", size: 14)
         .weight(.medium)
     
-    public static let keyboardFont: Font = .custom("Pretendard-Regular", size: 22)
-    public static let pvkeyBoardFont: Font = .custom("PretendardVariable", size: 22)
+    static let keyboardFont: Font = .custom("Pretendard-Regular", size: 22)
+    static let pvkeyBoardFont: Font = .custom("PretendardVariable", size: 22)
         .weight(.regular)
     
-    public static func pretendard(size: CGFloat, weight: PretendardWeight) -> Font {
+    static func pretendard(size: CGFloat, weight: PretendardWeight) -> Font {
         return .custom("Pretendard-\(weight.rawValue)", size: size)
     }
 }

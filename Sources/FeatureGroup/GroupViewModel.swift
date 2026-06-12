@@ -167,11 +167,11 @@ extension GroupViewModel {
         return infoGroup.memberCount
     }
     
-    func CreateGroupAction() {
-        CreateGroup()
+    func createGroupAction() {
+        createGroup()
     }
     
-    func LeaveGroupAction() {
+    func leaveGroupAction() {
         leaveGroup()
     }
     
@@ -296,7 +296,7 @@ extension GroupViewModel {
         }
     }
     
-    private func CreateGroup() {
+    private func createGroup() {
         guard !groupName.isEmpty else {
             
             return

@@ -104,7 +104,7 @@ private struct OnboardingSecondView: View {
     var body: some View {
         ZStack {
             VStack {
-                Image("onbodingImage")
+                Image("onboardingImage")
                 Spacer()
             }
 

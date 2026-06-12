@@ -8,5 +8,5 @@
 import SwiftUI
 
 public extension PresentationDetent {
-    public static let extraLarge = Self.fraction(0.65)
+    static let extraLarge = Self.fraction(0.65)
 }
