@@ -126,6 +126,7 @@ struct KeyboardView: View {
             .onChanged { value in
                 if !pressedKeys.contains(key) {
                     pressedKeys.insert(key)
+                    Haptic.impact(style: .soft)
                     startLongPress(for: key)
                 }
 
