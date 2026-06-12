@@ -13,6 +13,14 @@ import Platform
 import Features
 
 struct RootView: View {
+    // Composition Root — 구현체 선택은 이 한 곳에서만
+    private let dependencies = AppDependencies(
+        authRepository: AuthRepositoryImpl(),
+        groupRepository: GroupRepositoryImpl(),
+        tokenStore: TokenManager.shared,
+        userManager: UserManager.shared
+    )
+
     @StateObject private var pathModel = PathModel()
     @StateObject private var appState = AppState(
         isLoggedIn: TokenManager.shared.loadAccessToken().map { !$0.isEmpty } ?? false,
@@ -22,7 +30,7 @@ struct RootView: View {
 
     var body: some View {
         NavigationStack(path: $pathModel.paths) {
-            ContentView()
+            ContentView(dependencies: dependencies)
                 .navigationDestination(for: PathType.self) { pathType in
                     destination(for: pathType)
                 }
@@ -37,19 +45,19 @@ struct RootView: View {
     private func destination(for pathType: PathType) -> some View {
         switch pathType {
         case .mainTabView:
-            MainTabView()
+            MainTabView(dependencies: dependencies)
                 .navigationBarBackButtonHidden()
         case .exprienceView:
             ExperienceView()
                 .navigationBarBackButtonHidden()
         case .createGroupView:
-            CreateGroupView()
+            CreateGroupView(dependencies: dependencies)
                 .navigationBarBackButtonHidden()
         case .joinGroupView:
-            JoinGroupView()
+            JoinGroupView(dependencies: dependencies)
                 .navigationBarBackButtonHidden()
         case .managementGroupView:
-            ManagementGroupView()
+            ManagementGroupView(dependencies: dependencies)
                 .navigationBarBackButtonHidden()
         case .planView:
             PlanView()

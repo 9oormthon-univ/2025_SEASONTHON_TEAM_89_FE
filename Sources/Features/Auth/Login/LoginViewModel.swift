@@ -9,7 +9,6 @@ import Foundation
 import Combine
 import KakaoSDKUser
 import Domain
-import Data
 import Platform
 
 final class LoginViewModel: ObservableObject {
@@ -18,16 +17,16 @@ final class LoginViewModel: ObservableObject {
 
     private let repository: AuthRepository
     private let userManager: UserManager
-    private let tokenManager: TokenManager
+    private let tokenStore: TokenStore
 
     init(
-        repository: AuthRepository = AuthRepositoryImpl(),
-        userManager: UserManager = .shared,
-        tokenManager: TokenManager = .shared
+        repository: AuthRepository,
+        userManager: UserManager,
+        tokenStore: TokenStore
     ) {
         self.repository = repository
         self.userManager = userManager
-        self.tokenManager = tokenManager
+        self.tokenStore = tokenStore
     }
 
     // MARK: - 로그인 처리 함수
@@ -71,10 +70,10 @@ final class LoginViewModel: ObservableObject {
             do {
                 let result = try await repository.loginWithKakao(
                     accessToken: kakaoToken,
-                    deviceToken: tokenManager.loadDeviceToken()
+                    deviceToken: tokenStore.loadDeviceToken()
                 )
                 userManager.setCurrentUser(result.user)
-                tokenManager.saveAccessToken(result.accessToken)
+                tokenStore.saveAccessToken(result.accessToken)
                 Log.debug("서버 로그인 성공! 사용자: \(result.user.nickname)")
                 isLoading = false
                 completion(true)

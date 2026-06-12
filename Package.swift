@@ -61,12 +61,11 @@ let package = Package(
         ),
 
         // MARK: - 화면 (Auth/Home/Group/Main/Setting/Experience 폴더로 구분)
-        // Data 의존은 Repository 기본값 주입 때문 — composition root 도입 시 제거 예정
+        // Data 의존 없음 — 구현체 조립은 앱 타깃(composition root)에서
         .target(
             name: "Features",
             dependencies: [
                 "Domain",
-                "Data",
                 "DesignSystem",
                 "Platform",
                 .product(name: "DotLottie", package: "dotlottie-ios"),

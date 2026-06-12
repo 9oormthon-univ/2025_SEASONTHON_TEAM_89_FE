@@ -9,7 +9,6 @@ import SwiftUI
 import DotLottie
 import Domain
 import Platform
-import Data
 import DesignSystem
 
 public struct OnboardingView: View {

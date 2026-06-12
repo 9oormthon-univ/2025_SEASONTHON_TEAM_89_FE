@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Domain
-import Data
 import DesignSystem
 
 public struct SettingView: View {

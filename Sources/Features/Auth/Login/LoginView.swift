@@ -8,14 +8,19 @@
 import SwiftUI
 import Domain
 import DesignSystem
-import Data
 import Platform
 
 public struct LoginView: View {
-    @StateObject private var loginViewModel = LoginViewModel()
+    @StateObject private var loginViewModel: LoginViewModel
     @EnvironmentObject private var appState: AppState
     
-    public init() { }
+    public init(dependencies: AppDependencies) {
+        _loginViewModel = StateObject(wrappedValue: LoginViewModel(
+            repository: dependencies.authRepository,
+            userManager: dependencies.userManager,
+            tokenStore: dependencies.tokenStore
+        ))
+    }
     
     public var body: some View {
         

@@ -9,7 +9,6 @@ import Foundation
 import Combine
 import Domain
 import Platform
-import Data
 
 class GroupViewModel: ObservableObject {
 
@@ -70,8 +69,8 @@ class GroupViewModel: ObservableObject {
             nickname: "",
             profileImage: ""
         ),
-        repository: GroupRepository = GroupRepositoryImpl(),
-        userManager: UserManager = .shared
+        repository: GroupRepository,
+        userManager: UserManager
     ) {
         self.groupName = groupName
         self.userName = userName
