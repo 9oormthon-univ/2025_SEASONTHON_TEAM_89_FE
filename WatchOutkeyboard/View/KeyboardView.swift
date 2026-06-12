@@ -41,9 +41,11 @@ struct KeyboardView: View {
                         HStack(spacing: 7) {
                             ForEach(row, id: \.self) { key in
                                 keyView(for: key)
-                                    .scaleEffect(pressedKeys.contains(key) ? 0.9 : 1)
-                                    .opacity(pressedKeys.contains(key) ? 0.6 : 1)
-                                    .animation(.easeOut(duration: 0.1), value: pressedKeys.contains(key))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8.5)
+                                            .fill(.black.opacity(pressedKeys.contains(key) ? 0.12 : 0))
+                                    )
+                                    .animation(pressedKeys.contains(key) ? nil : .easeOut(duration: 0.15), value: pressedKeys.contains(key))
                                     .contentShape(Rectangle())
                                     .background(GeometryReader { geo in
                                         Color.clear.preference(
@@ -280,7 +282,6 @@ struct KeyboardView: View {
         .background(keyBackgroundColor(for: key))
         .foregroundColor(.primary)
         .cornerRadius(8.5)
-        .shadow(color: .black.opacity(0.35), radius: 0.5, x: 0, y: 1)
     }
     // MARK: - keyBackgroundColor
     private func keyBackgroundColor(for key: KeyType) -> Color {
