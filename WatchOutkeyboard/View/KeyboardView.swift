@@ -7,6 +7,7 @@
 import SwiftUI
 import Core
 import Shared
+import KeyboardCore
 
 struct KeyboardView: View {
     @ObservedObject var controller: KeyboardViewController
@@ -18,37 +19,51 @@ struct KeyboardView: View {
     @State var status = "정상"
     @State var count = 0
     @State var oldText : String = ""
+
+    // 롱프레스 쌍자음 팝업 상태
+    @State private var keyFrames: [KeyType: CGRect] = [:]
+    @State private var popupKey: KeyType?
+    @State private var pressedKeys: Set<KeyType> = []
+    @State private var longPressTasks: [KeyType: Task<Void, Never>] = [:]
     
     var body: some View {
-        HStack {
-            Spacer()
-                .frame(width:1)
-            VStack(spacing: 8) {
-                
-                bannerView()
-                
-                
-                ForEach(controller.keyLayout, id: \.self) { row in
-                    HStack(spacing: 7) {
-                        ForEach(row, id: \.self) { key in
-                            Button(action: {
-                                controller.handleKeyPress(key)
-                                let currentText = controller.textDocumentProxy.documentContextBeforeInput ?? ""
-                                
-                                webSocketService.checkFraudMessage(currentText)
-                            }) {
+        ZStack(alignment: .topLeading) {
+            HStack {
+                Spacer()
+                    .frame(width:1)
+                VStack(spacing: 8) {
+
+                    bannerView()
+
+
+                    ForEach(controller.keyLayout, id: \.self) { row in
+                        HStack(spacing: 7) {
+                            ForEach(row, id: \.self) { key in
                                 keyView(for: key)
+                                    .contentShape(Rectangle())
+                                    .background(GeometryReader { geo in
+                                        Color.clear.preference(
+                                            key: KeyFramePreferenceKey.self,
+                                            value: [key: geo.frame(in: .named("keyboard"))]
+                                        )
+                                    })
+                                    .gesture(keyGesture(for: key))
                             }
-                            .buttonStyle(.plain)
                         }
                     }
                 }
+                .padding(2)
+                Spacer()
+                    .frame(width:1)
+
             }
-            .padding(2)
-            Spacer()
-                .frame(width:1)
-            
+
+            popupOverlay()
         }
+        .coordinateSpace(name: "keyboard")
+        .onPreferenceChange(KeyFramePreferenceKey.self) { keyFrames = $0 }
+        .onChange(of: controller.keyboardMode) { dismissPopup() }
+        .onChange(of: controller.isShifted) { dismissPopup() }
         .onAppear {
             
             webSocketService.connect(urlString: webSocketURL)
@@ -139,6 +154,68 @@ struct KeyboardView: View {
         .cornerRadius(8)
     }
     
+    // MARK: - Long Press (쌍자음)
+    private func keyGesture(for key: KeyType) -> some Gesture {
+        DragGesture(minimumDistance: 0)
+            .onChanged { _ in
+                guard !pressedKeys.contains(key) else { return }
+                pressedKeys.insert(key)
+
+                guard controller.variant(for: key) != nil else { return }
+                longPressTasks[key]?.cancel()
+                longPressTasks[key] = Task { @MainActor in
+                    try? await Task.sleep(for: .milliseconds(400))
+                    guard !Task.isCancelled, pressedKeys.contains(key) else { return }
+                    popupKey = key
+                    Haptic.impact(style: .medium)
+                }
+            }
+            .onEnded { _ in
+                pressedKeys.remove(key)
+                longPressTasks[key]?.cancel()
+                longPressTasks[key] = nil
+
+                if popupKey == key {
+                    popupKey = nil
+                    controller.handleLongPress(key)
+                } else {
+                    controller.handleKeyPress(key)
+                }
+
+                let currentText = controller.textDocumentProxy.documentContextBeforeInput ?? ""
+                webSocketService.checkFraudMessage(currentText)
+            }
+    }
+
+    @ViewBuilder
+    private func popupOverlay() -> some View {
+        if let popupKey,
+           let frame = keyFrames[popupKey],
+           let variant = controller.variant(for: popupKey) {
+            let popupWidth: CGFloat = 46
+            let popupHeight: CGFloat = 44
+            let maxX = keyFrames.values.map(\.maxX).max() ?? frame.maxX
+            let x = min(max(frame.midX, popupWidth / 2 + 2), maxX - popupWidth / 2)
+            let y = max(frame.minY - 26, popupHeight / 2)
+
+            Text(String(variant))
+                .font(.system(size: 26, weight: .medium))
+                .frame(width: popupWidth, height: popupHeight)
+                .background(Color(.systemBackground))
+                .cornerRadius(10)
+                .shadow(color: .black.opacity(0.35), radius: 4, y: 2)
+                .position(x: x, y: y)
+                .allowsHitTesting(false)
+        }
+    }
+
+    private func dismissPopup() {
+        popupKey = nil
+        pressedKeys.removeAll()
+        longPressTasks.values.forEach { $0.cancel() }
+        longPressTasks.removeAll()
+    }
+
     // MARK: - keyView
     @ViewBuilder
     private func keyView(for key: KeyType) -> some View {
@@ -223,11 +300,19 @@ struct KeyboardView: View {
             
         case .shift, .backspace:
             return 66
-            
+
         case .enter:
             return 96
-            
+
         }
+    }
+}
+
+// MARK: - KeyFramePreferenceKey
+private struct KeyFramePreferenceKey: PreferenceKey {
+    static var defaultValue: [KeyType: CGRect] = [:]
+    static func reduce(value: inout [KeyType: CGRect], nextValue: () -> [KeyType: CGRect]) {
+        value.merge(nextValue()) { $1 }
     }
 }
 
