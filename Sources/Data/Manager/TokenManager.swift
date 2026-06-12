@@ -5,50 +5,50 @@
 //  Created by 어재선 on 9/18/25.
 //
 
-
 import Foundation
-import SwiftKeychainWrapper
+import Core
 
 public final class TokenManager {
     public static let shared = TokenManager()
-    private init() {}
+
+    private let keychain = KeychainStorage()
 
     private let accessTokenKey = "accessToken"
     private let refreshTokenKey = "refreshToken"
     private let deviceTokenKey = "deviceToken"
 
+    private init() {}
+
     public func saveDeviceToken(_ token: String) {
-        KeychainWrapper.standard.set(token, forKey: deviceTokenKey)
-        print("DeviceToken 저장 완료: \(token)")
+        keychain.set(token, forKey: deviceTokenKey)
+        Log.debug("DeviceToken 저장 완료")
     }
-    
+
     public func saveAccessToken(_ token: String) {
-        KeychainWrapper.standard.set(token, forKey: accessTokenKey)
-        print("AccessToken 저장 완료: \(token)")
+        keychain.set(token, forKey: accessTokenKey)
+        Log.debug("AccessToken 저장 완료")
     }
 
     public func saveRefreshToken(_ token: String) {
-        KeychainWrapper.standard.set(token, forKey: refreshTokenKey)
-        print("RefreshToken 저장 완료: \(token)")
+        keychain.set(token, forKey: refreshTokenKey)
+        Log.debug("RefreshToken 저장 완료")
     }
 
     public func loadAccessToken() -> String? {
-         return KeychainWrapper.standard.string(forKey: accessTokenKey)
-        
+        keychain.string(forKey: accessTokenKey)
     }
 
     public func loadRefreshToken() -> String? {
-         return KeychainWrapper.standard.string(forKey: refreshTokenKey)
-        
+        keychain.string(forKey: refreshTokenKey)
     }
-    
+
     public func loadDeviceToken() -> String? {
-        return KeychainWrapper.standard.string(forKey: deviceTokenKey)
+        keychain.string(forKey: deviceTokenKey)
     }
-    
+
     public func clearAllTokens() {
-        KeychainWrapper.standard.removeObject(forKey: accessTokenKey)
-        KeychainWrapper.standard.removeObject(forKey: refreshTokenKey)
-        print("모든 토큰 삭제 완료")
+        keychain.remove(forKey: accessTokenKey)
+        keychain.remove(forKey: refreshTokenKey)
+        Log.debug("모든 토큰 삭제 완료")
     }
 }
