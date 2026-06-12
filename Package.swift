@@ -19,7 +19,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Moya/Moya.git", from: "15.0.0"),
-        .package(url: "https://github.com/LottieFiles/dotlottie-ios.git", from: "1.0.0"),
+        .package(url: "https://github.com/LottieFiles/dotlottie-ios.git", exact: "0.9.2"),
     ],
     targets: [
         // MARK: - Foundation Layers (의존성 없음)
