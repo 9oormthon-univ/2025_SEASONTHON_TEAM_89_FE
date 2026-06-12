@@ -18,7 +18,7 @@ public struct LoadingView: View {
             
             HStack {
                 Spacer()
-                DotLottieAnimation(fileName: "loading", config: AnimationConfig(autoplay: true, loop: true)).view()
+                (DotLottieAnimation(fileName: "loading", config: AnimationConfig(autoplay: true, loop: true)).view() as DotLottieView)
                     .scaledToFit()
                     .frame(width: 300)
                 Spacer()

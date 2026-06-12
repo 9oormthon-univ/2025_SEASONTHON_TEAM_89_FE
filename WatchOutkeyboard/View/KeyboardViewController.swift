@@ -6,6 +6,7 @@
 //
 import UIKit
 import SwiftUI
+import KeyboardCore
 
 class KeyboardViewController: UIInputViewController, ObservableObject {
 
@@ -80,6 +81,41 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
         } else {
             hangulEngine.reset()
         }
+    }
+
+    // MARK: - Long Press (쌍자음)
+    private static let shiftedJamo: [Character: Character] = [
+        "ㄱ": "ㄲ", "ㄷ": "ㄸ", "ㅂ": "ㅃ", "ㅈ": "ㅉ", "ㅅ": "ㅆ"
+    ]
+
+    func variant(for key: KeyType) -> Character? {
+        guard case .character(let char) = key else { return nil }
+        switch keyboardMode {
+        case .korean:
+            return Self.shiftedJamo[char]
+        case .english:
+            guard char.isLowercase else { return nil }
+            return Character(char.uppercased())
+        default:
+            return nil
+        }
+    }
+
+    func handleLongPress(_ key: KeyType) {
+        guard let shifted = variant(for: key) else {
+            handleKeyPress(key)
+            return
+        }
+        handleCharacterKey(shifted)
+    }
+
+    // MARK: - Cursor Movement (스페이스 트랙패드)
+    func beginCursorMode() {
+        finalizeHangulInput()
+    }
+
+    func moveCursor(by offset: Int) {
+        textDocumentProxy.adjustTextPosition(byCharacterOffset: offset)
     }
 
     // MARK: - Key Handling

@@ -11,13 +11,15 @@ import Foundation
 /// - textToInsert: 텍스트 필드에 새로 삽입할 문자열
 /// - charactersToDelete: 텍스트 필드에서 지워야 할 글자 수
 public struct EngineOutput {
-    let textToInsert: String
-    let charactersToDelete: Int
+    public let textToInsert: String
+    public let charactersToDelete: Int
 }
 
 public class HangulEngine {
-    
+
     private var status: Hangul?
+
+    public init() {}
 
     public func process(jamo: Character) -> EngineOutput {
         
