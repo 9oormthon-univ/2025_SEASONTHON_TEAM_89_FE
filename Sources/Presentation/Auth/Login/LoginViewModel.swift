@@ -7,7 +7,6 @@
 
 import Foundation
 import Combine
-import KakaoSDKUser
 import Domain
 import Platform
 
@@ -18,56 +17,26 @@ final class LoginViewModel: ObservableObject {
     private let repository: AuthRepository
     private let userManager: UserManager
     private let tokenStore: TokenStore
+    private let kakaoAuthGateway: KakaoAuthGateway
 
     init(
         repository: AuthRepository,
         userManager: UserManager,
-        tokenStore: TokenStore
+        tokenStore: TokenStore,
+        kakaoAuthGateway: KakaoAuthGateway
     ) {
         self.repository = repository
         self.userManager = userManager
         self.tokenStore = tokenStore
+        self.kakaoAuthGateway = kakaoAuthGateway
     }
 
     // MARK: - 로그인 처리 함수
     func handleKakaoLogin(completion: @escaping (_ success: Bool) -> Void) {
-        if UserApi.isKakaoTalkLoginAvailable() {
-            loginWithKakaoTalk(completion: completion)
-        } else {
-            loginWithKakaoAccount(completion: completion)
-        }
-    }
-
-    private func loginWithKakaoTalk(completion: @escaping (_ success: Bool) -> Void) {
-        UserApi.shared.loginWithKakaoTalk { [weak self] (oauthToken, error) in
-            if let error = error {
-                Log.error("카카오톡 로그인 실패: \(error)")
-                completion(false)
-                return
-            }
-            if let accessToken = oauthToken?.accessToken {
-                self?.requestLoginToServer(with: accessToken, completion: completion)
-            }
-        }
-    }
-
-    private func loginWithKakaoAccount(completion: @escaping (_ success: Bool) -> Void) {
-        UserApi.shared.loginWithKakaoAccount { [weak self] (oauthToken, error) in
-            if let error = error {
-                Log.error("카카오 계정 로그인 실패: \(error)")
-                completion(false)
-                return
-            }
-            if let accessToken = oauthToken?.accessToken {
-                self?.requestLoginToServer(with: accessToken, completion: completion)
-            }
-        }
-    }
-
-    private func requestLoginToServer(with kakaoToken: String, completion: @escaping (_ success: Bool) -> Void) {
         isLoading = true
         Task { @MainActor in
             do {
+                let kakaoToken = try await kakaoAuthGateway.authorize()
                 let result = try await repository.loginWithKakao(
                     accessToken: kakaoToken,
                     deviceToken: tokenStore.loadDeviceToken()
@@ -78,7 +47,7 @@ final class LoginViewModel: ObservableObject {
                 isLoading = false
                 completion(true)
             } catch {
-                Log.error("서버 로그인 실패: \(error)")
+                Log.error("카카오 로그인 실패: \(error)")
                 isLoading = false
                 completion(false)
             }
