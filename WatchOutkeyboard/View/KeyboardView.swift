@@ -41,6 +41,9 @@ struct KeyboardView: View {
                         HStack(spacing: 7) {
                             ForEach(row, id: \.self) { key in
                                 keyView(for: key)
+                                    .scaleEffect(pressedKeys.contains(key) ? 0.9 : 1)
+                                    .opacity(pressedKeys.contains(key) ? 0.6 : 1)
+                                    .animation(.easeOut(duration: 0.1), value: pressedKeys.contains(key))
                                     .contentShape(Rectangle())
                                     .background(GeometryReader { geo in
                                         Color.clear.preference(
