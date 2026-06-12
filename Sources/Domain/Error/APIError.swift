@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Validation Error Models
 public struct ValidationErrorResponse: Decodable {
-    let detail: [ValidationErrorDetail]
+    public let detail: [ValidationErrorDetail]
 }
 
 public struct ValidationErrorDetail: Decodable {

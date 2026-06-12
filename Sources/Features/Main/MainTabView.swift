@@ -7,16 +7,22 @@
 
 import SwiftUI
 import Domain
-import Data
 import Platform
 import DesignSystem
 
 public struct MainTabView: View {
     @EnvironmentObject private var pathModel: PathModel
-    @StateObject private var mainTabViewModel = MainTabViewModel()
+    @StateObject private var mainTabViewModel: MainTabViewModel
+    private let dependencies: AppDependencies
     @EnvironmentObject private var appState: AppState
 
-    public init() { }
+    public init(dependencies: AppDependencies) {
+        self.dependencies = dependencies
+        _mainTabViewModel = StateObject(wrappedValue: MainTabViewModel(
+            repository: dependencies.authRepository,
+            userManager: dependencies.userManager
+        ))
+    }
 
     public var body: some View {
         VStack(spacing:0) {
@@ -61,8 +67,8 @@ public struct MainTabView: View {
                     Button("취소", role: .cancel) { }
                     Button("로그아웃", role: .destructive) {
                         appState.isLoggedIn = false
-                        TokenManager.shared.clearAllTokens()
-                        UserManager.shared.clearUser()
+                        dependencies.tokenStore.clearAllTokens()
+                        dependencies.userManager.clearUser()
                     }
                 } message: {
                     Text("로그아웃 하시면 자동으로 그룹에서 강퇴됩니다.")
@@ -72,8 +78,8 @@ public struct MainTabView: View {
                     Button("탈퇴하기", role: .destructive) {
                         mainTabViewModel.loginDelete() {
                             appState.isLoggedIn = false
-                            TokenManager.shared.clearAllTokens()
-                            UserManager.shared.clearUser()
+                            dependencies.tokenStore.clearAllTokens()
+                            dependencies.userManager.clearUser()
                         }
                         
                     }
@@ -86,7 +92,7 @@ public struct MainTabView: View {
             .background(Color.gray100)
             
             if mainTabViewModel.selectedTab == .homeView {
-                HomeView()
+                HomeView(dependencies: dependencies)
                     .navigationBarBackButtonHidden()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if mainTabViewModel.selectedTab == .settingView {
@@ -124,8 +130,4 @@ public struct MainTabView: View {
         }
         
     }
-}
-
-#Preview {
-    MainTabView()
 }

@@ -11,9 +11,14 @@ import DesignSystem
 
 public struct JoinGroupView: View {
     @EnvironmentObject private var pathModel: PathModel
-    @StateObject private var groupViewModel = GroupViewModel()
+    @StateObject private var groupViewModel: GroupViewModel
 
-    public init() { }
+    public init(dependencies: AppDependencies) {
+        _groupViewModel = StateObject(wrappedValue: GroupViewModel(
+            repository: dependencies.groupRepository,
+            userManager: dependencies.userManager
+        ))
+    }
 
     public var body: some View {
         VStack {
@@ -174,8 +179,4 @@ public struct JoinGroupView: View {
         
     }
 
-}
-
-#Preview {
-    JoinGroupView()
 }

@@ -11,17 +11,18 @@ import Platform
 import Features
 
 struct ContentView: View {
+    let dependencies: AppDependencies
     @EnvironmentObject private var appState: AppState
 
     var body: some View {
         if !appState.isLoggedIn {
-            LoginView()
+            LoginView(dependencies: dependencies)
                 .navigationBarBackButtonHidden()
         } else if !appState.isOnboardingCompleted {
             OnboardingView()
                 .navigationBarBackButtonHidden()
         } else {
-            MainTabView()
+            MainTabView(dependencies: dependencies)
                 .navigationBarBackButtonHidden()
         }
     }

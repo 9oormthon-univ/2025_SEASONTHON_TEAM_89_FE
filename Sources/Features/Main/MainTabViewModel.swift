@@ -9,7 +9,6 @@ import Foundation
 import Combine
 import DesignSystem
 import Domain
-import Data
 import Platform
 
 class MainTabViewModel: ObservableObject {
@@ -23,8 +22,8 @@ class MainTabViewModel: ObservableObject {
 
     init(
         selectedTab: WatchOutTab = .homeView,
-        repository: AuthRepository = AuthRepositoryImpl(),
-        userManager: UserManager = .shared
+        repository: AuthRepository,
+        userManager: UserManager
     ) {
         self.selectedTab = selectedTab
         self.repository = repository

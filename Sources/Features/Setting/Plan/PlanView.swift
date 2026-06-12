@@ -8,7 +8,6 @@
 import SwiftUI
 import Domain
 import DesignSystem
-import Data
 
 public struct PlanView: View {
     @EnvironmentObject var pathModel: PathModel

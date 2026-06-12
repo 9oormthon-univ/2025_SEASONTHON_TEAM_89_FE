@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Domain
 import Platform
 
 public struct APIClient {

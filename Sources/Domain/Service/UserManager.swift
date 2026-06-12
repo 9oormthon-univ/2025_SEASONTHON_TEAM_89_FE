@@ -7,7 +7,6 @@
 
 import Foundation
 import Combine
-import Domain
 
 
 public final class UserManager: ObservableObject {

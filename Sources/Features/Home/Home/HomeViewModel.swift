@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Data
+import Domain
 import Platform
 
 class HomeViewModel: ObservableObject {
@@ -16,7 +16,7 @@ class HomeViewModel: ObservableObject {
     
     private let userManager: UserManager
 
-    init(userManager: UserManager = .shared) {
+    init(userManager: UserManager) {
         self.userManager = userManager
         userManager.loadUserFromUserDefaults()
     }

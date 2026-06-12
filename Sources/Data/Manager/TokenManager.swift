@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import Domain
 import Platform
 
-public final class TokenManager {
+public final class TokenManager: TokenStore {
     public static let shared = TokenManager()
 
     private let keychain = KeychainStorage()

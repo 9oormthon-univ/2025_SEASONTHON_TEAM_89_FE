@@ -8,14 +8,15 @@
 import SwiftUI
 import Domain
 import Platform
-import Data
 import DesignSystem
 
 public struct HomeView: View {
     @EnvironmentObject private var pathModel: PathModel
-    @StateObject private var homeViewModel: HomeViewModel = HomeViewModel()
+    @StateObject private var homeViewModel: HomeViewModel
     
-    public init() { }
+    public init(dependencies: AppDependencies) {
+        _homeViewModel = StateObject(wrappedValue: HomeViewModel(userManager: dependencies.userManager))
+    }
     
     public var body: some View {
         ScrollView(showsIndicators: false){
@@ -287,9 +288,4 @@ private struct CustomDivider: View {
             .frame(height: 8)
             .foregroundStyle(Color.gray100)
     }
-}
-
-
-#Preview {
-    HomeView()
 }
