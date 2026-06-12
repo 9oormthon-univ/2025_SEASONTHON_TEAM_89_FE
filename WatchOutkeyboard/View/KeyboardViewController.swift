@@ -89,8 +89,16 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
     ]
 
     func variant(for key: KeyType) -> Character? {
-        guard keyboardMode == .korean, case .character(let char) = key else { return nil }
-        return Self.shiftedJamo[char]
+        guard case .character(let char) = key else { return nil }
+        switch keyboardMode {
+        case .korean:
+            return Self.shiftedJamo[char]
+        case .english:
+            guard char.isLowercase else { return nil }
+            return Character(char.uppercased())
+        default:
+            return nil
+        }
     }
 
     func handleLongPress(_ key: KeyType) {
@@ -99,6 +107,15 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
             return
         }
         handleCharacterKey(shifted)
+    }
+
+    // MARK: - Cursor Movement (스페이스 트랙패드)
+    func beginCursorMode() {
+        finalizeHangulInput()
+    }
+
+    func moveCursor(by offset: Int) {
+        textDocumentProxy.adjustTextPosition(byCharacterOffset: offset)
     }
 
     // MARK: - Key Handling
