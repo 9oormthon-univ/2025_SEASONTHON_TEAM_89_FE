@@ -6,13 +6,11 @@
 //
 
 import SwiftUI
+import DesignSystem
 import Domain
 import Data
-import Core
-import FeatureMain
-import FeatureGroup
-import FeatureExperience
-import FeatureSetting
+import Platform
+import Features
 
 struct RootView: View {
     @StateObject private var pathModel = PathModel()

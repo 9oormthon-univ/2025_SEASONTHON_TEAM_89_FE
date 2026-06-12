@@ -1,5 +1,5 @@
 {
-  "originHash" : "d39c5c757a4d683c86d51310056853faec830fa9a8e1980b0aae0cb5e534f857",
+  "originHash" : "1bcb5ca7111e86976082b3f5a903d5935869ca137b0e4f9d4b6d98370448869e",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -26,42 +26,6 @@
       "state" : {
         "revision" : "f17e30773062d9df4c8e0e211da9ac22dfb2e5c1",
         "version" : "2.24.6"
-      }
-    },
-    {
-      "identity" : "moya",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Moya/Moya.git",
-      "state" : {
-        "revision" : "c263811c1f3dbf002be9bd83107f7cdc38992b26",
-        "version" : "15.0.3"
-      }
-    },
-    {
-      "identity" : "reactiveswift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ReactiveCocoa/ReactiveSwift.git",
-      "state" : {
-        "revision" : "c43bae3dac73fdd3cb906bd5a1914686ca71ed3c",
-        "version" : "6.7.0"
-      }
-    },
-    {
-      "identity" : "rxswift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ReactiveX/RxSwift.git",
-      "state" : {
-        "revision" : "5dd1907d64f0d36f158f61a466bab75067224893",
-        "version" : "6.9.0"
-      }
-    },
-    {
-      "identity" : "swiftkeychainwrapper",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jrendel/SwiftKeychainWrapper",
-      "state" : {
-        "revision" : "185a3165346a03767101c4f62e9a545a0fe0530f",
-        "version" : "4.0.1"
       }
     }
   ],
