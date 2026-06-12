@@ -6,7 +6,7 @@
 //
 import UIKit
 import SwiftUI
-import KeyboardCore
+import KeyboardKit
 
 class KeyboardViewController: UIInputViewController, ObservableObject {
 

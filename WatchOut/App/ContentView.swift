@@ -7,9 +7,8 @@
 
 import SwiftUI
 import Domain
-import Core
-import FeatureAuth
-import FeatureMain
+import Platform
+import Features
 
 struct ContentView: View {
     @EnvironmentObject private var appState: AppState
