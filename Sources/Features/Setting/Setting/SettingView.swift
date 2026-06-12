@@ -124,7 +124,7 @@ private struct SheetView: View {
                 LazyVGrid(columns:columns,alignment: .leading) {
                     ForEach(Range(1...7), id: \.self) { index in
                         Circle()
-                            .foregroundStyle(Color(status == .danger ? "Risk1Color\(index)" :"RiskColor\(index)" ))
+                            .foregroundStyle(status == .danger ? Color.risk1Color("\(index)") : Color.riskColor("\(index)"))
                             .frame(width: 24,height: 24)
                             .padding(4)
                             .overlay{
@@ -145,7 +145,7 @@ private struct SheetView: View {
             ZStack {
                 Image("KeyboardImage")
                 Image("KeyboardStatusImage")
-                    .foregroundStyle(Color( status == .danger ? "Risk1Color\(settingViewModel.getRiskLevelColor(level: status))" : "RiskColor\(settingViewModel.getRiskLevelColor(level: status))"))
+                    .foregroundStyle(status == .danger ? Color.risk1Color(settingViewModel.getRiskLevelColor(level: status)) : Color.riskColor(settingViewModel.getRiskLevelColor(level: status)))
             }
         }
     }
@@ -191,7 +191,7 @@ private struct ColorPickerView: View {
                 .scaledToFit()
                 .frame(width: 36)
             
-                .foregroundStyle(Color( status == .danger ? "Risk1Color\(settingViewModel.getRiskLevelColor(level: status))" : "RiskColor\(settingViewModel.getRiskLevelColor(level: status))"))
+                .foregroundStyle(status == .danger ? Color.risk1Color(settingViewModel.getRiskLevelColor(level: status)) : Color.riskColor(settingViewModel.getRiskLevelColor(level: status)))
             Image(systemName: "chevron.down")
                 .foregroundStyle(Color.gray500)
             
