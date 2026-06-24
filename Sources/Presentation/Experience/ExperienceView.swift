@@ -132,18 +132,30 @@ public struct ExperienceView: View {
                 .font(.pretendard(size: 14, weight: .medium
                                  ))
                 CustomTextField(text: $text, enter: {
-                    
-                    if experienceType == .two {
-                        NotificationManager.instance.scheduleNotification(title: "위험한 문장이 반복 감지되었습니다.", subtitle: "필요하다면 즉시 신고를 도와드 수 있어요.", secondsLater: 1)
-                    }
-                    
-                    if experienceType == .two {
-                        experienceType = .three
-                        isEnter = true
+                    guard !text.isEmpty else { return }
+
+                    switch experienceType {
+                    case .one:
+                        // 1단계: 위험 문장 감지 → 입력 문장 전송 후 2단계로
                         sendtext = text
+                        isEnter = true
+                        experienceType = .two
                         text = ""
-                        
-                        
+
+                    case .two:
+                        // 2단계: 위험도 반응 확인 → 알림 후 3단계로
+                        NotificationManager.instance.scheduleNotification(
+                            title: "위험한 문장이 반복 감지되었습니다.",
+                            subtitle: "필요하다면 즉시 신고를 도와드릴 수 있어요.",
+                            secondsLater: 1
+                        )
+                        sendtext = text
+                        isEnter = true
+                        experienceType = .three
+                        text = ""
+
+                    case .three:
+                        break
                     }
                 }, isDisabled: false)
                     .focused($focused)
