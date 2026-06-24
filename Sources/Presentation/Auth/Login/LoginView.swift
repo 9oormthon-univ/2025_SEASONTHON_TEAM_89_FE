@@ -48,6 +48,9 @@ public struct LoginView: View {
                 Button {
                     loginViewModel.handleKakaoLogin { success in
                                    if success {
+                                       // 로그인할 때마다 온보딩을 다시 보여준다.
+                                       SharedUserDefaults.isOnboarding = false
+                                       appState.isOnboardingCompleted = false
                                        appState.isLoggedIn = true
                                    } else {
                                        print("최종 로그인 실패")

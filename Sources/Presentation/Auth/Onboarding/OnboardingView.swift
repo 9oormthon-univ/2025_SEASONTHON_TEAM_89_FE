@@ -93,6 +93,7 @@ private struct OnboardingFirstView: View {
 // MARK: - OnboardingSecondView
 private struct OnboardingSecondView: View {
     @EnvironmentObject private var pathModel: PathModel
+    @EnvironmentObject private var appState: AppState
     @FocusState private var focusedField: Field?
     @State private var hiddenText: String = ""
 
@@ -111,8 +112,9 @@ private struct OnboardingSecondView: View {
                 Spacer()
 
                 Button {
+                    // 온보딩 완료 → 메인으로 전환 (ContentView가 appState로 반응형 전환)
                     SharedUserDefaults.isOnboarding = true
-                    pathModel.paths.append(.mainTabView)
+                    appState.isOnboardingCompleted = true
                 } label: {
                     VStack {
                         Text("선택완료")
