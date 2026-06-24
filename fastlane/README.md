@@ -23,6 +23,22 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 앱이 정상 빌드되는지 확인 (시뮬레이터·서명 없음, Apple 계정 불필요)
 
+### ios asc_check
+
+```sh
+[bundle exec] fastlane ios asc_check
+```
+
+App Store Connect API 키 인증 확인 (업로드 없음)
+
+### ios beta
+
+```sh
+[bundle exec] fastlane ios beta
+```
+
+TestFlight 업로드 (아카이브 빌드 → 업로드)
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
