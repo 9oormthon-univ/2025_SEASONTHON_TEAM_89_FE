@@ -110,3 +110,6 @@ xcuserdata
 # End of https://www.toptal.com/developers/gitignore/api/swift,swiftpackagemanager,xcode,swiftpm
 
 *.xcconfig
+# App Store Connect API 키 / 로컬 시크릿
+*.p8
+fastlane/.env
