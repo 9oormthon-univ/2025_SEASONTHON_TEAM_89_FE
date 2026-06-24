@@ -6,13 +6,9 @@
 //
 import UIKit
 import SwiftUI
+import KeyboardKit
 
 class KeyboardViewController: UIInputViewController, ObservableObject {
-
-    // MARK: - Types
-    enum KeyboardMode {
-        case korean, english, symbols, moreSymbols
-    }
 
     // MARK: - Properties
     private let hangulEngine = HangulEngine()
@@ -22,16 +18,7 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
 
     // MARK: - Computed Properties
     var keyLayout: [[KeyType]] {
-        switch keyboardMode {
-        case .korean:
-            return isShifted ? koreanShiftedLayout : koreanLayout
-        case .english:
-            return isShifted ? englishShiftedLayout : englishLayout
-        case .symbols:
-            return symbolsLayout
-        case .moreSymbols:
-            return moreSymbolsLayout
-        }
+        KeyboardLayoutProvider.layout(mode: keyboardMode, isShifted: isShifted)
     }
     
     // MARK: - Lifecycle
@@ -80,6 +67,41 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
         } else {
             hangulEngine.reset()
         }
+    }
+
+    // MARK: - Long Press (쌍자음)
+    private static let shiftedJamo: [Character: Character] = [
+        "ㄱ": "ㄲ", "ㄷ": "ㄸ", "ㅂ": "ㅃ", "ㅈ": "ㅉ", "ㅅ": "ㅆ"
+    ]
+
+    func variant(for key: KeyType) -> Character? {
+        guard case .character(let char) = key else { return nil }
+        switch keyboardMode {
+        case .korean:
+            return Self.shiftedJamo[char]
+        case .english:
+            guard char.isLowercase else { return nil }
+            return Character(char.uppercased())
+        default:
+            return nil
+        }
+    }
+
+    func handleLongPress(_ key: KeyType) {
+        guard let shifted = variant(for: key) else {
+            handleKeyPress(key)
+            return
+        }
+        handleCharacterKey(shifted)
+    }
+
+    // MARK: - Cursor Movement (스페이스 트랙패드)
+    func beginCursorMode() {
+        finalizeHangulInput()
+    }
+
+    func moveCursor(by offset: Int) {
+        textDocumentProxy.adjustTextPosition(byCharacterOffset: offset)
     }
 
     // MARK: - Key Handling
@@ -172,62 +194,6 @@ class KeyboardViewController: UIInputViewController, ObservableObject {
         if !output.textToInsert.isEmpty {
             textDocumentProxy.insertText(output.textToInsert)
         }
-    }
-}
-
-private extension KeyboardViewController {
-    var koreanLayout: [[KeyType]] {
-        [
-            [.character("ㅂ"), .character("ㅈ"), .character("ㄷ"), .character("ㄱ"), .character("ㅅ"), .character("ㅛ"), .character("ㅕ"), .character("ㅑ"), .character("ㅐ"), .character("ㅔ")],
-            [.character("ㅁ"), .character("ㄴ"), .character("ㅇ"), .character("ㄹ"), .character("ㅎ"), .character("ㅗ"), .character("ㅓ"), .character("ㅏ"), .character("ㅣ")],
-            [.shift, .character("ㅋ"), .character("ㅌ"), .character("ㅊ"), .character("ㅍ"), .character("ㅠ"), .character("ㅜ"), .character("ㅡ"), .backspace],
-            [.switchToSymbols, .modeChange, .space, .enter]
-        ]
-    }
-    
-    var koreanShiftedLayout: [[KeyType]] {
-        [
-            [.character("ㅃ"), .character("ㅉ"), .character("ㄸ"), .character("ㄲ"), .character("ㅆ"), .character("ㅛ"), .character("ㅕ"), .character("ㅑ"), .character("ㅒ"), .character("ㅖ")],
-            [.character("ㅁ"), .character("ㄴ"), .character("ㅇ"), .character("ㄹ"), .character("ㅎ"), .character("ㅗ"), .character("ㅓ"), .character("ㅏ"), .character("ㅣ")],
-            [.shift, .character("ㅋ"), .character("ㅌ"), .character("ㅊ"), .character("ㅍ"), .character("ㅠ"), .character("ㅜ"), .character("ㅡ"), .backspace],
-            [.switchToSymbols, .modeChange, .space, .enter]
-        ]
-    }
-    
-    var englishLayout: [[KeyType]] {
-        [
-            [.character("q"), .character("w"), .character("e"), .character("r"), .character("t"), .character("y"), .character("u"), .character("i"), .character("o"), .character("p")],
-            [.character("a"), .character("s"), .character("d"), .character("f"), .character("g"), .character("h"), .character("j"), .character("k"), .character("l")],
-            [.shift, .character("z"), .character("x"), .character("c"), .character("v"), .character("b"), .character("n"), .character("m"), .backspace],
-            [.switchToSymbols, .modeChange, .space, .enter]
-        ]
-    }
-    
-    var englishShiftedLayout: [[KeyType]] {
-        [
-            [.character("Q"), .character("W"), .character("E"), .character("R"), .character("T"), .character("Y"), .character("U"), .character("I"), .character("O"), .character("P")],
-            [.character("A"), .character("S"), .character("D"), .character("F"), .character("G"), .character("H"), .character("J"), .character("K"), .character("L")],
-            [.shift, .character("Z"), .character("X"), .character("C"), .character("V"), .character("B"), .character("N"), .character("M"), .backspace],
-            [.switchToSymbols, .modeChange, .space, .enter]
-        ]
-    }
-
-    var symbolsLayout: [[KeyType]] {
-        [
-            [.character("1"), .character("2"), .character("3"), .character("4"), .character("5"), .character("6"), .character("7"), .character("8"), .character("9"), .character("0")],
-            [.character("-"), .character("/"), .character(":"), .character(";"), .character("("), .character(")"), .character("$"), .character("&"), .character("@"), .character("\"")],
-            [.shift, .character("."), .character(","), .character("?"), .character("!"), .character("'"), .backspace],
-            [.switchToMoreSymbols, .modeChange, .space, .enter]
-        ]
-    }
-    
-    var moreSymbolsLayout: [[KeyType]] {
-        [
-            [.character("["), .character("]"), .character("{"), .character("}"), .character("#"), .character("%"), .character("^"), .character("*"), .character("+"), .character("=")],
-            [.character("_"), .character("\\"), .character("|"), .character("~"), .character("<"), .character(">"), .character("€"), .character("£"), .character("¥"), .character("•")],
-            [.shift, .character("."), .character(","), .character("?"), .character("!"), .character("'"), .backspace],
-            [.switchToSymbols, .modeChange, .space, .enter]
-        ]
     }
 }
 
