@@ -1,0 +1,18 @@
+# Fastfile: "lane"(작업 묶음)을 정의하는 곳.
+# 터미널에서  fastlane <레인이름>  으로 실행한다.
+
+default_platform(:ios)
+
+platform :ios do
+  desc "앱이 정상 빌드되는지 확인 (시뮬레이터·서명 없음, Apple 계정 불필요)"
+  lane :build_check do
+    build_app(
+      project: "WatchOut.xcodeproj",
+      scheme: "WatchOut",
+      destination: "generic/platform=iOS Simulator",
+      skip_archive: true,        # 아카이브 대신 build만 (검증용)
+      skip_codesigning: true,    # 시뮬레이터라 코드 서명 불필요
+      clean: false
+    )
+  end
+end

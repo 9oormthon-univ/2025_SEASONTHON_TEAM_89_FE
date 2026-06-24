@@ -1,0 +1,8 @@
+# 앱을 식별하는 기본 정보. fastlane이 "어떤 앱"을 다루는지 여기서 읽는다.
+
+app_identifier("com.jaesuneo.WatchOut")   # 앱 번들 ID
+team_id("NZJWJ35U9D")                      # Apple Developer 팀 ID (코드 서명용)
+
+# 아래는 TestFlight 업로드(3단계)에서 채울 예정 — 지금은 주석 처리.
+# apple_id("you@example.com")              # App Store Connect 로그인 계정
+# itc_team_id("...")                       # App Store Connect 팀 ID
