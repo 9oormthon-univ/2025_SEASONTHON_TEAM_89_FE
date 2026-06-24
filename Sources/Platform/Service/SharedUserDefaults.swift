@@ -30,6 +30,7 @@ public struct SharedUserDefaults {
         case groupCode = "groupCode"
         case joinId = "joinId"
         case createGroup = "isCreateGroup"
+        case hasLaunchedBefore = "hasLaunchedBefore"
         case WarningNotification = "isWarningNotification"
         case DangerNotification = "isDangerNotification"
         case WarningHaptic = "isWarningHaptic"
@@ -79,6 +80,15 @@ public struct SharedUserDefaults {
             return shared.object(forKey: SettingsKey.createGroup.rawValue) as? Bool ?? false
         } set {
             shared.set(newValue, forKey: SettingsKey.createGroup.rawValue)
+        }
+    }
+
+    //MARK: - 첫 실행 여부 (앱 삭제 시 UserDefaults는 지워지나 Keychain은 남음 → 재설치 감지용)
+    public static var hasLaunchedBefore: Bool {
+        get {
+            return shared.bool(forKey: SettingsKey.hasLaunchedBefore.rawValue)
+        } set {
+            shared.set(newValue, forKey: SettingsKey.hasLaunchedBefore.rawValue)
         }
     }
     
