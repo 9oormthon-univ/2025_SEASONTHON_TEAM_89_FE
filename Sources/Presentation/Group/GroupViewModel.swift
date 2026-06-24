@@ -200,6 +200,14 @@ extension GroupViewModel {
             isJoinGroup = true
             showError = false
         } catch {
+            // 409: 이미 그룹에 속해 있음 → 에러 대신 관리 화면으로 복귀
+            if case .conflict = (error as? APIError) {
+                Log.debug("joinGroup 409: 이미 그룹 소속 → 관리 화면으로")
+                isCreate = true
+                isJoinGroup = true
+                showError = false
+                return
+            }
             Log.error("joinGroup 실패: \(error)")
             handleError(error)
         }
@@ -234,7 +242,11 @@ extension GroupViewModel {
             Log.debug("infoGroup 성공: 멤버 \(info.members.count)명")
         } catch {
             isLoading = false
-            SharedUserDefaults.isCreateGroup = false
+            // 그룹이 실제로 없을 때(404)만 상태를 내린다.
+            // 네트워크/서버 일시 오류로 홈이 "입장하기"로 바뀌어 재입장→409 충돌하는 desync 방지.
+            if case .notFound = (error as? APIError) {
+                SharedUserDefaults.isCreateGroup = false
+            }
             Log.error("infoGroup 실패: \(error)")
             handleError(error)
         }
@@ -267,6 +279,14 @@ extension GroupViewModel {
             isCreate = true
             groupName = ""
         } catch {
+            // 409: 이미 그룹에 속해 있음 → 에러 대신 관리 화면으로 복귀
+            if case .conflict = (error as? APIError) {
+                Log.debug("createGroup 409: 이미 그룹 소속 → 관리 화면으로")
+                isCreate = true
+                groupName = ""
+                showError = false
+                return
+            }
             Log.error("createGroup 실패: \(error)")
             handleError(error)
         }

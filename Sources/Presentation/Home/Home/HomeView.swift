@@ -15,7 +15,10 @@ public struct HomeView: View {
     @StateObject private var homeViewModel: HomeViewModel
     
     public init(dependencies: AppDependencies) {
-        _homeViewModel = StateObject(wrappedValue: HomeViewModel(userManager: dependencies.userManager))
+        _homeViewModel = StateObject(wrappedValue: HomeViewModel(
+            userManager: dependencies.userManager,
+            groupRepository: dependencies.groupRepository
+        ))
     }
     
     public var body: some View {
@@ -44,7 +47,7 @@ public struct HomeView: View {
                 .frame(height: 16)
             VStack(spacing: 8) {
                 
-                if SharedUserDefaults.isCreateGroup {
+                if homeViewModel.isInGroup {
                     GroupBoxRowView(title: "내 그룹 관리", subTitle: "가족 그룹을 관리해 보세요", imageName: "maingroup3")
                         .onTapGesture {
                             pathModel.paths.append(.managementGroupView)
@@ -82,6 +85,10 @@ public struct HomeView: View {
                 UserManager.shared.loadUserFromUserDefaults()
 
             }
+        }
+        .task {
+            // 홈 진입 시 서버 기준으로 그룹 소속 여부 동기화 (로컬 플래그 desync 방지)
+            await homeViewModel.syncGroupMembership()
         }
         
     }

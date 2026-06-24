@@ -54,6 +54,7 @@ public enum APIError: Error {
     case unauthorized           // 401
     case forbidden              // 403
     case notFound               // 404
+    case conflict               // 409
     case serverError            // 500
     case networkError
     case decodingError
@@ -71,6 +72,8 @@ public enum APIError: Error {
             return "접근 권한이 없습니다."
         case .notFound:
             return "요청한 정보를 찾을 수 없습니다."
+        case .conflict:
+            return "이미 그룹에 속해 있습니다."
         case .serverError:
             return "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
         case .networkError:
