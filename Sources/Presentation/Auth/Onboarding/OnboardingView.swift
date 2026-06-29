@@ -29,16 +29,23 @@ private struct OnboardingContentView: View {
     fileprivate init(onboardingViewModel: OnboardingContentViewModel) {
         self.onboardingViewModel = onboardingViewModel
     }
+    
     fileprivate var body: some View {
+        isOnboardingView
+    }
+    
+    @ViewBuilder
+    var isOnboardingView: some View {
         ZStack {
             if !onboardingViewModel.getIsKeyboardEnabled() {
                 ZStack {
+                    VStack {
                     (DotLottieAnimation(
                         fileName: "guidevideo",
                         config: AnimationConfig(autoplay: true, loop: true)
                     ).view() as DotLottieView)
-
-                    VStack {
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                         Spacer()
                         OnboardingFirstView()
                     }

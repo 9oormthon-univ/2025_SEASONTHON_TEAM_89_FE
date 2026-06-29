@@ -10,7 +10,8 @@ import Platform
 
 // MARK: - OnboardingContentViewModel
 final class OnboardingContentViewModel: ObservableObject {
-    @Published private var isKeyboardEnabled = false
+    // 첫 프레임부터 실제 키보드 활성 상태로 시작 → FirstView가 깜빡이고 사라지는 현상 방지.
+    @Published private var isKeyboardEnabled = KeyboardPermissionManager.isKeyboardEnabled()
     @Published private var isFirstSetting = false
 }
 
