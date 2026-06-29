@@ -66,12 +66,22 @@ public final class FraudDetectionSession: ObservableObject {
             }
             if SharedUserDefaults.isTutorial == false {
                 SharedUserDefaults.riskLevel2Count += 1
+                // 서버 경고 카운트 업데이트 + 그룹원 자동 푸시
+                GroupNotificationService.shared.reportWarningCount(
+                    userId: SharedUserDefaults.userID,
+                    count: SharedUserDefaults.riskLevel2Count
+                )
             }
 
         case .danger:
             dangerCount += 1
             if SharedUserDefaults.isTutorial == false {
                 SharedUserDefaults.riskLevel3Count += 1
+                // 서버 위험 카운트 업데이트 + 그룹원 자동 푸시
+                GroupNotificationService.shared.reportDangerCount(
+                    userId: SharedUserDefaults.userID,
+                    count: SharedUserDefaults.riskLevel3Count
+                )
             }
             if dangerCount % 3 == 0, SharedUserDefaults.isDangerNotification {
                 NotificationManager.instance.scheduleNotification(
