@@ -48,7 +48,32 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         print("✅ Device Token: \(token)")
         TokenManager.shared.saveDeviceToken(token)
-        
+        registerDeviceTokenToServer(token)
+    }
+
+    /// 수신한 디바이스 토큰을 서버에 등록한다.
+    /// 로그인 바디 전송만으로는 토큰 도착 타이밍(비동기)·회전을 놓쳐 그룹 푸시가 누락되므로,
+    /// 토큰을 받는 즉시(로그인 상태면) 서버에 갱신해 항상 최신값을 보유하게 한다.
+    private func registerDeviceTokenToServer(_ token: String) {
+        let userId = SharedUserDefaults.userID
+        guard !userId.isEmpty else {
+            print("ℹ️ user_id 없음(로그인 전) → 토큰은 로그인 시 전송됨")
+            return
+        }
+        Task {
+            do {
+                try await APIClient.default.request(
+                    try Endpoint(
+                        path: "auth/device-token",
+                        method: .post,
+                        json: DeviceTokenRequest(userId: userId, deviceToken: token)
+                    )
+                )
+                print("✅ 디바이스 토큰 서버 등록 완료")
+            } catch {
+                print("❌ 디바이스 토큰 서버 등록 실패: \(error)")
+            }
+        }
     }
     
     
