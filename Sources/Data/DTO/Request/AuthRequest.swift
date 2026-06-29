@@ -18,8 +18,24 @@ public struct KakaoLoginRequest: Codable {
 
 public struct KakaoDeleteRequest: Codable {
     public let userId: String
-    
+
     public enum CodingKeys: String, CodingKey {
         case userId = "user_id"
+    }
+}
+
+/// POST /auth/device-token — 디바이스 토큰 등록/갱신 (user_id 기반)
+public struct DeviceTokenRequest: Codable {
+    public let userId: String
+    public let deviceToken: String
+
+    public init(userId: String, deviceToken: String) {
+        self.userId = userId
+        self.deviceToken = deviceToken
+    }
+
+    public enum CodingKeys: String, CodingKey {
+        case userId = "user_id"
+        case deviceToken = "device_token"
     }
 }
