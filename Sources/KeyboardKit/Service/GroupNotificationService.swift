@@ -2,10 +2,10 @@
 //  GroupNotificationService.swift
 //  WatchOutkeyboard
 //
-//  위험/경고 감지 시 서버에 카운트를 업데이트하고, 서버가 그룹원에게 자동 푸시를 보낸다.
-//  - PUT /api/notifications/danger-count   { user_id, danger_count }
-//  - PUT /api/notifications/warning-count  { user_id, warning_count }
-//  키보드 익스텐션(Full Access)에서 호출. user_id는 App Group(SharedUserDefaults)에서 읽는다.
+//  키보드에서 감지한 위험/경고를 서버에 반영한다.
+//  - 카운트(그룹 화면 숫자): PUT /api/notifications/{danger,warning}-count  — 푸시 없음, 카운트만
+//  - 그룹 푸시(위험 시): POST /api/notifications/danger                     — 그룹원에게 푸시
+//  키보드 익스텐션(Full Access)에서 호출. id는 App Group(SharedUserDefaults)에서 읽는다.
 //
 
 import Foundation
@@ -18,22 +18,30 @@ public struct GroupNotificationService {
 
     private init() {}
 
-    /// 위험(danger) 카운트 업데이트 + 그룹 자동 푸시.
+    /// 위험(danger) 카운트 업데이트. (그룹 화면 숫자용 — 푸시는 보내지 않음)
     public func reportDangerCount(userId: String, count: Int) {
-        send(path: "/notifications/danger-count", body: ["user_id": userId, "danger_count": count])
+        guard !userId.isEmpty else { return }
+        send(path: "/notifications/danger-count", method: "PUT",
+             body: ["user_id": userId, "danger_count": count])
     }
 
-    /// 경고(caution) 카운트 업데이트 + 그룹 자동 푸시.
+    /// 경고(caution) 카운트 업데이트. (그룹 화면 숫자용 — 푸시는 보내지 않음)
     public func reportWarningCount(userId: String, count: Int) {
-        send(path: "/notifications/warning-count", body: ["user_id": userId, "warning_count": count])
+        guard !userId.isEmpty else { return }
+        send(path: "/notifications/warning-count", method: "PUT",
+             body: ["user_id": userId, "warning_count": count])
     }
 
-    private func send(path: String, body: [String: Any]) {
-        // user_id가 비면 서버가 식별 불가 → 호출하지 않음.
-        if let uid = body["user_id"] as? String, uid.isEmpty {
-            print("[GroupNotify] user_id 비어있음 → 전송 생략")
-            return
-        }
+    /// 위험 감지 시 그룹 구성원에게 실제 푸시 알림 전송.
+    /// 그룹 가입 상태에서만 호출할 것(호출 측 가드). `dangerType`은 위험 유형 문자열.
+    public func sendDangerAlert(fromUserId: String, dangerType: String, message: String? = nil) {
+        guard !fromUserId.isEmpty else { return }
+        var body: [String: Any] = ["from_user_id": fromUserId, "danger_type": dangerType]
+        if let message { body["message"] = message }
+        send(path: "/notifications/danger", method: "POST", body: body)
+    }
+
+    private func send(path: String, method: String, body: [String: Any]) {
         guard let url = URL(string: baseURL + path),
               let data = try? JSONSerialization.data(withJSONObject: body) else {
             print("[GroupNotify] 요청 생성 실패: \(path)")
@@ -41,7 +49,7 @@ public struct GroupNotificationService {
         }
 
         var request = URLRequest(url: url)
-        request.httpMethod = "PUT"
+        request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = data
 
@@ -51,7 +59,7 @@ public struct GroupNotificationService {
                 return
             }
             let code = (response as? HTTPURLResponse)?.statusCode ?? -1
-            print("[GroupNotify] \(path) → \(code)")
+            print("[GroupNotify] \(method) \(path) → \(code)")
         }.resume()
     }
 }
